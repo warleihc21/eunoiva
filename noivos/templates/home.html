@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% block 'body' %}
+
+<style>
+    .card {
+        background-color: #f9f6f0;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 320px;
+    }
+    
+    .card:hover {
+        transform: scale(1.02);
+    }
+
+    .image-container {
+        height: 160px;
+        background-color: #ececec;
+        overflow: hidden;
+    }
+
+    .card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .card-content {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+    }
+
+    .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+    }
+
+    .reserved-text {
+        font-size: 0.875rem;
+        color: #666;
+        text-align: center;
+        margin-top: 4px;
+    }
+
+    .importance-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 8px;
+    }
+
+    .importance-label {
+        padding: 4px 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        text-align: center;
+    }
+
+    .importance-label.low {
+        color: #388e3c;
+        background-color: #e8f5e9;
+    }
+
+    .importance-label.medium {
+        color: #f57c00;
+        background-color: #fff3e0;
+    }
+
+    .importance-label.high {
+        color: #d32f2f;
+        background-color: #ffebee;
+    }
+
+    .delete-icon {
+        color: #d32f2f;
+        cursor: pointer;
+        font-size: 1.5rem;
+        text-align: center;
+        margin-top: 12px;
+    }
+
+    .delete-icon:hover {
+        color: #b71c1c;
+    }
+</style>
+
+    {% include "partials/navbar.html" %}
+
+    <div class="max-w-7xl mx-auto mt-12">
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-slate-200/20 p-6 rounded-md">
+                <h2 class="text-balance text-xl font-semibold tracking-tight text-gray-900">Crie sua lista de presentes</h2>
+                <br>
+                <form action="{% url 'home' %}" method="POST"  enctype='multipart/form-data'>{% csrf_token %}
+                    <label class="mt-4 block text-sm leading-6 text-gray-900">Nome do presente</label>
+                    <input type="text" name="nome_presente" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+                    <div class="w-full">
+                        <label class="mt-4 block text-sm leading-6 text-gray-900">Link de sugestão de compra</label>
+                        <input type="url" name="link_sugestao_compra" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300" placeholder="Insira o link do produto">
+                    </div>
+                    <div class="flex space-x-4">
+                        <div class="w-full">
+                            <label class="mt-4 block text-sm leading-6 text-gray-900">Foto de exemplo</label>
+                            <input type="file" name="foto" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+                        </div>
+                        <div class="w-full">
+                            <label class="mt-4 block text-sm leading-6 text-gray-900">Preço estimado</label>
+                            <input type="text" name="preco" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+                        </div>
+                    </div>
+                    <div class="flex space-x-4">
+                        <div class="w-full">
+                            <label class="mt-4 block text-sm leading-6 text-gray-900">Importância</label>
+                            <input type="range" min="1" max="5" name="importancia" class="block w-full py-3 text-gray-900">
+                        </div>
+                        <div class="w-full">
+                            <input type="submit" class="rounded-md w-full mt-4 bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="mx-auto">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-5 mt-4 gap-4">
+            {% for presente in presentes %}
+                <div class="card">
+                    <div class="image-container">
+                        {% if presente.foto %}
+                            <img class="card-image" src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}">
+                        {% else %}
+                            <p class="text-center text-gray-400">Sem imagem</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">{{ presente.nome_presente }}</h3>
+                        <p class="text-base leading-7 text-gray-600">Valor: R$ {{ presente.preco|floatformat:2 }}</p>
+                        {% if presente.reservado %}
+                            <p class="reserved-text text-primary">Reservado por {{ presente.reservado_por }}</p>
+                        {% endif %}
+                        {% if presente.link_sugestao_compra %}
+                            <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="mt-2 text-indigo-600 hover:text-indigo-800">Veja a sugestão de compra</a>
+                        {% endif %}
+                        <div class="importance-container">
+                            {% if presente.importancia <= 2 %}
+                                <span class="importance-label low">Pouco Importante</span>
+                            {% elif presente.importancia < 4 %}
+                                <span class="importance-label medium">Importante</span>
+                            {% else %}
+                                <span class="importance-label high">Muito Importante</span>
+                            {% endif %}
+                        </div>
+                        <form action="{% url 'excluir_presente' presente.id %}" method="POST" onsubmit="return confirmarExclusao();">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Excluir
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-8 bg-white p-6 rounded-md shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Presentes Reservados</h2>
+            
+            <table class="min-w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="border border-gray-300 px-4 py-2 text-left">Nome do Presente</th>
+                        <th class="border border-gray-300 px-4 py-2 text-left">Reservado por</th>
+                        <th class="border border-gray-300 px-4 py-2 text-right">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for presente in presentes_reservados %}
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">{{ presente.nome_presente }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ presente.reservado_por }}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-right">R$ {{ presente.preco|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2" class="border border-gray-300 px-4 py-2 font-semibold text-right">Total</td>
+                        <td class="border border-gray-300 px-4 py-2 text-right font-semibold">R$ {{ total_reservado|floatformat:2 }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+    </div>
+    <script>
+        function confirmarExclusao() {
+            return confirm("Tem certeza que deseja excluir este presente?");
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('myChart');
+    
+        new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Não reservado', 'Reservado'],
+            datasets: [{
+            label: 'Presentes',
+            data: JSON.parse('{{ data | safe }}'),
+            borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+            y: {
+                beginAtZero: true
+            }
+            }
+        }
+        });
+    </script>
+{% endblock %}
