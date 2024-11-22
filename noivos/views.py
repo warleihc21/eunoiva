@@ -4,6 +4,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from .models import Convidados, Presentes
 from django.contrib.auth.decorators import login_required # type: ignore
+from django.core.exceptions import ValidationError
+from django.contrib import messages
+from django.shortcuts import render
 
 
 @login_required(login_url='/auth/logar/')
@@ -57,7 +60,7 @@ def lista_convidados(request):
    elif request.method == 'POST':
       nome_convidado = request.POST.get('nome_convidado')
       whatsapp = request.POST.get('whatsapp')
-      maximo_acompanhantes = int(request.POST.get('maximo_acompanhantes'))
+      maximo_acompanhantes = int(request.POST.get('maximo_acompanhantes', 0))
       convidados = Convidados(
       nome_convidado=nome_convidado,
       whatsapp=whatsapp,
@@ -113,3 +116,35 @@ def excluir_presente(request, presente_id):
     presente = get_object_or_404(Presentes, id=presente_id)
     presente.delete()
     return redirect('home')
+
+
+def importar_convidados(request):
+    if request.method == 'POST' and request.FILES.get('file'):
+        arquivo = request.FILES['file']
+        
+        try:
+            # Carregar o arquivo Excel
+            wb = openpyxl.load_workbook(arquivo)
+            sheet = wb.active
+            
+            # Iterar pelas linhas e salvar os dados no banco de dados
+            for row in sheet.iter_rows(min_row=2, values_only=True):  # Começar da segunda linha
+                nome_convidado, whatsapp, maximo_acompanhantes = row
+                
+                if not nome_convidado or not whatsapp or not maximo_acompanhantes:
+                    raise ValidationError("Todos os campos devem ser preenchidos corretamente.")
+                
+                convidado = Convidados(
+                    nome_convidado=nome_convidado,
+                    whatsapp=whatsapp,
+                    maximo_acompanhantes=maximo_acompanhantes,
+                )
+                convidado.save()
+
+            messages.success(request, "Convidados importados com sucesso!")
+        except ValidationError as e:
+            messages.error(request, f"Erro de validação: {str(e)}")
+        except Exception as e:
+            messages.error(request, f"Erro ao importar os convidados: {str(e)}")
+    
+    return render(request, 'lista_convidados.html')
