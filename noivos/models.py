@@ -10,9 +10,9 @@ class Convidados(models.Model):
         ('C', 'Confirmado'),
         ('R', 'Recusado')
     )
-    nome_convidado = models.CharField(max_length=100)
+    nome_convidado = models.CharField(max_length=100, null=True)
     whatsapp = models.CharField(max_length=25, null=True, blank=True)
-    maximo_acompanhantes = models.PositiveIntegerField(default=0)
+    maximo_acompanhantes = models.PositiveIntegerField(default=0, null=True)
     token = models.CharField(max_length=25)
     status = models.CharField(max_length=2, choices=status_choices, default='AC')
 
@@ -50,11 +50,16 @@ class Presentes(models.Model):
     importancia = models.IntegerField()
     reservado = models.BooleanField(default=False)
     reservado_por = models.ForeignKey(Convidados, null=True, blank=True, on_delete=models.DO_NOTHING)
-    link_sugestao_compra = models.URLField(max_length=500, blank=True, null=True)  # Novo campo
+    link_sugestao_compra = models.URLField(max_length=500, blank=True, null=True) 
+    link_cobranca = models.URLField(max_length=500, blank=True, null=True) # Novo campo
 
     def clean(self):
         if self.link_sugestao_compra and len(self.link_sugestao_compra) > 500:
             raise ValidationError("O link de sugestão é muito longo.")
+    
+    def clean(self):
+        if self.link_cobranca and len(self.link_cobranca) > 500:
+            raise ValidationError("O link de cobrança é muito longo.")
 
     def __str__(self):
         return self.nome_presente

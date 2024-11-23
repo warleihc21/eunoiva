@@ -1,4 +1,5 @@
 import pandas as pd
+import csv
 import openpyxl
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
@@ -7,6 +8,7 @@ from django.contrib.auth.decorators import login_required # type: ignore
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.shortcuts import render
+import logging
 
 
 @login_required(login_url='/auth/logar/')
@@ -31,7 +33,8 @@ def home(request):
         nome_presente = request.POST.get('nome_presente')
         foto = request.FILES.get('foto')
         preco = request.POST.get('preco')
-        link_sugestao_compra = request.POST.get('link_sugestao_compra')  # Novo campo
+        link_sugestao_compra = request.POST.get('link_sugestao_compra')
+        link_cobranca = request.POST.get('link_cobranca')  # Novo campo
         if ',' in preco:
             preco = preco.replace(',', '.')
         preco = float(preco)
@@ -45,7 +48,8 @@ def home(request):
             foto=foto,
             preco=preco,
             importancia=importancia,
-            link_sugestao_compra=link_sugestao_compra,  # Salva o link
+            link_sugestao_compra=link_sugestao_compra,
+            link_cobranca=link_cobranca,  # Salva o link
         )
         presentes.save()
 
@@ -117,34 +121,15 @@ def excluir_presente(request, presente_id):
     presente.delete()
     return redirect('home')
 
-
-def importar_convidados(request):
-    if request.method == 'POST' and request.FILES.get('file'):
-        arquivo = request.FILES['file']
-        
-        try:
-            # Carregar o arquivo Excel
-            wb = openpyxl.load_workbook(arquivo)
-            sheet = wb.active
-            
-            # Iterar pelas linhas e salvar os dados no banco de dados
-            for row in sheet.iter_rows(min_row=2, values_only=True):  # Começar da segunda linha
-                nome_convidado, whatsapp, maximo_acompanhantes = row
-                
-                if not nome_convidado or not whatsapp or not maximo_acompanhantes:
-                    raise ValidationError("Todos os campos devem ser preenchidos corretamente.")
-                
-                convidado = Convidados(
-                    nome_convidado=nome_convidado,
-                    whatsapp=whatsapp,
-                    maximo_acompanhantes=maximo_acompanhantes,
-                )
-                convidado.save()
-
-            messages.success(request, "Convidados importados com sucesso!")
-        except ValidationError as e:
-            messages.error(request, f"Erro de validação: {str(e)}")
-        except Exception as e:
-            messages.error(request, f"Erro ao importar os convidados: {str(e)}")
+def excluir_convidado(request, convidado_id):
+    # Tentar pegar o convidado com o ID fornecido, se não encontrar, gerar um erro 404
+    convidado = get_object_or_404(Convidados, id=convidado_id)
     
-    return render(request, 'lista_convidados.html')
+    # Excluir o convidado
+    convidado.delete()
+    
+    # Exibir uma mensagem de sucesso
+    messages.success(request, f'O convidado {convidado.nome_convidado} foi excluído com sucesso.')
+    
+    # Redirecionar para a lista de convidados (ou qualquer página que você queira)
+    return redirect('lista_convidados')  # Substitua 'lista_convidados' pela URL da sua página de lista

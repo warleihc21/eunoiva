@@ -29,9 +29,6 @@
                             {% endif %}
                             <h3 class="mt-2 text-lg font-semibold leading-8 text-gray-900">{{presente.nome_presente}}</h3>
                             <p class="text-base leading-7 text-gray-600">Valor px: R$ {{ presente.preco|floatformat:2 }}</p>
-                            {% if presente.link_sugestao_compra %}
-                            <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="mt-2 text-indigo-600 hover:text-indigo-800">Veja a sugestão de compra</a>
-                            {% endif %}
                             {% if presente.importancia <= 2 %}
                             <span class="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400 ring-1 ring-inset ring-green-400/30">Pouco importante <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 text-green-400">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -49,7 +46,48 @@
                             </span>
                             {% endif %}
 
-                            <a href="{% url 'reservar_presente' presente.id %}?token={{token}}" class="rounded-md block w-full mt-4 bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 cursor-pointer">Reservar</a>
+                            <!-- Botão para abrir o modal -->
+                            <button type="button" class="rounded-md block w-full mt-4 bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 cursor-pointer" data-bs-toggle="modal" data-bs-target="#modal{{ presente.id }}">
+                                Reservar
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="modal{{ presente.id }}" tabindex="-1" aria-labelledby="modalLabel{{ presente.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalLabel{{ presente.id }}">{{ presente.nome_presente }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Valor:</strong> R$ {{ presente.preco|floatformat:2 }}</p>
+                                            {% if presente.link_sugestao_compra %}
+                                                <p><strong>Sugestão de compra:</strong> <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="text-indigo-600 hover:text-indigo-800">Veja a sugestão</a></p>
+                                            {% endif %}
+                                            <p><strong>Importância:</strong>
+                                                {% if presente.importancia <= 2 %}
+                                                    Pouco importante
+                                                {% elif presente.importancia < 4 %}
+                                                    Importante
+                                                {% else %}
+                                                    Muito importante
+                                                {% endif %}
+                                            </p>
+                                            {% if presente.link_sugestao_compra %}
+                                                <p><strong>Presenteie os Noivos com o valor do presente:</strong><a href="{{ presente.link_cobranca }}" target="_blank" class="text-indigo-600 hover:text-indigo-800 btn btn-light shadow">Enviar o valor</a></p>
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form action="{% url 'reservar_presente' presente.id %}?token={{token}}" method="POST">
+                                                {% csrf_token %}
+                                                
+                                                <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>        
 
                             
                             
