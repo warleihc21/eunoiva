@@ -1,45 +1,67 @@
-{% extends "account/base_entrance.html" %}
-{% load allauth i18n %}
-{% block head_title %}
-    {% trans "Signup" %}
-{% endblock head_title %}
-{% block content %}
-    {% element h1 %}
-        {% trans "Sign Up" %}
-    {% endelement %}
-    {% setvar link %}
-        <a href="{{ login_url }}">
-        {% endsetvar %}
-        {% setvar end_link %}
-        </a>
-    {% endsetvar %}
-    {% element p %}
-        {% blocktranslate %}Already have an account? Then please {{ link }}sign in{{ end_link }}.{% endblocktranslate %}
-    {% endelement %}
-    {% if not SOCIALACCOUNT_ONLY %}
-        {% url 'account_signup' as action_url %}
-        {% element form form=form method="post" action=action_url tags="entrance,signup" %}
-            {% slot body %}
-                {% csrf_token %}
-                {% element fields form=form unlabeled=True %}
-                {% endelement %}
-                {{ redirect_field }}
-            {% endslot %}
-            {% slot actions %}
-                {% element button tags="prominent,signup" type="submit" %}
-                    {% trans "Sign Up" %}
-                {% endelement %}
-            {% endslot %}
-        {% endelement %}
-    {% endif %}
-    {% if PASSKEY_SIGNUP_ENABLED %}
-        {% element hr %}
-        {% endelement %}
-        {% element button href=signup_by_passkey_url tags="prominent,signup,outline,primary" %}
-            {% trans "Sign up using a passkey" %}
-        {% endelement %}
-    {% endif %}
-    {% if SOCIALACCOUNT_ENABLED %}
-        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-    {% endif %}
-{% endblock content %}
+{% extends "base_auth.html" %}
+{% load i18n %}
+{% load static %}
+{% load allauth account %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'autenticacao/css/css.css' %}">
+{% endblock %}
+
+{% block 'titulo' %}Cadastre-se{% endblock %}
+
+{% block 'body' %}
+    <div class="container-fluid" style="background-color: #cee9ff;">
+        <div class="row">
+            <div class="col-md-6 sidebar">
+                <div class="logo_sidebar">
+                    <h2 class="logo" style="margin-top: 20px;">
+                        <img class="img_logo_sidebar" src="{% static 'autenticacao/img/casal.png' %}">
+                    </h2>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="area_cadastrar">
+                    {% if messages %}
+                        <br>
+                        {% for message in messages %}
+                            <div class="alert {{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <h2 class="titulo">Seja bem-vindo</h2>
+                    <p class="sub-titulo">Crie sua conta</p>
+                    <hr>
+
+                    <form method="post" action="{% url 'cadastro' %}">
+                        {% csrf_token %}
+                        <span class="bold">Nome de usuário</span>
+                        <input class="form-control input-form" name="usuario" type="text" placeholder="Digite seu nome de usuário...">
+                        <br>
+                        <span class="bold">E-mail</span>
+                        <input class="form-control input-form" name="email" type="email" placeholder="Digite seu e-mail...">
+                        <br>
+                        <div class="row">
+                            <div class="col-md">
+                                <span class="bold">Senha</span>
+                                <input class="form-control input-form" name="senha" type="password" placeholder="Digite sua senha...">
+                            </div>
+                            <div class="col-md">
+                                <span class="bold">Confirmar senha</span>
+                                <input class="form-control input-form" name="confirmar_senha" type="password" placeholder="Confirme sua senha...">
+                            </div>
+                        </div>
+                        <br>
+                        <button class="btn-first">Registrar</button>
+                    </form>
+
+                    <h3 style="position: absolute; bottom: 65px; font-weight: bold">
+                        Já possui uma conta?&nbsp;
+                        <a href="{% url 'account_login' %}" class="btn btn-outline-dark btn-lg">Logar</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -74,6 +74,43 @@ def lista_convidados(request):
    return redirect('lista_convidados')
 
 
+def cadastrar_convidados_em_lote(request):
+    if request.method == 'POST':
+        arquivo = request.FILES.get('arquivo_convidados')
+        if not arquivo:
+            messages.error(request, "Nenhum arquivo foi enviado.")
+            return redirect('lista_convidados')
+
+        try:
+            # Detecta o tipo de arquivo (CSV ou Excel)
+            if arquivo.name.endswith('.csv'):
+                df = pd.read_csv(arquivo)
+            elif arquivo.name.endswith('.xlsx'):
+                df = pd.read_excel(arquivo)
+            else:
+                messages.error(request, "Formato de arquivo não suportado. Envie um arquivo CSV ou Excel.")
+                return redirect('lista_convidados')
+
+            # Verifica se as colunas necessárias estão presentes
+            colunas_esperadas = ['Nome do convidado', 'Whatsapp', 'Máximo de Acompanhantes']
+            if not all(coluna in df.columns for coluna in colunas_esperadas):
+                messages.error(request, f"O arquivo deve conter as colunas: {', '.join(colunas_esperadas)}.")
+                return redirect('lista_convidados')
+
+            # Itera pelas linhas e cria os convidados
+            for _, row in df.iterrows():
+                Convidados.objects.create(
+                    nome_convidado=row['Nome do convidado'],
+                    whatsapp=str(row['Whatsapp']),
+                    maximo_acompanhantes=int(row['Máximo de Acompanhantes'])
+                )
+
+            messages.success(request, "Convidados cadastrados com sucesso!")
+        except Exception as e:
+            messages.error(request, f"Ocorreu um erro ao processar o arquivo: {str(e)}")
+        return redirect('lista_convidados')
+
+
 def exportar_convidados_excel(request):
     # Criar um novo arquivo Excel
     wb = openpyxl.Workbook()
@@ -133,3 +170,4 @@ def excluir_convidado(request, convidado_id):
     
     # Redirecionar para a lista de convidados (ou qualquer página que você queira)
     return redirect('lista_convidados')  # Substitua 'lista_convidados' pela URL da sua página de lista
+

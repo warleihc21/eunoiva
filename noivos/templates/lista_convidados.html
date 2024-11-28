@@ -48,7 +48,27 @@
                     </button>
                   </form>
                 </div>
+                <br>
+                <div class="bg-slate-200/20 p-6 rounded-md">
+                  <!-- Formulário para cadastro em lote -->
+                  <form action="{% url 'cadastrar_convidados_em_lote' %}" method="POST" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <h2 class="text-xl font-semibold tracking-tight text-gray-900">Cadastrar convidados em lote</h2>
+                      <br>
+                      <!-- Botão para download do arquivo de exemplo -->
+                      <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}" download>
+                        <button type="button">Baixar Arquivo de Exemplo</button>
+                      </a>
+                      <br>
+                      <label for="arquivo_convidados" class="block text-sm font-medium text-gray-700">Escolha um arquivo (CSV ou Excel)</label>
+                      <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" required class="mt-2 block w-full text-sm text-gray-900">
+                      <button type="submit" class="rounded-md mt-4 bg-blue-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400">Enviar</button>
+                  </form>
+                  
+                </div>
               </div>
+
+              
               
 
               <!-- Lista de convidados -->

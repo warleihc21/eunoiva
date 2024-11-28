@@ -190,3 +190,13 @@ MESSAGE_TAGS = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+LOGIN_REDIRECT_URL = '/noivos/'  # Redireciona após o login
+
+
+ACCOUNT_SIGNUP_REDIRECT_URL = "/auth/cadastro/"  # Redirecionar para o fluxo existente
+ACCOUNT_LOGOUT_REDIRECT_URL = "/auth/logar/"  # Já configura o logout
+ACCOUNT_ADAPTER = 'autenticacao.adapters.CustomAccountAdapter'
+
+
