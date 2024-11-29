@@ -14,11 +14,11 @@ import logging
 @login_required(login_url='/auth/logar/')
 def home(request):
     if request.method == "GET":
-        presentes = Presentes.objects.all()
-        nao_reservado = Presentes.objects.filter(reservado=False).count()
-        reservado = Presentes.objects.filter(reservado=True).count()
+        presentes = Presentes.objects.filter(user=request.user)
+        nao_reservado = presentes.filter(reservado=False).count()
+        reservado = presentes.filter(reservado=True).count()
 
-        presentes_reservados = Presentes.objects.filter(reservado=True)
+        presentes_reservados = presentes.filter(reservado=True)
         total_reservado = sum(presente.preco for presente in presentes_reservados)
 
         data = [nao_reservado, reservado]
@@ -38,40 +38,34 @@ def home(request):
         if ',' in preco:
             preco = preco.replace(',', '.')
         preco = float(preco)
-
         importancia = int(request.POST.get('importancia'))
-        if importancia < 1 or importancia > 5:
-            return redirect('home')
 
-        presentes = Presentes(
+        Presentes.objects.create(
+            user=request.user,
             nome_presente=nome_presente,
             foto=foto,
             preco=preco,
-            importancia=importancia,
-            link_sugestao_compra=link_sugestao_compra,
-            link_cobranca=link_cobranca,  # Salva o link
+            importancia=importancia
         )
-        presentes.save()
-
     return redirect('home')
    
 
 
 def lista_convidados(request):
-   if request.method == 'GET':
-      convidados = Convidados.objects.all()
-      return render(request, 'lista_convidados.html', {'convidados': convidados})
-   elif request.method == 'POST':
-      nome_convidado = request.POST.get('nome_convidado')
-      whatsapp = request.POST.get('whatsapp')
-      maximo_acompanhantes = int(request.POST.get('maximo_acompanhantes', 0))
-      convidados = Convidados(
-      nome_convidado=nome_convidado,
-      whatsapp=whatsapp,
-      maximo_acompanhantes=maximo_acompanhantes
-   )
-   convidados.save()
-   return redirect('lista_convidados')
+    if request.method == 'GET':
+        convidados = Convidados.objects.filter(user=request.user)
+        return render(request, 'lista_convidados.html', {'convidados': convidados})
+    elif request.method == 'POST':
+        nome_convidado = request.POST.get('nome_convidado')
+        whatsapp = request.POST.get('whatsapp')
+        maximo_acompanhantes = int(request.POST.get('maximo_acompanhantes', 0))
+        Convidados.objects.create(
+            user=request.user,
+            nome_convidado=nome_convidado,
+            whatsapp=whatsapp,
+            maximo_acompanhantes=maximo_acompanhantes
+        )
+        return redirect('lista_convidados')
 
 
 def cadastrar_convidados_em_lote(request):
@@ -100,6 +94,7 @@ def cadastrar_convidados_em_lote(request):
             # Itera pelas linhas e cria os convidados
             for _, row in df.iterrows():
                 Convidados.objects.create(
+                    user=request.user,
                     nome_convidado=row['Nome do convidado'],
                     whatsapp=str(row['Whatsapp']),
                     maximo_acompanhantes=int(row['Máximo de Acompanhantes'])
@@ -159,15 +154,8 @@ def excluir_presente(request, presente_id):
     return redirect('home')
 
 def excluir_convidado(request, convidado_id):
-    # Tentar pegar o convidado com o ID fornecido, se não encontrar, gerar um erro 404
-    convidado = get_object_or_404(Convidados, id=convidado_id)
-    
-    # Excluir o convidado
+    convidado = get_object_or_404(Convidados, id=convidado_id, user=request.user)
     convidado.delete()
-    
-    # Exibir uma mensagem de sucesso
-    messages.success(request, f'O convidado {convidado.nome_convidado} foi excluído com sucesso.')
-    
-    # Redirecionar para a lista de convidados (ou qualquer página que você queira)
-    return redirect('lista_convidados')  # Substitua 'lista_convidados' pela URL da sua página de lista
+    messages.success(request, f'O convidado {convidado.nome_convidado} foi excluído.')
+    return redirect('lista_convidados')
 

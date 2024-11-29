@@ -2,6 +2,7 @@ from django.forms import ValidationError
 from django.urls import reverse
 import secrets
 from django.db import models
+from django.contrib.auth.models import User
 
    
 class Convidados(models.Model):
@@ -10,6 +11,7 @@ class Convidados(models.Model):
         ('C', 'Confirmado'),
         ('R', 'Recusado')
     )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='convidados')
     nome_convidado = models.CharField(max_length=100, null=True)
     whatsapp = models.CharField(max_length=25, null=True, blank=True)
     maximo_acompanhantes = models.PositiveIntegerField(default=0, null=True)
@@ -44,6 +46,7 @@ def __str__(self):
 
 
 class Presentes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='presentes')
     nome_presente = models.CharField(max_length=100)
     foto = models.ImageField(upload_to='presentes/')
     preco = models.DecimalField(max_digits=10, decimal_places=2)

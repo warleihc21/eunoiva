@@ -9,7 +9,7 @@ from noivos.models import Convidados, Presentes, Acompanhante
 def convidados(request):
     token = request.GET.get('token')
     convidado = get_object_or_404(Convidados, token=token)
-    presentes = Presentes.objects.filter(reservado=False).order_by('-importancia')
+    presentes = Presentes.objects.filter(reservado=False, user=convidado.user).order_by('-importancia')
     return render(request, 'convidados.html', {'convidado': convidado, 'presentes': presentes, 'token': token})
 
 def responder_presenca(request):
@@ -29,7 +29,7 @@ def responder_presenca(request):
 def reservar_presente(request, id):
     token = request.GET.get('token')
     convidado = get_object_or_404(Convidados, token=token)
-    presente = get_object_or_404(Presentes, id=id)
+    presente = get_object_or_404(Presentes, id=id, user=convidado.user)
 
     presente.reservado = True
     presente.reservado_por = convidado
@@ -42,14 +42,15 @@ def adicionar_acompanhante(request, token):
     if request.method == 'POST':
         nome_acompanhante = request.POST.get('nome')
 
-        # Verifica se o limite de acompanhantes foi atingido
         if convidado.acompanhantes_count() >= convidado.maximo_acompanhantes:
             return HttpResponseForbidden("Você já atingiu o número máximo de acompanhantes permitidos.")
 
-        # Adiciona o novo acompanhante
+        # Criar acompanhante relacionado ao convidado
         Acompanhante.objects.create(nome=nome_acompanhante, convidado=convidado)
-        return redirect(f"{reverse('convidados')}?token={token}")  # Redireciona para a página do convidado
+        return redirect(f"{reverse('convidados')}?token={token}")
 
-    # Renderiza a página do convidado com os acompanhantes existentes
-    presentes = Presentes.objects.all()
-    return render(request, 'convidados.html', {'convidado': convidado, 'presentes': presentes})
+    presentes = Presentes.objects.filter(user=convidado.user)
+    return render(request, 'convidados.html', {
+        'convidado': convidado,
+        'presentes': presentes
+    })
