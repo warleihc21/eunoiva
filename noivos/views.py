@@ -45,7 +45,9 @@ def home(request):
             nome_presente=nome_presente,
             foto=foto,
             preco=preco,
-            importancia=importancia
+            importancia=importancia,
+            link_sugestao_compra=link_sugestao_compra,
+            link_cobranca=link_cobranca,
         )
     return redirect('home')
    
@@ -110,31 +112,63 @@ def exportar_convidados_excel(request):
     # Criar um novo arquivo Excel
     wb = openpyxl.Workbook()
 
+    # Filtrar os convidados do usuário autenticado
+    usuario_responsavel = request.user
+
     # Planilha para confirmados
     ws_confirmados = wb.create_sheet('Confirmados')
-    
     # Adicionar os títulos das colunas
     ws_confirmados.append(['Convidado', 'Whatsapp', 'Acompanhante', 'Link', 'Status'])
-    
-    # Obter convidados confirmados
-    convidados_confirmados = Convidados.objects.filter(status='C')
+    # Obter convidados confirmados do usuário responsável
+    convidados_confirmados = Convidados.objects.filter(user=usuario_responsavel, status='C')
 
     for convidado in convidados_confirmados:
         for acompanhante in convidado.acompanhantes.all():
             # Adicionar uma linha para cada acompanhante
-            ws_confirmados.append([convidado.nome_convidado, convidado.whatsapp, acompanhante.nome, convidado.link_convite, convidado.get_status_display()])
-    
+            ws_confirmados.append([
+                convidado.nome_convidado, 
+                convidado.whatsapp, 
+                acompanhante.nome, 
+                convidado.link_convite, 
+                convidado.get_status_display()
+            ])
+
     # Planilha para aguardando confirmação
     ws_aguardando = wb.create_sheet('Aguardando confirmação')
-    
     # Adicionar os títulos das colunas
     ws_aguardando.append(['Convidado', 'Whatsapp', 'Máximo de acompanhantes', 'Link', 'Status'])
-    
-    # Obter convidados aguardando confirmação
-    convidados_aguardando = Convidados.objects.filter(status='AC')
+    # Obter convidados aguardando confirmação do usuário responsável
+    convidados_aguardando = Convidados.objects.filter(user=usuario_responsavel, status='AC')
 
     for convidado in convidados_aguardando:
-        ws_aguardando.append([convidado.nome_convidado, convidado.whatsapp, convidado.maximo_acompanhantes, convidado.link_convite, convidado.get_status_display()])
+        ws_aguardando.append([
+            convidado.nome_convidado, 
+            convidado.whatsapp, 
+            convidado.maximo_acompanhantes, 
+            convidado.link_convite, 
+            convidado.get_status_display()
+        ])
+
+    # Planilha para total de confirmados (incluindo acompanhantes)
+    ws_total_confirmados = wb.create_sheet('Total Confirmados')
+    # Adicionar os títulos das colunas
+    ws_total_confirmados.append(['Nome', 'Whatsapp', 'Tipo'])
+    # Inicializar contador para o total de pessoas
+    total_pessoas = 0
+
+    for convidado in convidados_confirmados:
+        # Adicionar o convidado à lista
+        ws_total_confirmados.append([convidado.nome_convidado, convidado.whatsapp, 'Convidado'])
+        total_pessoas += 1
+
+        # Adicionar os acompanhantes do convidado à lista
+        for acompanhante in convidado.acompanhantes.all():
+            ws_total_confirmados.append([acompanhante.nome, '', 'Acompanhante'])  # Deixe o WhatsApp vazio para acompanhantes
+            total_pessoas += 1
+
+    # Adicionar o total de pessoas no final da planilha
+    ws_total_confirmados.append([])
+    ws_total_confirmados.append(['Total de pessoas:', '', total_pessoas])
 
     # Remover a planilha padrão que é criada automaticamente
     del wb['Sheet']
@@ -146,6 +180,8 @@ def exportar_convidados_excel(request):
     # Salvar o arquivo Excel na resposta HTTP
     wb.save(response)
     return response
+
+
 
 
 def excluir_presente(request, presente_id):

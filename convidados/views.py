@@ -10,7 +10,19 @@ def convidados(request):
     token = request.GET.get('token')
     convidado = get_object_or_404(Convidados, token=token)
     presentes = Presentes.objects.filter(reservado=False, user=convidado.user).order_by('-importancia')
-    return render(request, 'convidados.html', {'convidado': convidado, 'presentes': presentes, 'token': token})
+
+    # Verificar se o convidado pode adicionar acompanhantes
+    if convidado.maximo_acompanhantes > 0:
+        acompanhantes_restantes = convidado.maximo_acompanhantes - convidado.acompanhantes_count()
+    else:
+        acompanhantes_restantes = 0
+
+    return render(request, 'convidados.html', {
+        'convidado': convidado,
+        'presentes': presentes,
+        'token': token,
+        'acompanhantes_restantes': acompanhantes_restantes,
+    })
 
 def responder_presenca(request):
     resposta = request.GET.get('resposta')
@@ -38,19 +50,25 @@ def reservar_presente(request, id):
 
 def adicionar_acompanhante(request, token):
     convidado = get_object_or_404(Convidados, token=token)
+    
+    if request.method == 'POST' and convidado.acompanhantes_count() < convidado.maximo_acompanhantes:
+        nome = request.POST.get('nome')
+        if nome:
+            Acompanhante.objects.create(convidado=convidado, nome=nome)
+            messages.success(request, 'Acompanhante adicionado com sucesso!')
+        else:
+            messages.error(request, 'O nome do acompanhante é obrigatório.')
+    else:
+        messages.error(request, 'Você já atingiu o limite máximo de acompanhantes.')
+
+    return redirect(f"{reverse('convidados')}?token={token}")
+
+def excluir_acompanhante(request, token, acompanhante_id):
+    convidado = get_object_or_404(Convidados, token=token)
+    acompanhante = get_object_or_404(Acompanhante, id=acompanhante_id, convidado=convidado)
 
     if request.method == 'POST':
-        nome_acompanhante = request.POST.get('nome')
+        acompanhante.delete()
+        messages.success(request, 'Acompanhante excluído com sucesso!')
 
-        if convidado.acompanhantes_count() >= convidado.maximo_acompanhantes:
-            return HttpResponseForbidden("Você já atingiu o número máximo de acompanhantes permitidos.")
-
-        # Criar acompanhante relacionado ao convidado
-        Acompanhante.objects.create(nome=nome_acompanhante, convidado=convidado)
-        return redirect(f"{reverse('convidados')}?token={token}")
-
-    presentes = Presentes.objects.filter(user=convidado.user)
-    return render(request, 'convidados.html', {
-        'convidado': convidado,
-        'presentes': presentes
-    })
+    return redirect(f"{reverse('convidados')}?token={token}")
