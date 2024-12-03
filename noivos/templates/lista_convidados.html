@@ -102,7 +102,12 @@
                             </div>
                             <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {% if convidado.status == 'AC' %}text-indigo-700 bg-indigo-50 ring-indigo-600/20{% elif convidado.status == 'C'%}text-green-700 bg-green-50 ring-green-600/20{% else %}text-red-700 bg-red-50 ring-red-600/20{% endif %}">{{ convidado.get_status_display }}</span>
                           </li>
-                          <button class="btn btn-danger"><a href="{% url 'excluir_convidado' convidado.id %}" onclick="return confirm('Tem certeza que deseja excluir este convidado?')">Excluir</a></button>
+                          <button class="btn btn-danger">
+                              <a href="{% url 'excluir_convidado' convidado.id %}" 
+                                onclick="return confirm('Tem certeza que deseja excluir este convidado? Verifique se ele não possui presentes reservados.')">
+                                Excluir
+                              </a>
+                          </button>
                         </div>
                       </div>
                         <br>

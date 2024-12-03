@@ -52,7 +52,7 @@ class Presentes(models.Model):
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     importancia = models.IntegerField()
     reservado = models.BooleanField(default=False)
-    reservado_por = models.ForeignKey(Convidados, null=True, blank=True, on_delete=models.DO_NOTHING)
+    reservado_por = models.ForeignKey(Convidados, null=True, blank=True, on_delete=models.SET_NULL)
     link_sugestao_compra = models.URLField(max_length=500, blank=True, null=True) 
     link_cobranca = models.URLField(max_length=500, blank=True, null=True) # Novo campo
 

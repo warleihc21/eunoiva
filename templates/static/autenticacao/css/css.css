@@ -62,3 +62,30 @@
     color: white;
     font-weight: bold;
 }
+
+
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #6ea6ff; /* Azul padrão do Google */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%; /* Ajuste conforme necessário */
+}
+
+.btn-google img {
+    height: 20px; /* Ajuste o tamanho da imagem aqui */
+    width: auto;
+    margin-right: 10px; /* Espaçamento entre a imagem e o texto */
+}
+
+.btn-google:hover {
+    background-color: #6ea6ff;
+    color: white;
+}

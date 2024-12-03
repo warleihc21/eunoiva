@@ -2,13 +2,14 @@ import pandas as pd
 import csv
 import openpyxl
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Convidados, Presentes
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.shortcuts import render
 import logging
+from django.db.models import ProtectedError
 
 
 @login_required(login_url='/auth/logar/')
@@ -190,8 +191,24 @@ def excluir_presente(request, presente_id):
     return redirect('home')
 
 def excluir_convidado(request, convidado_id):
-    convidado = get_object_or_404(Convidados, id=convidado_id, user=request.user)
+    # Recuperar o convidado pelo ID
+    convidado = get_object_or_404(Convidados, id=convidado_id)
+
+    # Verificar se o convidado tem algum presente reservado
+    presentes_reservados = Presentes.objects.filter(reservado_por=convidado)
+
+    if presentes_reservados.exists():
+        # Tornar o presente reservado disponível novamente
+        presente = presentes_reservados.first()  # Aqui pegamos o primeiro presente reservado
+        presente.reservado_por = None  # Remove a associação com o convidado
+        presente.reservado = False  # Também pode definir como não reservado
+        presente.save()
+
+    # Excluir o convidado
     convidado.delete()
-    messages.success(request, f'O convidado {convidado.nome_convidado} foi excluído.')
+
+    # Mensagem de sucesso
+    messages.success(request, "O convidado foi excluído e o presente reservado está disponível novamente.")
     return redirect('lista_convidados')
+
 

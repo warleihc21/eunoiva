@@ -1,4 +1,5 @@
 {% extends 'base_auth.html' %}
+{% load socialaccount %}
 {% load static %}
 
 {% block 'head' %}
@@ -46,8 +47,17 @@
                         <input class="form-control input-form" name="senha" type="password" placeholder="Digite sua senha...">
                         <br>
                         <button class="btn-first">Logar</button>
+                      
 
                     </form>
+                    <br>
+                    <hr>
+
+                    <a title="Google" href="/accounts/google/login/?process=login">
+                        <button class="btn btn-google">
+                            <img src="https://playtht-website-assets.s3.amazonaws.com/img/brand/google.svg" alt="Google logo"/>Entrar com Google
+                        </button>
+                    </a>
 
                     <h3 style="position: absolute; bottom: 65px; font-weight: bold">Não tem uma conta ?&nbsp <a href="{% url 'cadastro' %}" class="btn btn-outline-dark btn-lg">Registre-se</a> </h3>
                 </div>
