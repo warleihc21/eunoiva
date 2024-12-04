@@ -56,15 +56,58 @@
                       <h2 class="text-xl font-semibold tracking-tight text-gray-900">Cadastrar convidados em lote</h2>
                       <br>
                       <!-- Botão para download do arquivo de exemplo -->
+                      <button class="btn-outline-light">
                       <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}" download>
-                        <button type="button">Baixar Arquivo de Exemplo</button>
+                        Baixar Arquivo de Exemplo
                       </a>
+                      </button>
                       <br>
                       <label for="arquivo_convidados" class="block text-sm font-medium text-gray-700">Escolha um arquivo (CSV ou Excel)</label>
                       <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" required class="mt-2 block w-full text-sm text-gray-900">
                       <button type="submit" class="rounded-md mt-4 bg-blue-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400">Enviar</button>
                   </form>
                   
+                </div>
+
+                
+                <!-- Modal -->
+                <div class="modal fade" id="modalEnviarMensagens" tabindex="-1" aria-labelledby="modalEnviarMensagensLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="modalEnviarMensagensLabel">Selecionar Convidados para Envio de Mensagem</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <table class="table table-bordered">
+                                  <thead>
+                                      <tr>
+                                          <th><input type="checkbox" id="selectAll"></th>
+                                          <th>Nome</th>
+                                          <th>Whatsapp</th>
+                                          <th>Status</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for convidado in nao_confirmados %}
+                                      <tr>
+                                          <td><input type="checkbox" class="convidado-checkbox" data-id="{{ convidado.id }}"></td>
+                                          <td>{{ convidado.nome_convidado }}</td>
+                                          <td>{{ convidado.whatsapp }}</td>
+                                          <td>{{ convidado.get_status_display }}</td>
+                                      </tr>
+                                      {% endfor %}
+                                  </tbody>
+                              </table>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                              <button type="button" id="enviarMensagensBtn" class="rounded-md bg-green-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-400" data-bs-toggle="modal" data-bs-target="#modalEnviarMensagens">
+                                <i class="fab fa-whatsapp me-2"></i> Enviar WhatsApp
+                            </button>
+                          </div>
+                      </div>
+                  </div>
                 </div>
               </div>
 
@@ -73,6 +116,13 @@
 
               <!-- Lista de convidados -->
               <div class="">
+                <!-- Botão para abrir o modal -->
+                <div class="grid grid-cols-2 mt-8">
+                  <button type="button" class="rounded-md bg-green-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-400" data-bs-toggle="modal" data-bs-target="#modalEnviarMensagens">
+                      <i class="fab fa-whatsapp me-2"></i> Enviar WhatsApp
+                  </button>
+                </div>
+                <br>
                   <ul role="list" class="divide-y divide-gray-100">
                       {% for convidado in convidados %}
                       <div class="border">
@@ -119,4 +169,45 @@
           </div>
       </div>
     </div>
+    <script>
+        // Selecionar/Deselecionar todos os checkboxes
+        document.getElementById('selectAll').addEventListener('change', function () {
+            const checkboxes = document.querySelectorAll('.convidado-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    
+        // Capturar os IDs dos convidados selecionados e enviar mensagens
+        document.getElementById('enviarMensagensBtn').addEventListener('click', function () {
+            const selecionados = [];
+            const checkboxes = document.querySelectorAll('.convidado-checkbox:checked');
+    
+            checkboxes.forEach(checkbox => {
+                selecionados.push(checkbox.getAttribute('data-id'));
+            });
+    
+            if (selecionados.length === 0) {
+                alert('Selecione pelo menos um convidado para enviar mensagens.');
+                return;
+            }
+    
+            // Enviar IDs selecionados ao backend via fetch
+            fetch('{% url "enviar_mensagens" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ convidados: selecionados })
+            }).then(response => {
+                if (response.ok) {
+                    alert('Mensagens enviadas com sucesso!');
+                    window.location.reload();
+                } else {
+                    alert('Erro ao enviar mensagens.');
+                }
+            });
+        });
+    </script>
 {% endblock %}

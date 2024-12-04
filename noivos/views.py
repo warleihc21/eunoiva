@@ -10,6 +10,12 @@ from django.contrib import messages
 from django.shortcuts import render
 import logging
 from django.db.models import ProtectedError
+from django.http import JsonResponse
+from noivos.models import Convidados
+import webbrowser
+from urllib.parse import quote
+from time import sleep
+import pyautogui
 
 
 @login_required(login_url='/auth/logar/')
@@ -57,7 +63,9 @@ def home(request):
 def lista_convidados(request):
     if request.method == 'GET':
         convidados = Convidados.objects.filter(user=request.user)
-        return render(request, 'lista_convidados.html', {'convidados': convidados})
+        nao_confirmados = convidados.filter(status='AC')
+        return render(request, 'lista_convidados.html', {'convidados': convidados,
+                                                         'nao_confirmados': nao_confirmados})
     elif request.method == 'POST':
         nome_convidado = request.POST.get('nome_convidado')
         whatsapp = request.POST.get('whatsapp')
@@ -210,5 +218,49 @@ def excluir_convidado(request, convidado_id):
     # Mensagem de sucesso
     messages.success(request, "O convidado foi excluído e o presente reservado está disponível novamente.")
     return redirect('lista_convidados')
+
+
+def enviar_mensagens(request):
+    if request.method == "POST":
+        import json
+        data = json.loads(request.body)
+        ids_convidados = data.get('convidados', [])
+
+        # Buscar os convidados selecionados no banco de dados
+        convidados = Convidados.objects.filter(id__in=ids_convidados)
+
+        # Abrir WhatsApp Web
+        webbrowser.open('https://web.whatsapp.com/')
+        print("Aguardando o WhatsApp Web carregar...")
+        sleep(30)
+
+        for convidado in convidados:
+            nome = convidado.nome
+            telefone = convidado.telefone
+            link = convidado.link
+            
+            mensagem = f"Olá {nome}, estamos aguardando sua confirmação de presença no evento. Por favor, confirme no link: {link}"
+
+            try:
+                # Criar link personalizado
+                link_mensagem_whatsapp = f'https://web.whatsapp.com/send?phone={telefone}&text={quote(mensagem)}'
+                webbrowser.open(link_mensagem_whatsapp)
+                print(f"Enviando mensagem para {nome}...")
+                sleep(10)
+
+                # Enviar mensagem usando a seta
+                seta = pyautogui.locateCenterOnScreen('seta.png')  # Certifique-se de ter a imagem 'seta.png'
+                if seta:
+                    pyautogui.click(seta[0], seta[1])
+                    sleep(2)
+
+                # Fechar aba após envio
+                pyautogui.hotkey('ctrl', 'w')
+                sleep(2)
+
+            except Exception as e:
+                print(f"Erro ao enviar mensagem para {nome}: {e}")
+
+        return JsonResponse({'status': 'sucesso'})
 
 
