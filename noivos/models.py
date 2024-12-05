@@ -4,6 +4,15 @@ import secrets
 from django.db import models
 from django.contrib.auth.models import User
 
+
+# Modelo para armazenar mensagens personalizadas
+class MensagemPersonalizada(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mensagens_personalizadas')
+    mensagem = models.TextField()
+    data_criacao = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Mensagem de {self.user.username}"
    
 class Convidados(models.Model):
     status_choices = (

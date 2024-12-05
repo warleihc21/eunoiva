@@ -72,44 +72,60 @@
                 
                 <!-- Modal -->
                 <div class="modal fade" id="modalEnviarMensagens" tabindex="-1" aria-labelledby="modalEnviarMensagensLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-lg">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="modalEnviarMensagensLabel">Selecionar Convidados para Envio de Mensagem</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body">
-                              <table class="table table-bordered">
-                                  <thead>
-                                      <tr>
-                                          <th><input type="checkbox" id="selectAll"></th>
-                                          <th>Nome</th>
-                                          <th>Whatsapp</th>
-                                          <th>Status</th>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                      {% for convidado in nao_confirmados %}
-                                      <tr>
-                                          <td><input type="checkbox" class="convidado-checkbox" data-id="{{ convidado.id }}"></td>
-                                          <td>{{ convidado.nome_convidado }}</td>
-                                          <td>{{ convidado.whatsapp }}</td>
-                                          <td>{{ convidado.get_status_display }}</td>
-                                      </tr>
-                                      {% endfor %}
-                                  </tbody>
-                              </table>
-                          </div>
-                          <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                              <button type="button" id="enviarMensagensBtn" class="rounded-md bg-green-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-400" data-bs-toggle="modal" data-bs-target="#modalEnviarMensagens">
-                                <i class="fab fa-whatsapp me-2"></i> Enviar WhatsApp
-                            </button>
-                          </div>
-                      </div>
-                  </div>
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalEnviarMensagensLabel">Selecionar Convidados para Envio de Mensagem</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Campo para mensagem personalizada -->
+                                <label for="mensagemPersonalizada" class="block text-sm font-medium text-gray-700">Mensagem personalizada</label>
+                                <textarea id="mensagemPersonalizada" name="mensagemPersonalizada" rows="4" class="mt-1 block w-full text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Digite sua mensagem aqui...">{{ mensagem_personalizada }}</textarea>
+                                <small class="text-gray-500">Use as palavras-chave {nome} e {link} para personalizar a mensagem.</small>
+
+                                <br><br>
+                                <!-- Botões para adicionar variáveis padrões -->
+                                <button type="button" class="bg-indigo-500 text-white px-2 py-1 rounded-md" onclick="adicionarVariavel('{nome}')">Adicionar {nome}</button>
+                                <button type="button" class="bg-indigo-500 text-white px-2 py-1 rounded-md" onclick="adicionarVariavel('{link}')">Adicionar {link}</button>
+                                <button type="button" id="salvarMensagemBtn" class="rounded-md bg-blue-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400">
+                                    Salvar Mensagem
+                                    </button>
+                                
+                                <br><br>
+                                <!-- Tabela de convidados -->
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" id="selectAll"></th>
+                                            <th>Nome</th>
+                                            <th>Whatsapp</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for convidado in nao_confirmados %}
+                                        <tr>
+                                            <td><input type="checkbox" class="convidado-checkbox" data-id="{{ convidado.id }}"></td>
+                                            <td>{{ convidado.nome_convidado }}</td>
+                                            <td>{{ convidado.whatsapp }}</td>
+                                            <td>{{ convidado.get_status_display }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                
+                                <button type="button" id="enviarMensagensBtn" class="rounded-md bg-green-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-400" disabled>
+                                Enviar WhatsApp
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+            </div>
 
               
               
@@ -164,7 +180,6 @@
                       {% endfor %}
                   </ul>
               </div>
-
               
           </div>
       </div>
@@ -177,37 +192,113 @@
                 checkbox.checked = this.checked;
             });
         });
+
+        // Função para adicionar a variável no campo de mensagem personalizada
+        function adicionarVariavel(variavel) {
+            var mensagemCampo = document.getElementById('mensagemPersonalizada');
+            mensagemCampo.value += ' ' + variavel;
+        }
     
-        // Capturar os IDs dos convidados selecionados e enviar mensagens
-        document.getElementById('enviarMensagensBtn').addEventListener('click', function () {
-            const selecionados = [];
-            const checkboxes = document.querySelectorAll('.convidado-checkbox:checked');
-    
-            checkboxes.forEach(checkbox => {
-                selecionados.push(checkbox.getAttribute('data-id'));
+        // Função para obter o CSRF token do cookie
+        function getCSRFToken() {
+            const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+            return csrfToken ? csrfToken.split('=')[1] : '';
+        }
+
+        // Função para salvar a mensagem personalizada
+        document.getElementById("salvarMensagemBtn").addEventListener("click", function () {
+            var mensagemPersonalizada = document.getElementById('mensagemPersonalizada').value;
+            
+            // Enviar a mensagem personalizada para o backend
+            fetch("{% url 'salvar_mensagem' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value // CSRF Token
+                },
+                body: JSON.stringify({
+                    mensagem: mensagemPersonalizada
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Exibir a mensagem personalizada no campo textarea após salvar
+                if (data.success) {
+                    document.getElementById('mensagemPersonalizada').value = data.mensagem; // Atualiza o campo com a mensagem salva
+                    alert('Mensagem salva com sucesso!');
+                } else {
+                    alert('Erro ao salvar mensagem!');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao enviar a mensagem:', error);
+                alert('Erro ao salvar mensagem!');
             });
-    
-            if (selecionados.length === 0) {
-                alert('Selecione pelo menos um convidado para enviar mensagens.');
-                return;
+        });
+
+        // Função para habilitar ou desabilitar o botão "Enviar WhatsApp"
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const convidadoCheckboxes = document.querySelectorAll('.convidado-checkbox');
+            const enviarMensagensBtn = document.getElementById('enviarMensagensBtn');
+
+            // Habilitar/desabilitar o botão baseado nos checkboxes
+            function toggleEnviarButton() {
+                const selectedCheckboxes = document.querySelectorAll('.convidado-checkbox:checked').length;
+                enviarMensagensBtn.disabled = selectedCheckboxes === 0;
             }
-    
-            // Enviar IDs selecionados ao backend via fetch
-            fetch('{% url "enviar_mensagens" %}', {
+
+            // Marcar/desmarcar todos os checkboxes
+            selectAllCheckbox.addEventListener('change', function () {
+                const isChecked = selectAllCheckbox.checked;
+                convidadoCheckboxes.forEach(checkbox => checkbox.checked = isChecked);
+                toggleEnviarButton();
+            });
+
+            // Monitorar mudanças nos checkboxes dos convidados
+            convidadoCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', toggleEnviarButton);
+            });
+        });
+
+        // Função para enviar mensagens via AJAX
+        function enviarMensagens() {
+            const selectedConvidados = [];
+            document.querySelectorAll('.convidado-checkbox:checked').forEach(checkbox => {
+                selectedConvidados.push(checkbox.getAttribute('data-id'));
+            });
+
+            // Dados a serem enviados para o servidor
+            const data = {
+                convidados: selectedConvidados,
+            };
+
+            fetch("{% url 'enviar_mensagens' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
+                    'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value
                 },
-                body: JSON.stringify({ convidados: selecionados })
-            }).then(response => {
-                if (response.ok) {
+                body: JSON.stringify(data)
+            })
+
+            
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'sucesso') {
                     alert('Mensagens enviadas com sucesso!');
-                    window.location.reload();
                 } else {
-                    alert('Erro ao enviar mensagens.');
+                    alert('Ocorreu um erro ao enviar as mensagens.');
                 }
+            })
+            .catch(error => {
+                alert('Erro ao enviar as mensagens: ' + error);
             });
-        });
+        }
+
+        // Adicionando evento de clique no botão "Enviar WhatsApp"
+        document.getElementById('enviarMensagensBtn').addEventListener('click', enviarMensagens);
+
+        
     </script>
 {% endblock %}

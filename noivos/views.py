@@ -1,9 +1,11 @@
+import json
 import pandas as pd
 import csv
 import openpyxl
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, JsonResponse
-from .models import Convidados, Presentes
+from core import settings
+from .models import Convidados, Presentes, MensagemPersonalizada
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.core.exceptions import ValidationError
 from django.contrib import messages
@@ -11,11 +13,13 @@ from django.shortcuts import render
 import logging
 from django.db.models import ProtectedError
 from django.http import JsonResponse
-from noivos.models import Convidados
+
 import webbrowser
 from urllib.parse import quote
 from time import sleep
 import pyautogui
+from io import StringIO
+from django.views.decorators.csrf import csrf_exempt
 
 
 @login_required(login_url='/auth/logar/')
@@ -222,45 +226,90 @@ def excluir_convidado(request, convidado_id):
 
 def enviar_mensagens(request):
     if request.method == "POST":
-        import json
         data = json.loads(request.body)
         ids_convidados = data.get('convidados', [])
-
+        
         # Buscar os convidados selecionados no banco de dados
         convidados = Convidados.objects.filter(id__in=ids_convidados)
+
+        # Salvar a mensagem personalizada no banco de dados
+        try:
+            mensagem_personalizada = MensagemPersonalizada.objects.filter(user=request.user).latest('data_criacao').mensagem
+        except MensagemPersonalizada.DoesNotExist:
+            mensagem_personalizada = ""
+            return render(request, 'lista_convidados.html', {'mensagem_personalizada': mensagem_personalizada})
 
         # Abrir WhatsApp Web
         webbrowser.open('https://web.whatsapp.com/')
         print("Aguardando o WhatsApp Web carregar...")
         sleep(30)
 
+        # Lista para armazenar os convidados que falharam
+        erros_envio = []
+
         for convidado in convidados:
-            nome = convidado.nome
-            telefone = convidado.telefone
-            link = convidado.link
+            nome = convidado.nome_convidado
+            telefone = convidado.whatsapp
+            if not telefone.startswith("55"):
+                telefone = f"55{telefone}"
+
+            link = convidado.link_convite
             
-            mensagem = f"Olá {nome}, estamos aguardando sua confirmação de presença no evento. Por favor, confirme no link: {link}"
+            # Substituir as variáveis no template da mensagem
+            mensagem = mensagem_personalizada.replace("{nome}", nome).replace("{link}", link)
 
             try:
                 # Criar link personalizado
                 link_mensagem_whatsapp = f'https://web.whatsapp.com/send?phone={telefone}&text={quote(mensagem)}'
                 webbrowser.open(link_mensagem_whatsapp)
                 print(f"Enviando mensagem para {nome}...")
+                sleep(15)
+                pyautogui.press('enter')
                 sleep(10)
-
-                # Enviar mensagem usando a seta
-                seta = pyautogui.locateCenterOnScreen('seta.png')  # Certifique-se de ter a imagem 'seta.png'
-                if seta:
-                    pyautogui.click(seta[0], seta[1])
-                    sleep(2)
-
-                # Fechar aba após envio
                 pyautogui.hotkey('ctrl', 'w')
-                sleep(2)
-
+                sleep(10)
             except Exception as e:
                 print(f"Erro ao enviar mensagem para {nome}: {e}")
+                # Adicionar os dados do convidado à lista de erros
+                erros_envio.append({'nome': nome, 'telefone': telefone, 'link': link})
 
+        # Se houver erros, gerar o arquivo .csv para download
+        if erros_envio:
+            # Criar o CSV na memória
+            buffer = StringIO()
+            escritor_csv = csv.DictWriter(buffer, fieldnames=['nome', 'telefone', 'link'])
+            escritor_csv.writeheader()
+            escritor_csv.writerows(erros_envio)
+            
+            # Configurar a resposta HTTP para o download do arquivo
+            buffer.seek(0)
+            response = HttpResponse(buffer, content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="erros_envio.csv"'
+            return response
+
+        # Caso não haja erros, retornar sucesso
         return JsonResponse({'status': 'sucesso'})
+    
 
+@csrf_exempt
+def salvar_mensagem(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            mensagem = data.get('mensagem', '')
+            user = request.user  # Obtendo o usuário logado
 
+            # Salvar a mensagem personalizada na tabela MensagemPersonalizada
+            nova_mensagem = MensagemPersonalizada(user=user, mensagem=mensagem)
+            nova_mensagem.save()
+
+            # Retorna a mensagem salva para o frontend
+            return JsonResponse({
+                'success': True,
+                'mensagem': mensagem  # Retorna a mensagem salva para exibição
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })
