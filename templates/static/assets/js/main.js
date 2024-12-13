@@ -144,8 +144,23 @@
         }
       }, false);
     });
-
+    
   });
+
+  document.getElementById('toggleButton').addEventListener('click', function() {
+    var catalog = document.getElementById('downloadCatalog');
+    if (catalog.classList.contains('show')) {
+      catalog.classList.remove('show');
+      setTimeout(function() { catalog.style.display = 'none'; }, 500); // Espera a transição terminar antes de esconder
+      this.innerHTML = '<i class="bi bi-chevron-down"></i>'; // Ícone de setinha para baixo
+    } else {
+      catalog.style.display = 'block';
+      setTimeout(function() { catalog.classList.add('show'); }, 10); // Adiciona a classe após um pequeno atraso para permitir a transição
+      this.innerHTML = '<i class="bi bi-chevron-up"></i>'; // Ícone de setinha para cima
+    }
+  });
+  
+  
 
   /**
    * Init swiper sliders

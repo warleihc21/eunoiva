@@ -13,13 +13,16 @@ from django.shortcuts import render
 import logging
 from django.db.models import ProtectedError
 from django.http import JsonResponse
-
+from .models import Perfil
 import webbrowser
 from urllib.parse import quote
 from time import sleep
 import pyautogui
 from io import StringIO
 from django.views.decorators.csrf import csrf_exempt
+
+
+
 
 
 @login_required(login_url='/auth/logar/')
@@ -32,12 +35,19 @@ def home(request):
         presentes_reservados = presentes.filter(reservado=True)
         total_reservado = sum(presente.preco for presente in presentes_reservados)
 
+        # Buscar os nomes dos cônjuges configurados no Perfil
+        perfil = Perfil.objects.get(user=request.user)
+        nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
+        nome_segundo_conjuge = perfil.nome_segundo_conjuge
+
         data = [nao_reservado, reservado]
         return render(request, 'home.html', {
             'presentes': presentes,
             'data': data,
             'presentes_reservados': presentes_reservados,
-            'total_reservado': total_reservado
+            'total_reservado': total_reservado,
+            'nome_primeiro_conjuge': nome_primeiro_conjuge,
+            'nome_segundo_conjuge': nome_segundo_conjuge
         })
 
     elif request.method == "POST":
@@ -147,12 +157,21 @@ def lista_convidados(request):
 
 def guest_details(request):
     if request.method == 'GET':
-        convidados = Convidados.objects.filter(user=request.user).order_by('nome_convidado')  # Ordena por nome
-        confirmados = convidados.filter(status='C')  # Status 'C' indica confirmados
-        nao_confirmados = convidados.filter(status='AC')  # Status 'AC' indica não confirmados
+        filtro = request.GET.get('filtro', 'Todos')  # 'Todos' será o padrão
+        convidados = Convidados.objects.filter(user=request.user).order_by('nome_convidado')
+
+        if filtro == 'Confirmados':
+            convidados = convidados.filter(status='C')  # Confirmados
+        elif filtro == 'Aguardando Confirmacao':
+            convidados = convidados.filter(status='AC')  # Aguardando confirmação
+        elif filtro == 'Com Acompanhantes':
+            convidados = convidados.filter(status='C', acompanhantes__isnull=False)  # Confirmados com acompanhantes
+        elif filtro == 'Sem Acompanhantes':
+            convidados = convidados.filter(status='C').exclude(acompanhantes__isnull=False)  # Confirmados sem acompanhantes
+
         return render(request, 'guest-details.html', {
-            'confirmados': confirmados,
-            'nao_confirmados': nao_confirmados,
+            'convidados': convidados,
+            'filtro': filtro
         })
     elif request.method == 'POST':
         nome_convidado = request.POST.get('nome_convidado')

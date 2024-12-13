@@ -94,11 +94,25 @@
     .delete-icon:hover {
         color: #b71c1c;
     }
+    
+    .welcome-message {
+        background-color: #f0f4f8;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #333;
+    }
 </style>
 
     {% include "partials/navbar.html" %}
 
     <div class="max-w-7xl mx-auto mt-12">
+        <div class="welcome-message">
+            <p>Bem-vindos, {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</p>
+        </div>
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-slate-200/20 p-6 rounded-md">
                 <h2 class="text-balance text-xl font-semibold tracking-tight text-gray-900">Crie sua lista de presentes</h2>

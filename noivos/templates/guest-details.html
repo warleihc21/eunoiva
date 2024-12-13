@@ -84,71 +84,81 @@
 
   <main class="main">
 
-    <!-- Page Title -->
-    <div class="page-title">
-      <div class="container d-lg-flex justify-content-between align-items-center">
-        <h1 class="mb-2 mb-lg-0">Lista de convidados</h1>
-        <nav class="breadcrumbs">
-          <ol>
-            <li><a href="home1.html">Home</a></li>
-            <li class="current">Lista de Convidados</li>
-          </ol>
-        </nav>
-      </div>
-    </div><!-- End Page Title -->
+    
+    <div class="col-lg-12 mx-auto" data-aos="fade-up" data-aos-delay="100">
+      <div class="service-box text-center p-4 bg-light rounded shadow-sm">
+        <h4 class="mb-2">Gerenciador de Arquivos</h4>
+        <a id="toggleButton" class=" mb-3">
+          <i class="bi bi-chevron-down"></i> <!-- Ícone de setinha para baixo -->
+        </a>
+        <div id="downloadCatalog" class="download-catalog row g-3" style="display: none;">
+          <div class="download-catalog row g-3">
+            <div class="col-lg-4">
+              <a href="{% url 'exportar_convidados_excel' %}" class="d-flex flex-column align-items-center justify-content-center h-100 p-3 bg-white rounded shadow-sm text-decoration-none" style="height: 100%;">
+                <i class="bi bi-file-earmark-excel"></i>
+                <span class="d-block mt-2">Exportar lista de convidados</span>
+              </a>
+            </div>
+            <div class="col-lg-4">
+              <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}" class="d-flex flex-column align-items-center justify-content-center h-100 p-3 bg-white rounded shadow-sm text-decoration-none" style="height: 100%;">
+                <i class="bi bi-file-earmark-excel"></i>
+                <span class="d-block mt-2">Baixar Arquivo de Exemplo</span>
+              </a>
+            </div>
+            <div class="col-lg-4">
+              <form action="{% url 'cadastrar_convidados_em_lote' %}" method="POST" enctype="multipart/form-data" class="d-flex flex-column align-items-center justify-content-center h-100 p-3 bg-white rounded shadow-sm" style="height: 100%;">
+                {% csrf_token %}
+                <span class="text-xl font-semibold tracking-tight text-gray-900 d-block mb-2">Cadastrar convidados em lote</span>
+                <label for="arquivo_convidados" class="d-block text-sm font-medium text-gray-700 mb-2">Escolha um arquivo (CSV ou Excel)</label>
+                <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" required class="mt-2 block w-full text-sm text-gray-900">
+                <button type="submit" class="btn btn-success btn-sm rounded-md mt-4 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400">Enviar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div><!-- End Services List --> 
+    </div>
+    
+    
 
     <!-- Services Section -->
-    <section id="service-details" class="services service-details section light-background">
+    <section id="service-details" class="services service-details light-background">
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <span>Convidados</span>
-        <h2>Convidados</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+        <h1>Convidados</h1>
+        <p>Segue a lista de seus convidados, use o filtro abaixo para navegar entre as opções</p>
       </div><!-- End Section Title -->
 
       <div class="container">
-        <div class="row gy-5">
-          <div class="col-lg-2" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="service-box">
-              <h4>Filtros</h4>
-              <div class="services-list">
-                <a href="#" class="active"><i class="bi bi-arrow-right-circle"></i><span>Todos</span></a>
-                <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Confirmados</span></a>
-                <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Aguardando confirmação</span></a>
-                <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Com acompanhantes</span></a>
-                <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Sem acompanhantes</span></a>
-              </div>
-            </div><!-- End Services List -->
-
-            <div class="service-box">
-              <h4>Arquivos</h4>
-              <div class="download-catalog">
-                <a href="{% url 'exportar_convidados_excel' %}"><i class="bi bi-file-earmark-excel"></i><span>Exportar lista de convidados</span></a>
-                <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}"><i class="bi bi-file-earmark-excel"></i><span>Baixar Arquivo de Exemplo</span></a>
-                <hr>
-                <form action="{% url 'cadastrar_convidados_em_lote' %}" method="POST" enctype="multipart/form-data">
-                  {% csrf_token %}
-                  <span class="text-xl font-semibold tracking-tight text-gray-900">Cadastrar convidados em lote</span>
-                  <label for="arquivo_convidados" class="block text-sm font-medium text-gray-700">Escolha um arquivo (CSV ou Excel)</label>
-                        <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" required class="mt-2 block w-full text-sm text-gray-900">
-                        <button type="submit" class="rounded-md mt-4 bg-blue-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400">Enviar</button>
-                        <a type="submit" class="btn-getstarted">Enviar</a>
-                </form>
-              </div>
-            </div><!-- End Services List -->
-
-            
+        <div class="row gy-5">          
+          <div class="service-box services-list isotope-layout rounded shadow-sm" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+            <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
+              <a href="?filtro=Todos" class="d-inline-block {% if filtro == 'Todos' %}active{% endif %}">
+                <i class="bi bi-arrow-right-circle"></i><span>Todos</span>
+              </a>
+              <a href="?filtro=Confirmados" class="d-inline-block {% if filtro == 'Confirmados' %}active{% endif %}">
+                <i class="bi bi-arrow-right-circle"></i><span>Confirmados</span>
+              </a>
+              <a href="?filtro=Aguardando Confirmacao" class="d-inline-block {% if filtro == 'Aguardando Confirmacao' %}active{% endif %}">
+                <i class="bi bi-arrow-right-circle"></i><span>Aguardando confirmação</span>
+              </a>
+              <a href="?filtro=Com Acompanhantes" class="d-inline-block {% if filtro == 'Com Acompanhantes' %}active{% endif %}">
+                <i class="bi bi-arrow-right-circle"></i><span>Com acompanhantes</span>
+              </a>
+              <a href="?filtro=Sem Acompanhantes" class="d-inline-block {% if filtro == 'Sem Acompanhantes' %}active{% endif %}">
+                <i class="bi bi-arrow-right-circle"></i><span>Sem acompanhantes</span>
+              </a>
+            </ul><!-- End Portfolio Filters -->
           </div>
 
-          <div class="col-lg-10 ps-lg-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-12 ps-lg-6" data-aos="fade-up" data-aos-delay="200">
             <!-- Confirmados -->
             <div class="row gy-4">
-              <h3 class="mt-4">Confirmados</h3>
-              {% for convidado in confirmados %}
+              <h3 class="mt-4">{{ filtro }}</h3>
+              {% for convidado in convidados %}
               <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="service-item position-relative">
+                <div class="service-item position-relative rounded shadow-sm">
                   <div class="icon">
                     <i class="bi bi-person-square"></i>
                   </div>
@@ -170,40 +180,22 @@
                     </ul>
                   </div>
                   {% endif %}
-                  <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {% if convidado.status == 'AC' %}text-indigo-700 bg-indigo-50 ring-indigo-600/20{% elif convidado.status == 'C'%}text-green-700 bg-green-50 ring-green-600/20{% else %}text-red-700 bg-red-50 ring-red-600/20{% endif %}">{{ convidado.get_status_display }}</span>
+                  <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset 
+                  {% if convidado.status == 'AC' %}text-indigo-700 bg-indigo-50 ring-indigo-600/20
+                  {% elif convidado.status == 'C' %}text-green-700 bg-green-50 ring-green-600/20
+                  {% else %}text-red-700 bg-red-50 ring-red-600/20{% endif %}">
+                    {{ convidado.get_status_display }}
+                  </span>
                 </div>
-              </div><!-- End Service Item -->
+              </div>
               {% empty %}
-              <p>Nenhum convidado confirmado.</p>
+              <p>Nenhum convidado encontrado.</p>
               {% endfor %}
             </div>
+            
           </div>
             <br>
-            <hr>
-
-            <!-- Não Confirmados -->
-            <div class="row gy-4">
-              <h3 class="mt-4">Não Confirmados</h3>
-              {% for convidado in nao_confirmados %}
-              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="service-item position-relative">
-                  <div class="icon">
-                    <i class="bi bi-person-square"></i>
-                  </div>
-                  <a href="{% url 'service_details' %}" class="stretched-link">
-                    <h3>{{ convidado.nome_convidado }}</h3>
-                  </a>
-                  <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{ convidado.whatsapp }}</p>
-                  <p class="mt-1 text-xs leading-5 text-gray-500">{{ convidado.link_convite }}</p>
-                  <p class="mt-1 text-xs leading-5 text-gray-700">Máximo de acompanhantes permitidos: {{ convidado.maximo_acompanhantes }}</p>
-                  <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {% if convidado.status == 'AC' %}text-indigo-700 bg-indigo-50 ring-indigo-600/20{% elif convidado.status == 'C'%}text-green-700 bg-green-50 ring-green-600/20{% else %}text-red-700 bg-red-50 ring-red-600/20{% endif %}">{{ convidado.get_status_display }}</span>
-                </div>
-              </div><!-- End Service Item -->
-              {% empty %}
-              <p>Nenhum convidado não confirmado.</p>
-              {% endfor %}
-            </div>
-          
+            <hr>          
         </div>
       </div>
     </section><!-- /Services Section -->

@@ -4,6 +4,16 @@ import secrets
 from django.db import models
 from django.contrib.auth.models import User
 
+class Perfil(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nome_primeiro_conjuge = models.CharField(max_length=100, blank=True, null=True)  # Primeiro cônjuge
+    nome_segundo_conjuge = models.CharField(max_length=100, blank=True, null=True)  # Segundo cônjuge
+    data_casamento = models.DateField(blank=True, null=True)
+    configurado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Perfil de {self.user.username}"
+
 
 # Modelo para armazenar mensagens personalizadas
 class MensagemPersonalizada(models.Model):
