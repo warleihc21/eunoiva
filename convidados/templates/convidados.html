@@ -78,7 +78,7 @@
                                             {% endif %}
                                         </div>
                                         <div class="modal-footer">
-                                            <form action="{% url 'reservar_presente' presente.id %}?token={{token}}" method="POST">
+                                            <form action="" method="POST">
                                                 {% csrf_token %}
                                                 
                                                 <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
@@ -86,8 +86,8 @@
                                             </form>
                                         </div>
                                     </div>
-                                </div>
-                            </div>        
+                                </div> 
+                            </div>         
 
                             
                             

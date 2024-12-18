@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block 'body' %}
 
+
 <style>
     .card {
         background-color: #f9f6f0;
@@ -105,6 +106,37 @@
         font-weight: bold;
         color: #333;
     }
+
+    
+
+    #timer {
+    display: flex;
+    justify-content: center;
+    gap: 16px; /* Espaçamento entre os campos */
+    }
+
+    .campo-tempo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        border: 2px solid #6366F1; /* Cor de borda */
+        border-radius: 12px; /* Borda arredondada */
+        background-color: #F0F4FF; /* Cor de fundo leve */
+        width: 80px; /* Largura padrão dos campos */
+    }
+
+    .valor-tempo {
+        font-size: 2.5rem; /* Tamanho da fonte do valor */
+        font-weight: bold;
+        color: #4F46E5; /* Cor do valor */
+    }
+
+    .rotulo-tempo {
+        font-size: 1rem; /* Tamanho da fonte do rótulo */
+        color: #4B5563; /* Cor do rótulo */
+        margin-top: 8px;
+    }
 </style>
 
     {% include "partials/navbar.html" %}
@@ -112,7 +144,28 @@
     <div class="max-w-7xl mx-auto mt-12">
         <div class="welcome-message">
             <p>Bem-vindos, {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</p>
+            <p>Nossa data</p>
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ data_casamento }}</h2>
+            <div id="timer" class="flex justify-center space-x-4">
+                <div class="campo-tempo">
+                    <span id="dias" class="valor-tempo">00</span>
+                    <span class="rotulo-tempo">dias</span>
+                </div>
+                <div class="campo-tempo">
+                    <span id="horas" class="valor-tempo">00</span>
+                    <span class="rotulo-tempo">horas</span>
+                </div>
+                <div class="campo-tempo">
+                    <span id="minutos" class="valor-tempo">00</span>
+                    <span class="rotulo-tempo">minutos</span>
+                </div>
+                <div class="campo-tempo">
+                    <span id="segundos" class="valor-tempo">00</span>
+                    <span class="rotulo-tempo">segundos</span>
+                </div>
+            </div>
         </div>
+        
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-slate-200/20 p-6 rounded-md">
                 <h2 class="text-balance text-xl font-semibold tracking-tight text-gray-900">Crie sua lista de presentes</h2>
@@ -223,6 +276,7 @@
         </div>
         
     </div>
+    
     <script>
         function confirmarExclusao() {
             return confirm("Tem certeza que deseja excluir este presente?");
@@ -251,5 +305,57 @@
             }
         }
         });
+
+
+
+
+        const dataCasamento = "{{ data_casamento|date:'Y-m-d' }}";
+
+        function iniciarContador() {
+            if (!dataCasamento || isNaN(new Date(dataCasamento))) {
+                console.error("A data de casamento fornecida é inválida.");
+                return;
+            }
+
+            const fim = new Date(dataCasamento).getTime();
+
+            if (!document.getElementById("dias") || 
+                !document.getElementById("horas") || 
+                !document.getElementById("minutos") || 
+                !document.getElementById("segundos")) {
+                console.error("Elementos do contador não encontrados no HTML.");
+                return;
+            }
+
+            const contador = setInterval(() => {
+                const agora = Date.now();
+                const tempoRestante = fim - agora;
+
+                if (tempoRestante <= 0) {
+                    clearInterval(contador);
+                    document.getElementById("timer").innerHTML = `
+                        <div style="font-size: 2rem; font-weight: bold; color: green;">
+                            O grande dia chegou!
+                        </div>`;
+                    return;
+                }
+
+                const tempo = {
+                    dias: Math.floor(tempoRestante / (1000 * 60 * 60 * 24)),
+                    horas: Math.floor((tempoRestante / (1000 * 60 * 60)) % 24),
+                    minutos: Math.floor((tempoRestante / (1000 * 60)) % 60),
+                    segundos: Math.floor((tempoRestante / 1000) % 60)
+                };
+
+                for (const unidade in tempo) {
+                    document.getElementById(unidade).innerText = String(tempo[unidade]).padStart(2, '0');
+                }
+            }, 1000);
+        }
+
+        document.addEventListener("DOMContentLoaded", iniciarContador);        
+
     </script>
+    
+    
 {% endblock %}

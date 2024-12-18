@@ -14,6 +14,7 @@ urlpatterns = [
  path('enviar-mensagens/', views.enviar_mensagens, name='enviar_mensagens'),
  path('service-details/', views.service_details, name='service_details'),
  path('guest-details/', views.guest_details, name='guest_details'),
+ path('details-gifts/', views.details_gifts, name='details_gifts'),
 
  
 ]

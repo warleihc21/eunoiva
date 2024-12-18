@@ -39,6 +39,7 @@ def home(request):
         perfil = Perfil.objects.get(user=request.user)
         nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
         nome_segundo_conjuge = perfil.nome_segundo_conjuge
+        data_casamento = perfil.data_casamento
 
         data = [nao_reservado, reservado]
         return render(request, 'home.html', {
@@ -47,7 +48,8 @@ def home(request):
             'presentes_reservados': presentes_reservados,
             'total_reservado': total_reservado,
             'nome_primeiro_conjuge': nome_primeiro_conjuge,
-            'nome_segundo_conjuge': nome_segundo_conjuge
+            'nome_segundo_conjuge': nome_segundo_conjuge,
+            'data_casamento': data_casamento,
         })
 
     elif request.method == "POST":
@@ -85,6 +87,12 @@ def home1(request):
         convidados = Convidados.objects.filter(user=request.user)
         nao_confirmados = convidados.filter(status='AC')
 
+        # Buscar os nomes dos cônjuges configurados no Perfil
+        perfil = Perfil.objects.get(user=request.user)
+        nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
+        nome_segundo_conjuge = perfil.nome_segundo_conjuge
+        data_casamento = perfil.data_casamento
+
         data = [nao_reservado, reservado]
         return render(request, 'home1.html', {
             'presentes': presentes,
@@ -92,7 +100,10 @@ def home1(request):
             'presentes_reservados': presentes_reservados,
             'total_reservado': total_reservado,
             'convidados': convidados,
-                                                         'nao_confirmados': nao_confirmados
+            'nao_confirmados': nao_confirmados,
+            'nome_primeiro_conjuge': nome_primeiro_conjuge,
+            'nome_segundo_conjuge': nome_segundo_conjuge,
+            'data_casamento': data_casamento,
         })
 
     elif request.method == "POST":
@@ -173,17 +184,69 @@ def guest_details(request):
             'convidados': convidados,
             'filtro': filtro
         })
-    elif request.method == 'POST':
-        nome_convidado = request.POST.get('nome_convidado')
-        whatsapp = request.POST.get('whatsapp')
-        maximo_acompanhantes = int(request.POST.get('maximo_acompanhantes', 0))
-        Convidados.objects.create(
+    elif request.method == "POST":
+        nome_presente = request.POST.get('nome_presente')
+        foto = request.FILES.get('foto')
+        preco = request.POST.get('preco')
+        link_sugestao_compra = request.POST.get('link_sugestao_compra')
+        link_cobranca = request.POST.get('link_cobranca')  # Novo campo
+        if ',' in preco:
+            preco = preco.replace(',', '.')
+        preco = float(preco)
+        importancia = int(request.POST.get('importancia'))
+
+        Presentes.objects.create(
             user=request.user,
-            nome_convidado=nome_convidado,
-            whatsapp=whatsapp,
-            maximo_acompanhantes=maximo_acompanhantes
+            nome_presente=nome_presente,
+            foto=foto,
+            preco=preco,
+            importancia=importancia,
+            link_sugestao_compra=link_sugestao_compra,
+            link_cobranca=link_cobranca,
         )
         return redirect('guest_details')
+    
+
+def details_gifts(request):
+    if request.method == "GET":
+        presentes = Presentes.objects.filter(user=request.user)
+        nao_reservado = presentes.filter(reservado=False).count()
+        reservado = presentes.filter(reservado=True).count()
+
+        presentes_reservados = presentes.filter(reservado=True)
+        total_reservado = sum(presente.preco for presente in presentes_reservados)
+
+        
+        data = [nao_reservado, reservado]
+        return render(request, 'detail-gifts.html', {
+            'presentes': presentes,
+            'data': data,
+            'presentes_reservados': presentes_reservados,
+            'total_reservado': total_reservado,
+
+        })
+
+    elif request.method == "POST":
+        nome_presente = request.POST.get('nome_presente')
+        foto = request.FILES.get('foto')
+        preco = request.POST.get('preco')
+        link_sugestao_compra = request.POST.get('link_sugestao_compra')
+        link_cobranca = request.POST.get('link_cobranca')  # Novo campo
+        if ',' in preco:
+            preco = preco.replace(',', '.')
+        preco = float(preco)
+        importancia = int(request.POST.get('importancia'))
+
+        Presentes.objects.create(
+            user=request.user,
+            nome_presente=nome_presente,
+            foto=foto,
+            preco=preco,
+            importancia=importancia,
+            link_sugestao_compra=link_sugestao_compra,
+            link_cobranca=link_cobranca,
+        )
+        return redirect('details_gifts')
 
 
 

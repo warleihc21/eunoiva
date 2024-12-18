@@ -3,13 +3,15 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
 from django.urls import reverse
-from noivos.models import Convidados, Presentes, Acompanhante
+from noivos.models import Convidados, Perfil, Presentes, Acompanhante
 
 
 def convidados(request):
     token = request.GET.get('token')
     convidado = get_object_or_404(Convidados, token=token)
-    presentes = Presentes.objects.filter(reservado=False, user=convidado.user).order_by('-importancia')
+    presentes = Presentes.objects.filter(reservado=False, user=convidado.user).order_by('-importancia'),
+
+    
 
     # Verificar se o convidado pode adicionar acompanhantes
     if convidado.maximo_acompanhantes > 0:
@@ -21,7 +23,8 @@ def convidados(request):
         'convidado': convidado,
         'presentes': presentes,
         'token': token,
-        'acompanhantes_restantes': acompanhantes_restantes,
+        'acompanhantes_restantes': acompanhantes_restantes
+
     })
 
 def responder_presenca(request):

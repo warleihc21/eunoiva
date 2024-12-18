@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - eNno Bootstrap Template</title>
+  <title>e.Noiva</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -93,8 +93,11 @@
       <div class="container">
         <div class="row gy-4">
           <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
-            <h1>Elegant and creative solutions</h1>
-            <p>We are team of talented designers making websites with Bootstrap</p>
+            <h1>Bem-vindos, 
+              <br>
+              {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</h1>
+              <br>
+            <h2>Nossa data: {{ data_casamento }}</h2>
             <div class="d-flex">
               <a href="#about" class="btn-get-started">Get Started</a>
               <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
@@ -117,8 +120,8 @@
 
           <div class="col-lg-4 d-flex" data-aos="fade-up" data-aos-delay="100">
             <div class="service-item position-relative">
-              <div class="icon"><i class="bi bi-activity icon"></i></div>
-              <h4><a href="" class="stretched-link">Lorem Ipsum</a></h4>
+              <div class="icon"><i class="bi bi-gift icon"></i></div>
+              <h4><a href="details-gifts" class="stretched-link">Presentes</a></h4>
               <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi</p>
             </div>
           </div><!-- End Service Item -->
@@ -193,29 +196,29 @@
 
           <div class="col-lg-3 col-md-6">
             <div class="stats-item text-center w-100 h-100">
-              <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1" class="purecounter"></span>
-              <p>Clients</p>
+              <span id="dias" class="purecounter"></span>
+              <p>Dias</p>
             </div>
           </div><!-- End Stats Item -->
 
           <div class="col-lg-3 col-md-6">
             <div class="stats-item text-center w-100 h-100">
-              <span data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1" class="purecounter"></span>
-              <p>Projects</p>
+              <span id="horas" class="purecounter"></span>
+              <p>Horas</p>
             </div>
           </div><!-- End Stats Item -->
 
           <div class="col-lg-3 col-md-6">
             <div class="stats-item text-center w-100 h-100">
-              <span data-purecounter-start="0" data-purecounter-end="1453" data-purecounter-duration="1" class="purecounter"></span>
-              <p>Hours Of Support</p>
+              <span id="minutos" class="purecounter"></span>
+              <p>Minutos</p>
             </div>
           </div><!-- End Stats Item -->
 
           <div class="col-lg-3 col-md-6">
             <div class="stats-item text-center w-100 h-100">
-              <span data-purecounter-start="0" data-purecounter-end="32" data-purecounter-duration="1" class="purecounter"></span>
-              <p>Workers</p>
+              <span id="segundos" class="purecounter"></span>
+              <p>Segundos</p>
             </div>
           </div><!-- End Stats Item -->
 
@@ -837,6 +840,54 @@
 
   <!-- Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <script>
+    const dataCasamento = "{{ data_casamento|date:'Y-m-d' }}";
+
+    function iniciarContador() {
+        if (!dataCasamento || isNaN(new Date(dataCasamento))) {
+            console.error("A data de casamento fornecida é inválida.");
+            return;
+        }
+
+        const fim = new Date(dataCasamento).getTime();
+
+        if (!document.getElementById("dias") || 
+            !document.getElementById("horas") || 
+            !document.getElementById("minutos") || 
+            !document.getElementById("segundos")) {
+            console.error("Elementos do contador não encontrados no HTML.");
+            return;
+        }
+
+        const contador = setInterval(() => {
+            const agora = Date.now();
+            const tempoRestante = fim - agora;
+
+            if (tempoRestante <= 0) {
+                clearInterval(contador);
+                document.getElementById("timer").innerHTML = `
+                    <div style="font-size: 2rem; font-weight: bold; color: green;">
+                        O grande dia chegou!
+                    </div>`;
+                return;
+            }
+
+            const tempo = {
+                dias: Math.floor(tempoRestante / (1000 * 60 * 60 * 24)),
+                horas: Math.floor((tempoRestante / (1000 * 60 * 60)) % 24),
+                minutos: Math.floor((tempoRestante / (1000 * 60)) % 60),
+                segundos: Math.floor((tempoRestante / 1000) % 60)
+            };
+
+            for (const unidade in tempo) {
+                document.getElementById(unidade).innerText = String(tempo[unidade]).padStart(2, '0');
+            }
+        }, 1000);
+    }
+
+    document.addEventListener("DOMContentLoaded", iniciarContador); 
+  </script>
 
 </body>
 
