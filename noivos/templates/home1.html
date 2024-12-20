@@ -84,6 +84,18 @@
 
     </div>
   </header>
+  <style>
+    .campo-tempo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        border: 2px solid #6366F1; /* Cor de borda */
+        border-radius: 12px; /* Borda arredondada */
+        background-color: #F0F4FF; /* Cor de fundo leve */
+        width: 80px; /* Largura padrão dos campos */
+    }
+  </style>
 
   <main class="main">
 
@@ -111,6 +123,49 @@
 
     </section><!-- /Hero Section -->
 
+
+    <!-- Stats Section -->
+    <section id="stats" class="stats section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-3 col-md-6">
+            <div class="campo-tempo stats-item text-center w-100 h-100">
+              <span id="dias" class="purecounter"></span>
+              <p>Dias</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6">
+            <div class="campo-tempo stats-item text-center w-100 h-100">
+              <span id="horas" class="purecounter"></span>
+              <p>Horas</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6">
+            <div class="campo-tempo stats-item text-center w-100 h-100">
+              <span id="minutos" class="purecounter"></span>
+              <p>Minutos</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6">
+            <div class="campo-tempo stats-item text-center w-100 h-100">
+              <span id="segundos" class="purecounter"></span>
+              <p>Segundos</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Stats Section -->
+
+
     <!-- Featured Services Section -->
     <section id="featured-services" class="featured-services section">
 
@@ -128,8 +183,8 @@
 
           <div class="col-lg-4 d-flex" data-aos="fade-up" data-aos-delay="200">
             <div class="service-item position-relative">
-              <div class="icon"><i class="bi bi-bounding-box-circles icon"></i></div>
-              <h4><a href="" class="stretched-link">Sed ut perspici</a></h4>
+              <div class="icon"><i class="bi bi-clipboard-heart icon"></i></div>
+              <h4><a href="" class="stretched-link">Convidados</a></h4>
               <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>
             </div>
           </div><!-- End Service Item -->
@@ -187,46 +242,6 @@
 
     </section><!-- /About Section -->
 
-    <!-- Stats Section -->
-    <section id="stats" class="stats section">
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="row gy-4">
-
-          <div class="col-lg-3 col-md-6">
-            <div class="stats-item text-center w-100 h-100">
-              <span id="dias" class="purecounter"></span>
-              <p>Dias</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-          <div class="col-lg-3 col-md-6">
-            <div class="stats-item text-center w-100 h-100">
-              <span id="horas" class="purecounter"></span>
-              <p>Horas</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-          <div class="col-lg-3 col-md-6">
-            <div class="stats-item text-center w-100 h-100">
-              <span id="minutos" class="purecounter"></span>
-              <p>Minutos</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-          <div class="col-lg-3 col-md-6">
-            <div class="stats-item text-center w-100 h-100">
-              <span id="segundos" class="purecounter"></span>
-              <p>Segundos</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-        </div>
-
-      </div>
-
-    </section><!-- /Stats Section -->
 
     <!-- Services Section -->
     <section id="services" class="services section light-background">

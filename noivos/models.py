@@ -1,8 +1,11 @@
+from io import BytesIO
 from django.forms import ValidationError
 from django.urls import reverse
 import secrets
 from django.db import models
 from django.contrib.auth.models import User
+from PIL import Image, ImageOps
+from django.core.files.base import ContentFile
 
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -67,21 +70,38 @@ def __str__(self):
 class Presentes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='presentes')
     nome_presente = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to='presentes/')
+    foto = models.ImageField(upload_to='presentes/', blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     importancia = models.IntegerField()
     reservado = models.BooleanField(default=False)
-    reservado_por = models.ForeignKey(Convidados, null=True, blank=True, on_delete=models.SET_NULL)
-    link_sugestao_compra = models.URLField(max_length=500, blank=True, null=True) 
-    link_cobranca = models.URLField(max_length=500, blank=True, null=True) # Novo campo
+    reservado_por = models.ForeignKey('Convidados', null=True, blank=True, on_delete=models.SET_NULL)
+    link_sugestao_compra = models.URLField(max_length=500, blank=True, null=True)
+    link_cobranca = models.URLField(max_length=500, blank=True, null=True)
 
     def clean(self):
+        # Validar links longos
         if self.link_sugestao_compra and len(self.link_sugestao_compra) > 500:
             raise ValidationError("O link de sugestão é muito longo.")
-    
-    def clean(self):
         if self.link_cobranca and len(self.link_cobranca) > 500:
             raise ValidationError("O link de cobrança é muito longo.")
+
+    def save(self, *args, **kwargs):
+        # Ajustar a imagem para formato quadrado com fundo branco
+        if self.foto:
+            img = Image.open(self.foto)
+            img = img.convert("RGB")  # Garantir que a imagem seja RGB
+            
+            # Redimensionar mantendo proporção, com fundo branco
+            desired_size = 300
+            img = ImageOps.pad(img, (desired_size, desired_size), method=Image.Resampling.LANCZOS, color=(255, 255, 255))
+            
+            # Salvar a imagem ajustada
+            buffer = BytesIO()
+            img.save(buffer, format='JPEG')  # Salvar no formato JPEG
+            buffer.seek(0)
+            self.foto = ContentFile(buffer.read(), name=self.foto.name)
+        
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.nome_presente

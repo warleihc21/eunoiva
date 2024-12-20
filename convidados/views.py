@@ -9,7 +9,7 @@ from noivos.models import Convidados, Perfil, Presentes, Acompanhante
 def convidados(request):
     token = request.GET.get('token')
     convidado = get_object_or_404(Convidados, token=token)
-    presentes = Presentes.objects.filter(reservado=False, user=convidado.user).order_by('-importancia'),
+    presentes = Presentes.objects.filter(reservado=False, user=convidado.user).order_by('-importancia')
 
     
 
