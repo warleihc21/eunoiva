@@ -6,13 +6,28 @@ from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image, ImageOps
 from django.core.files.base import ContentFile
+from django.core.validators import FileExtensionValidator
 
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nome_primeiro_conjuge = models.CharField(max_length=100, blank=True, null=True)  # Primeiro cônjuge
     nome_segundo_conjuge = models.CharField(max_length=100, blank=True, null=True)  # Segundo cônjuge
     data_casamento = models.DateField(blank=True, null=True)
+    imagem = models.ImageField(upload_to='imagens_perfil/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])])
+    mensagem_noivos = models.TextField(blank=True, null=True)
+
+
     configurado = models.BooleanField(default=False)
+
+    # Campos de endereço
+    cep = models.CharField(max_length=10, blank=True, null=True)
+    rua = models.CharField(max_length=150, blank=True, null=True)
+    numero = models.CharField(max_length=10, blank=True, null=True)
+    complemento = models.CharField(max_length=100, blank=True, null=True)
+    bairro = models.CharField(max_length=100, blank=True, null=True)
+    pais = models.CharField(max_length=50, default='Brasil')
+    estado = models.CharField(max_length=2, blank=True, null=True)
+    municipio = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return f"Perfil de {self.user.username}"
@@ -105,4 +120,5 @@ class Presentes(models.Model):
 
     def __str__(self):
         return self.nome_presente
+    
 

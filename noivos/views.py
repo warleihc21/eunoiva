@@ -20,6 +20,7 @@ from time import sleep
 import pyautogui
 from io import StringIO
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
 
 
 
@@ -40,16 +41,38 @@ def home(request):
         nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
         nome_segundo_conjuge = perfil.nome_segundo_conjuge
         data_casamento = perfil.data_casamento
+        imagem = perfil.imagem
 
-        data = [nao_reservado, reservado]
+        rua = perfil.rua
+        numero = perfil.numero
+        bairro = perfil.bairro
+        municipio = perfil.municipio
+        estado = perfil.estado
+        pais = perfil.pais
+        cep = perfil.cep
+
+        # Gerando timestamp
+        timestamp = int(datetime.now().timestamp())
+
+        # Passar o perfil completo para o template
         return render(request, 'home.html', {
             'presentes': presentes,
-            'data': data,
+            'data': [nao_reservado, reservado],
             'presentes_reservados': presentes_reservados,
             'total_reservado': total_reservado,
             'nome_primeiro_conjuge': nome_primeiro_conjuge,
             'nome_segundo_conjuge': nome_segundo_conjuge,
             'data_casamento': data_casamento,
+            'imagem': imagem,
+            'perfil': perfil,
+            'timestamp': timestamp,  # Passando o timestamp para o template
+            'rua': rua,
+            'numero': numero,
+            'bairro': bairro,
+            'municipio': municipio,
+            'estado': estado,
+            'pais': pais,
+            'cep': cep,
         })
 
     elif request.method == "POST":
@@ -73,6 +96,7 @@ def home(request):
             link_cobranca=link_cobranca,
         )
     return redirect('home')
+
 
 
 

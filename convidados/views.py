@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
 from django.urls import reverse
 from noivos.models import Convidados, Perfil, Presentes, Acompanhante
+from datetime import datetime
 
 
 def convidados(request):
@@ -11,7 +12,7 @@ def convidados(request):
     convidado = get_object_or_404(Convidados, token=token)
     presentes = Presentes.objects.filter(reservado=False, user=convidado.user).order_by('-importancia')
 
-    
+    timestamp = int(datetime.now().timestamp())
 
     # Verificar se o convidado pode adicionar acompanhantes
     if convidado.maximo_acompanhantes > 0:
@@ -23,7 +24,8 @@ def convidados(request):
         'convidado': convidado,
         'presentes': presentes,
         'token': token,
-        'acompanhantes_restantes': acompanhantes_restantes
+        'acompanhantes_restantes': acompanhantes_restantes,
+        'timestamp': timestamp
 
     })
 

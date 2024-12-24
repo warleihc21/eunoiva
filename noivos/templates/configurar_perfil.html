@@ -1,22 +1,143 @@
 {% extends 'base.html' %}
 {% block 'body' %}
-<div class="max-w-md mx-auto mt-12">
-    <h1 class="text-xl font-semibold mb-4">Configurar Perfil</h1>
-    <form action="{% url 'configurar_perfil' %}" method="POST">
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Configurar Perfil</h1>
+    <form action="{% url 'configurar_perfil' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="mb-4">
-            <label for="nome_primeiro_conjuge" class="block text-sm font-medium text-gray-700">Nome do primeiro cônjuge</label>
-            <input type="text" id="nome_primeiro_conjuge" name="nome_primeiro_conjuge" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+        <div class="row">
+            <!-- Coluna 1 -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="nome_primeiro_conjuge" class="form-label">Nome do primeiro cônjuge</label>
+                    <input type="text" id="nome_primeiro_conjuge" name="nome_primeiro_conjuge" class="form-control" value="{{ perfil.nome_primeiro_conjuge }}">
+                </div>
+                <div class="mb-3">
+                    <label for="nome_segundo_conjuge" class="form-label">Nome do segundo cônjuge</label>
+                    <input type="text" id="nome_segundo_conjuge" name="nome_segundo_conjuge" class="form-control" value="{{ perfil.nome_segundo_conjuge }}">
+                </div>
+                <div class="mb-3">
+                    <label for="data_casamento" class="form-label">Data do casamento</label>
+                    <input type="date" id="data_casamento" name="data_casamento" class="form-control" value="{{ perfil.data_casamento|date:'Y-m-d' }}">
+                </div>
+                <div class="mb-3">
+                    <label for="imagem" class="form-label">Imagem de perfil</label>
+                    <input type="file" id="imagem" name="imagem" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="mensagem_noivos" class="form-label">Mensagem</label>
+                    <textarea id="mensagem_noivos" name="mensagem_noivos" class="form-control" rows="4">{{ perfil.mensagem_noivos }}</textarea>
+                </div>
+            </div>
+            
+
+            <!-- Coluna 2 -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="cep" class="form-label">CEP</label>
+                    <input type="text" id="cep" name="cep" class="form-control" value="{{ perfil.cep }}" onblur="buscarCEP()">
+                </div>
+                <div class="mb-3">
+                    <label for="rua" class="form-label">Rua</label>
+                    <input type="text" id="rua" name="rua" class="form-control" value="{{ perfil.rua }}">
+                </div>
+                <div class="mb-3">
+                    <label for="numero" class="form-label">Número</label>
+                    <input type="text" id="numero" name="numero" class="form-control" value="{{ perfil.numero }}">
+                </div>
+                <div class="mb-3">
+                    <label for="complemento" class="form-label">Complemento</label>
+                    <input type="text" id="complemento" name="complemento" class="form-control" value="{{ perfil.complemento }}">
+                </div>
+                <div class="mb-3">
+                    <label for="bairro" class="form-label">Bairro</label>
+                    <input type="text" id="bairro" name="bairro" class="form-control" value="{{ perfil.bairro }}">
+                </div>
+                <div class="mb-3">
+                    <label for="pais" class="form-label">País</label>
+                    <select id="pais" name="pais" class="form-select">
+                        <option value="Brasil" {% if perfil.pais == "Brasil" %}selected{% endif %}>Brasil</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select id="estado" name="estado" class="form-select">
+                        <option value="" {% if not perfil.estado %}selected{% endif %}>Selecione</option>
+                        <option value="AC" {% if perfil.estado == "AC" %}selected{% endif %}>Acre</option>
+                        <option value="AL" {% if perfil.estado == "AL" %}selected{% endif %}>Alagoas</option>
+                        <option value="AP"{% if perfil.estado == "AP" %}selected{% endif %}>Amapá</option>
+                        <option value="AM" {% if perfil.estado == "AM" %}selected{% endif %}>Amazonas</option>
+                        <option value="BA" {% if perfil.estado == "BA" %}selected{% endif %}>Bahia</option>
+                        <option value="CE" {% if perfil.estado == "CE" %}selected{% endif %}>Ceará</option>
+                        <option value="DF" {% if perfil.estado == "DF" %}selected{% endif %}>Distrito Federal</option>
+                        <option value="ES" {% if perfil.estado == "ES" %}selected{% endif %}>Espírito Santo</option>
+                        <option value="GO" {% if perfil.estado == "GO" %}selected{% endif %}>Goiás</option>
+                        <option value="MA" {% if perfil.estado == "MA" %}selected{% endif %}>Maranhão</option>
+                        <option value="MT" {% if perfil.estado == "MT" %}selected{% endif %}>Mato Grosso</option>
+                        <option value="MS" {% if perfil.estado == "MS" %}selected{% endif %}>Mato Grosso do Sul</option>
+                        <option value="MG" {% if perfil.estado == "MG" %}selected{% endif %}>Minas Gerais</option>
+                        <option value="PA" {% if perfil.estado == "PA" %}selected{% endif %}>Pará</option>
+                        <option value="PB" {% if perfil.estado == "PB" %}selected{% endif %}>Paraíba</option>
+                        <option value="PR" {% if perfil.estado == "PR" %}selected{% endif %}>Paraná</option>
+                        <option value="PE" {% if perfil.estado == "PE" %}selected{% endif %}>Pernambuco</option>
+                        <option value="PI" {% if perfil.estado == "PI" %}selected{% endif %}>Piauí</option>
+                        <option value="RJ" {% if perfil.estado == "RJ" %}selected{% endif %}>Rio de Janeiro</option>
+                        <option value="RN" {% if perfil.estado == "RN" %}selected{% endif %}>Rio Grande do Norte</option>
+                        <option value="RS" {% if perfil.estado == "RS" %}selected{% endif %}>Rio Grande do Sul</option>
+                        <option value="RO" {% if perfil.estado == "RO" %}selected{% endif %}>Rondônia</option>
+                        <option value="RR" {% if perfil.estado == "RR" %}selected{% endif %}>Roraima</option>
+                        <option value="SC" {% if perfil.estado == "SC" %}selected{% endif %}>Santa Catarina</option>
+                        <option value="SP" {% if perfil.estado == "SP" %}selected{% endif %}>São Paulo</option>
+                        <option value="SE" {% if perfil.estado == "SE" %}selected{% endif %}>Sergipe</option>
+                        <option value="TO" {% if perfil.estado == "TO" %}selected{% endif %}>Tocantins</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="municipio" class="form-label">Município</label>
+                    <input type="text" id="municipio" name="municipio" class="form-control" value="{{ perfil.municipio }}">
+                </div>
+            </div>
         </div>
-        <div class="mb-4">
-            <label for="nome_segundo_conjuge" class="block text-sm font-medium text-gray-700">Nome do segundo cônjuge</label>
-            <input type="text" id="nome_segundo_conjuge" name="nome_segundo_conjuge" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Salvar</button>
         </div>
-        <div class="mb-4">
-            <label for="data_casamento" class="block text-sm font-medium text-gray-700">Data do casamento</label>
-            <input type="date" id="data_casamento" name="data_casamento" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-        </div>
-        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md">Salvar</button>
     </form>
 </div>
+<script>
+    async function buscarCEP() {
+        const cep = document.getElementById('cep').value.replace(/\D/g, ''); // Remove caracteres não numéricos
+        if (cep.length !== 8) {
+            alert('Digite um CEP válido com 8 dígitos.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            if (!response.ok) throw new Error('Erro ao consultar o CEP.');
+
+            const data = await response.json();
+            if (data.erro) throw new Error('CEP não encontrado.');
+
+            // Preenchendo os campos retornados pela API
+            document.getElementById('rua').value = data.logradouro || '';
+            document.getElementById('bairro').value = data.bairro || '';
+            document.getElementById('municipio').value = data.localidade || '';
+
+            // Definindo o país como Brasil (fixo)
+            document.getElementById('pais').value = 'Brasil';
+
+            // Ajustando o estado como "selecionado" no <select>
+            const estadoSelect = document.getElementById('estado');
+            const estadoUf = data.uf || '';
+            for (const option of estadoSelect.options) {
+                if (option.value === estadoUf) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+</script>
 {% endblock %}

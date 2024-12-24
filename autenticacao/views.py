@@ -108,27 +108,57 @@ def ativar_conta(request, token):
 
 @login_required(login_url='/auth/logar/')
 def configurar_perfil(request):
+    # Obtém o perfil do usuário logado
     perfil, created = Perfil.objects.get_or_create(user=request.user)
 
-    if perfil.configurado:
-        return redirect('/')
-
     if request.method == "POST":
+        # Campos do perfil
         nome_primeiro_conjuge = request.POST.get('nome_primeiro_conjuge')
         nome_segundo_conjuge = request.POST.get('nome_segundo_conjuge')
         data_casamento = request.POST.get('data_casamento')
+        mensagem_noivos = request.POST.get('mensagem_noivos')
 
-        if not nome_primeiro_conjuge or not nome_segundo_conjuge or not data_casamento:
-            messages.error(request, "Preencha todos os campos.")
+        # Campos do endereço
+        cep = request.POST.get('cep')
+        rua = request.POST.get('rua')
+        numero = request.POST.get('numero')
+        complemento = request.POST.get('complemento')
+        bairro = request.POST.get('bairro')
+        pais = request.POST.get('pais')
+        estado = request.POST.get('estado')
+        municipio = request.POST.get('municipio')
+
+        # Verificar se os campos obrigatórios foram preenchidos
+        if not nome_primeiro_conjuge or not nome_segundo_conjuge or not data_casamento or not cep or not rua or not numero or not bairro or not estado or not municipio:
+            messages.error(request, "Preencha todos os campos obrigatórios.")
             return redirect('/auth/configurar_perfil')
 
+        # Atualizar o perfil
         perfil.nome_primeiro_conjuge = nome_primeiro_conjuge
         perfil.nome_segundo_conjuge = nome_segundo_conjuge
         perfil.data_casamento = data_casamento
+        perfil.mensagem_noivos = mensagem_noivos
+        perfil.cep = cep
+        perfil.rua = rua
+        perfil.numero = numero
+        perfil.complemento = complemento
+        perfil.bairro = bairro
+        perfil.pais = pais
+        perfil.estado = estado
+        perfil.municipio = municipio
         perfil.configurado = True
+
+        if 'imagem' in request.FILES:
+            perfil.imagem = request.FILES['imagem']
+
         perfil.save()
 
-        messages.success(request, "Perfil configurado com sucesso!")
+        messages.success(request, "Perfil atualizado com sucesso!")
         return redirect('/noivos/')
 
+    # Passa o perfil para o template
     return render(request, 'configurar_perfil.html', {'perfil': perfil})
+
+
+
+
