@@ -37,6 +37,7 @@ class Perfil(models.Model):
 class MensagemPersonalizada(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mensagens_personalizadas')
     mensagem = models.TextField()
+    arquivo_base64 = models.TextField(blank=True, null=True)
     data_criacao = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

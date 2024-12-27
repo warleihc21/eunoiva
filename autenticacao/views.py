@@ -81,7 +81,7 @@ def logar(request):
             if not perfil.configurado:
                 return redirect('/auth/configurar_perfil')
 
-            return redirect('/')
+            return redirect('/noivos/')
             
 
 def sair(request):

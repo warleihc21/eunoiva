@@ -1,3 +1,4 @@
+import base64
 import json
 import pandas as pd
 import csv
@@ -116,6 +117,15 @@ def home1(request):
         nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
         nome_segundo_conjuge = perfil.nome_segundo_conjuge
         data_casamento = perfil.data_casamento
+        imagem = perfil.imagem
+
+        rua = perfil.rua
+        numero = perfil.numero
+        bairro = perfil.bairro
+        municipio = perfil.municipio
+        estado = perfil.estado
+        pais = perfil.pais
+        cep = perfil.cep
 
         data = [nao_reservado, reservado]
         return render(request, 'home1.html', {
@@ -128,6 +138,15 @@ def home1(request):
             'nome_primeiro_conjuge': nome_primeiro_conjuge,
             'nome_segundo_conjuge': nome_segundo_conjuge,
             'data_casamento': data_casamento,
+            'imagem': imagem,
+            'perfil': perfil,
+            'rua': rua,
+            'numero': numero,
+            'bairro': bairro,
+            'municipio': municipio,
+            'estado': estado,
+            'pais': pais,
+            'cep': cep,
         })
 
     elif request.method == "POST":
@@ -176,8 +195,14 @@ def lista_convidados(request):
     if request.method == 'GET':
         convidados = Convidados.objects.filter(user=request.user)
         nao_confirmados = convidados.filter(status='AC')
-        return render(request, 'lista_convidados.html', {'convidados': convidados,
-                                                         'nao_confirmados': nao_confirmados})
+        mensagem = MensagemPersonalizada.objects.filter(user=request.user).first()
+        arquivo_base64 = MensagemPersonalizada.objects.filter(user=request.user)
+        return render(request, 'lista_convidados.html', {
+            'convidados': convidados, 
+            'nao_confirmados': nao_confirmados,
+            'mensagem': mensagem.mensagem if mensagem else '',
+            'arquivo_base64': arquivo_base64,
+            })
     elif request.method == 'POST':
         nome_convidado = request.POST.get('nome_convidado')
         whatsapp = request.POST.get('whatsapp')
@@ -239,7 +264,6 @@ def details_gifts(request):
 
         presentes_reservados = presentes.filter(reservado=True)
         total_reservado = sum(presente.preco for presente in presentes_reservados)
-
         
         data = [nao_reservado, reservado]
         return render(request, 'detail-gifts.html', {
@@ -249,6 +273,8 @@ def details_gifts(request):
             'total_reservado': total_reservado,
 
         })
+    
+
 
     elif request.method == "POST":
         nome_presente = request.POST.get('nome_presente')
@@ -271,6 +297,9 @@ def details_gifts(request):
             link_cobranca=link_cobranca,
         )
         return redirect('details_gifts')
+    
+def portfolio_details(request):
+    return render(request, 'portfolio-details.html')
 
 
 
@@ -488,13 +517,29 @@ def salvar_mensagem(request):
         try:
             data = json.loads(request.body)
             mensagem = data.get('mensagem', '')
+            arquivo = request.FILES.get('arquivo', None)  # Obtém o arquivo enviado
             user = request.user  # Obtendo o usuário logado
 
-            # Salvar a mensagem personalizada na tabela MensagemPersonalizada
-            nova_mensagem = MensagemPersonalizada(user=user, mensagem=mensagem)
-            nova_mensagem.save()
+            # Verificar se já existe uma mensagem para o usuário
+            mensagem_existente = MensagemPersonalizada.objects.filter(user=user).first()
 
-            # Retorna a mensagem salva para o frontend
+            # Codifica o arquivo em Base64 se ele existir
+            arquivo_base64 = None
+            if arquivo:
+                arquivo_base64 = base64.b64encode(arquivo.read()).decode('utf-8')
+                
+            if mensagem_existente:
+                # Atualizar a mensagem existente
+                mensagem_existente.mensagem = mensagem
+                if arquivo_base64:
+                    mensagem_existente.arquivo_base64 = arquivo_base64
+                mensagem_existente.save()
+            else:
+                # Criar uma nova mensagem se não existir
+                nova_mensagem = MensagemPersonalizada(user=user, mensagem=mensagem)
+                nova_mensagem.save()
+
+            # Retorna a mensagem salva ou atualizada para o frontend
             return JsonResponse({
                 'success': True,
                 'mensagem': mensagem  # Retorna a mensagem salva para exibição

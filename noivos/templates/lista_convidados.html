@@ -81,8 +81,21 @@
                             <div class="modal-body">
                                 <!-- Campo para mensagem personalizada -->
                                 <label for="mensagemPersonalizada" class="block text-sm font-medium text-gray-700">Mensagem personalizada</label>
-                                <textarea id="mensagemPersonalizada" name="mensagemPersonalizada" rows="4" class="mt-1 block w-full text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Digite sua mensagem aqui...">{{ mensagem_personalizada }}</textarea>
+                                <textarea id="mensagemPersonalizada" name="mensagemPersonalizada" rows="4" class="mt-1 block w-full text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Digite sua mensagem aqui...">{{ mensagem }}</textarea>
                                 <small class="text-gray-500">Use as palavras-chave {nome} e {link} para personalizar a mensagem.</small>
+
+                                <br><br>
+
+                                <!-- Campo para upload de arquivo -->
+                                <label for="arquivo" class="block text-sm font-medium text-gray-700">Anexar Imagem ou PDF</label>
+                                <input type="file" id="arquivo" name="arquivo" accept=".pdf, .jpg, .jpeg, .png" class="mt-1 block w-full text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <!-- Pré-visualização da imagem -->
+                                {% if mensagem and mensagem.arquivo_base64 %}
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Pré-visualização da Imagem</label>
+                                    <img src="data:image/png;base64,{{ mensagem.arquivo_base64 }}" alt="Prévia da imagem" class="mt-2 block w-20 h-20 object-contain">
+                                </div>
+                                {% endif %}
 
                                 <br><br>
                                 <!-- Botões para adicionar variáveis padrões -->
@@ -236,15 +249,25 @@
             });
         });
 
-        // Função para habilitar ou desabilitar o botão "Enviar WhatsApp"
         document.addEventListener('DOMContentLoaded', function () {
+
+            // Exemplo de mensagem padrão que será carregada
+            const mensagemPadrao = "{{ mensagem|escapejs }}";
+
+            // Adicionar evento para quando o modal for exibido
+            const modal = document.getElementById("modalEnviarMensagens");
+            modal.addEventListener("shown.bs.modal", function () {
+                const textarea = document.getElementById("mensagemPersonalizada");
+                textarea.value = mensagemPadrao;
+            });
+
             const selectAllCheckbox = document.getElementById('selectAll');
-            const convidadoCheckboxes = document.querySelectorAll('.convidado-checkbox');
+            const convidadoCheckboxes = Array.from(document.querySelectorAll('.convidado-checkbox'));
             const enviarMensagensBtn = document.getElementById('enviarMensagensBtn');
 
             // Habilitar/desabilitar o botão baseado nos checkboxes
             function toggleEnviarButton() {
-                const selectedCheckboxes = document.querySelectorAll('.convidado-checkbox:checked').length;
+                const selectedCheckboxes = convidadoCheckboxes.filter(checkbox => checkbox.checked).length;
                 enviarMensagensBtn.disabled = selectedCheckboxes === 0;
             }
 
@@ -260,6 +283,7 @@
                 checkbox.addEventListener('change', toggleEnviarButton);
             });
         });
+
 
         // Função para enviar mensagens via AJAX
         function enviarMensagens() {

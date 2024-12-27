@@ -166,7 +166,7 @@
             <div class="welcome-message w-2/3">
                 <p>Bem-vindos, {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</p>
                 <p>Nossa data</p>
-                <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ data_casamento }}</h2>
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ data_casamento|date:"d/m/Y" }}</h2>
                 <div id="timer" class="flex justify-center space-x-4">
                     <div class="campo-tempo">
                         <span id="dias" class="valor-tempo">00</span>

@@ -1,9 +1,6 @@
 {% extends "base.html" %}
-
 {% block 'body' %}
-
 {% load static %}
-
 <style>
     #timer {
     display: flex;
@@ -49,10 +46,31 @@
     .section-full-height {
         flex: 1;  /* Isso faz com que o conteúdo ocupe o restante da altura da tela */
     }
+
+    @font-face {
+        font-family: 'PurplePurse-Regular';
+        src: url('/static/noivos/fonts/PurplePurse-Regular.ttf') format('truetype');
+    }
+
+    .PurplePurse-Regular {
+        font-family: 'PurplePurse-Regular', sans-serif;
+        font-size: 3em; /* Ajuste o tamanho se necessário */
+        text-transform: uppercase; /* Converte o texto para caixa alta */
+
+    }
 </style>
 
 {% include "partials/navbar_convidados.html" %}
     <div class="max-w-7xl mx-auto mt-12">
+        {% if messages %}
+            <div class="max-w-7xl mx-auto mt-12">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <!-- Seção de imagem com os nomes dos cônjuges no centro e efeito de escurecimento -->
         <div class="relative w-full h-96">
             {% if convidado.user.perfil.imagem %}
@@ -61,16 +79,16 @@
             <!-- Camada escura sobre a imagem -->
             <div class="absolute inset-0 bg-black opacity-40"></div>
             <div class="absolute inset-0 flex items-center justify-center text-white text-5xl font-semibold">
-                <span class="text-6xl">{{ convidado.user.perfil.nome_primeiro_conjuge }} <span class="text-5xl">&</span> {{ convidado.user.perfil.nome_segundo_conjuge }}</span>
+                <span class="uppercase text-6xl">{{ convidado.user.perfil.nome_primeiro_conjuge }} <span class="text-5xl">&</span> {{ convidado.user.perfil.nome_segundo_conjuge }}</span>
             </div>
         </div>
-        <br>
-        
+        <br>        
         <section class="section-full-height">
             <!-- Dados da Data de Casamento -->
             <div class="mx-auto max-w-2xl text-center">
-                <p class="text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Nossa data</p>
-                <h2 class="text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">{{ convidado.user.perfil.data_casamento }}</h2>
+                <p class="PurplePurse-Regular text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Nossa data</p>
+                <br>
+                <h1 class="text-balance text-4xl fw-bold tracking-tight text-gray-900 sm:text-5xl">{{ convidado.user.perfil.data_casamento|date:"d/m/Y" }}</h1>
                 <br>
                 <div id="timer" class="flex justify-center space-x-4">
                     <div class="campo-tempo">
@@ -94,107 +112,106 @@
         </section>
         <br>
         <hr class="mt-12 mb-12"> 
-        <div class="centralizar-imagem mt-12 mb-12">
+        <div class="centralizar-imagem mt-24 mb-24">
             <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
         </div> 
         <section id="mensagem-noivos" class="section-full-height"></section>
             <div class="text-center">
-                <p class="mt-12 mb-12 text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Mensagem</p>
+                <p class="PurplePurse-Regular mt-12 mb-12 text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Mensagem</p>
                 
-                <p class="flex items-center justify-center text-4xl ">{{ convidado.user.perfil.mensagem_noivos }}</p>
+                <p class="fst-italic flex items-center justify-center text-4xl ">{{ convidado.user.perfil.mensagem_noivos }}</p>
             </div>
-        </section>
-        
+        </section>     
 
         <section id="confirmacao-presenca" class="section-full-height">
-            <div class="centralizar-imagem mt-12 mb-12">
+            
+            <div class="centralizar-imagem mt-24 mb-24">
                 <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
             </div>
-            <div class="mx-auto max-w-2xl text-center">
-                <h2 class="mt-12 mb-12 text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
-                    Olá, {{convidado.nome_convidado}}
-                </h2>
-        
-                {% if convidado.status == 'AC' %}
-                    <p class="mt-12 mb-12 text-lg leading-8 text-gray-600 flex items-center justify-center">
-                        <span class="text-balance text-4xl tracking-tight text-gray-900 sm:text-5xl">Confirme sua presença no casamento:</span>
-                    </p>
-                    <div class="mt-12 mb-12">
-                        <a href="{% url 'responder_presenca' %}?resposta=C&token={{convidado.token}}" 
-                            class="mt-12 mb-12 inline-flex items-center justify-center py-3 px-6 text-white bg-green-500 rounded-lg shadow-lg text-xl hover:bg-green-400 transition duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            Confirmar
-                        </a>
-                        <a href="{% url 'responder_presenca' %}?resposta=R&token={{convidado.token}}" 
-                            class="inline-flex items-center justify-center py-3 px-6 text-white bg-red-500 rounded-lg shadow-lg text-xl hover:bg-red-400 transition duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                            Recusar
-                        </a>
-                    </div>
-                {% elif convidado.status == 'C' %}
-                    <p class="mt-12 mb-12 text-lg leading-8 text-gray-600">Presença confirmada! Estamos ansiosos para vê-lo no casamento.</p>
-                {% elif convidado.status == 'R' %}
-                    <p class="mt-12 mb-12 text-lg leading-8 text-gray-600">Presença recusada. Sentiremos sua falta, esperamos vê-lo em outra oportunidade!</p>
-                {% endif %}
+            <div class="text-center">
+                <p class="PurplePurse-Regular mt-24 mb-12 text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Confirmação de presença</p>
             </div>
-            <div>
-                {% if convidado.maximo_acompanhantes > 0 %}
-                <div class="bg-slate-200/20 p-6 rounded-md drop-shadow-lg ring-1 ring-gray-600/20">
-                    <h2 class="text-xl font-semibold tracking-tight text-gray-900 text-center">Adicione seus acompanhantes</h2>
-                    
-                    {% if acompanhantes_restantes > 0 %}
-                        <form action="{% url 'adicionar_acompanhante' convidado.token %}" method="POST">
-                            {% csrf_token %}
-                            <label class="mt-4 block text-sm leading-6 text-gray-900">Nome</label>
-                            <input type="text" name="nome" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <input type="submit" class="rounded-md mt-4 bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 cursor-pointer" value="Adicionar">
-                        </form>
-                        <p class="text-gray-600 mt-2">Você ainda pode adicionar <strong>{{ acompanhantes_restantes }}</strong> acompanhante(s).</p>
-                    {% else %}
-                        <p class="text-red-500 mt-2">Você já atingiu o número máximo de acompanhantes permitidos.</p>
-                    {% endif %}
-
-                    <hr class="my-4">
-                    <ul>
-                        {% for acompanhante in convidado.acompanhantes.all %}
-                            <li class="bg-slate-100 p-4 flex justify-between items-center">
-                                {{ acompanhante.nome }}
-                                <form action="{% url 'excluir_acompanhante' convidado.token acompanhante.id %}" method="POST" class="inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-semibold">Excluir</button>
-                                </form>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-            </div>
-        
-            <div class="centralizar-imagem mt-12 mb-12">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
-            </div>
-        </section>
-        
-        
-
-        <br>
-        
-
-        <section class="section-full-height">
-
-            <div class="grid grid-cols-1 gap-4">
+            <div class="grid gap-4 grid-cols-2">
                 <div class="mx-auto max-w-2xl text-center">
                     <h2 class="mt-12 mb-12 text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                        Olá, {{convidado.nome_convidado}}
+                    </h2>
+            
+                    {% if convidado.status == 'AC' %}
+                        <p class="mt-12 mb-12 text-lg leading-8 text-gray-600 flex items-center justify-center">
+                            <span class="text-balance text-4xl tracking-tight text-gray-900 sm:text-5xl">Confirme sua presença no casamento:</span>
+                        </p>
+                        <div class="mt-12 mb-12">
+                            <a href="{% url 'responder_presenca' %}?resposta=C&token={{convidado.token}}" 
+                                class="mt-12 mb-12 inline-flex items-center justify-center py-3 px-6 text-white bg-green-500 rounded-lg shadow-lg text-xl hover:bg-green-400 transition duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Confirmar
+                            </a>
+                            <a href="{% url 'responder_presenca' %}?resposta=R&token={{convidado.token}}" 
+                                class="inline-flex items-center justify-center py-3 px-6 text-white bg-red-500 rounded-lg shadow-lg text-xl hover:bg-red-400 transition duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                Recusar
+                            </a>
+                        </div>
+                    {% elif convidado.status == 'C' %}
+                        <p class="mt-12 mb-12 text-lg leading-8 text-gray-600">Presença confirmada! Estamos ansiosos para vê-lo no casamento.</p>
+                    {% elif convidado.status == 'R' %}
+                        <p class="mt-12 mb-12 text-lg leading-8 text-gray-600">Presença recusada. Sentiremos sua falta, esperamos vê-lo em outra oportunidade!</p>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if convidado.maximo_acompanhantes > 0 %}
+                    <div class="bg-slate-200/20 p-6 rounded-md drop-shadow-lg ring-1 ring-gray-600/20">
+                        <h2 class="text-xl font-semibold tracking-tight text-gray-900 text-center">Adicione seus acompanhantes</h2>
+                        
+                        {% if acompanhantes_restantes > 0 %}
+                            <form action="{% url 'adicionar_acompanhante' convidado.token %}" method="POST">
+                                {% csrf_token %}
+                                <label class="mt-4 block text-sm leading-6 text-gray-900">Nome</label>
+                                <input type="text" name="nome" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="submit" class="rounded-md mt-4 bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 cursor-pointer" value="Adicionar">
+                            </form>
+                            <p class="text-gray-600 mt-2">Você ainda pode adicionar <strong>{{ acompanhantes_restantes }}</strong> acompanhante(s).</p>
+                        {% else %}
+                            <p class="text-red-500 mt-2">Você já atingiu o número máximo de acompanhantes permitidos.</p>
+                        {% endif %}
+
+                        <hr class="my-4">
+                        <ul>
+                            {% for acompanhante in convidado.acompanhantes.all %}
+                                <li class="bg-slate-100 p-4 flex justify-between items-center">
+                                    {{ acompanhante.nome }}
+                                    <form action="{% url 'excluir_acompanhante' convidado.token acompanhante.id %}" method="POST" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-semibold">Excluir</button>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="centralizar-imagem mt-24 mb-12">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
+            </div>
+        </section> 
+
+        <br>
+
+        <section class="section-full-height">
+            <div class="grid grid-cols-1 gap-4">
+                <div class="mx-auto max-w-2xl text-center">
+                    <h2 class="PurplePurse-Regular mt-12 mb-12 text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
                         Presentes
                     </h2>
                     <p class="mt-2 text-lg leading-8 text-gray-600">Escolha o presente para os noivos</p>
                 </div>
-                    <div class="grid grid-cols-3 mt-4 gap-4">
-                        
+                    <div class="grid grid-cols-3 mt-4 gap-4">                        
                         {% for presente in presentes %}
                         <div>
                             {% if presente.foto %}
@@ -225,12 +242,10 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                                 </svg>
                             </span>
-                            {% endif %}
-                        
+                            {% endif %}                        
                             <button type="button" class="rounded-md block w-full mt-4 bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 cursor-pointer" data-bs-toggle="modal" data-bs-target="#modal{{ presente.id }}">
                                 Reservar
-                            </button>
-                        
+                            </button>                        
                             <!-- Modal -->
                             <div class="modal fade" id="modal{{ presente.id }}" tabindex="-1" aria-labelledby="modalLabel{{ presente.id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-lg"> <!-- Corrigi o tamanho do modal para consistência -->
@@ -256,7 +271,7 @@
                                                 {% endif %}
                                             </p>
                                             {% if presente.link_cobranca %}
-                                            <p><strong>Presenteie os noivos com o valor em dinheito:</strong>
+                                            <p><strong>Pague pelo presente dentro da plataforma:</strong>
                                                 <a href="{{ presente.link_cobranca }}" target="_blank" class="text-indigo-600 hover:text-indigo-800">Pague aqui</a>
                                             </p>
                                             {% endif %}
@@ -272,42 +287,30 @@
                                 </div>
                             </div>
                         </div>
-
                         {% endfor %}
-                        
-            
                     </div>
-                             
-        
             </div>
         </section>
 
+        <section>
 
-        <div class="mt-8 bg-white p-6 rounded-md shadow-md">
-            <h2 class="text-xl font-semibold mb-4">Local do Casamento</h2>
-            <p>Rua: {{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }}, Bairro: {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }}, {{ convidado.user.perfil.estado }}, {{ convidado.user.perfil.pais }} - Cep: {{ convidado.user.perfil.cep }}</p>
-        </div>
-
-        <div id="map" style="width: 100%; height: 400px;"></div>
-
-        <br>
-        
-        
-        
+            <div class="mt-8 bg-white p-6 rounded-md shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Local do Casamento</h2>
+                <p>Rua: {{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }}, Bairro: {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }}, {{ convidado.user.perfil.estado }}, {{ convidado.user.perfil.pais }} - Cep: {{ convidado.user.perfil.cep }}</p>
+            </div>
+            <div id="map" style="width: 100%; height: 400px;"></div>
+            <br>
+            <br>
+        </section>
     </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArufezJ1vUqr_syuLuz7ZKDXmzlxVXu88&callback=initMap&v={{ timestamp }}" 
     async defer></script>
-
     <script>
-
-
-function initMap() {
+        function initMap() {
             // Obtendo o endereço do casamento
             const endereco = "{{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }}, {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }}, {{ convidado.user.perfil.estado }}";
-            
             // Usando o Geocoder do Google Maps para obter as coordenadas a partir do endereço
             const geocoder = new google.maps.Geocoder();
-            
             geocoder.geocode({ 'address': endereco }, function(results, status) {
                 if (status === 'OK') {
                     // Criando o mapa centrado no local
@@ -346,7 +349,7 @@ function initMap() {
 
         // Certifique-se de que a data seja passada corretamente do Django para o JavaScript
         const dataCasamento = "{{ convidado.user.perfil.data_casamento|date:'Y-m-d' }}";
-    
+
         function iniciarContador() {
             if (!dataCasamento || isNaN(new Date(dataCasamento))) {
                 console.error("A data de casamento fornecida é inválida.");

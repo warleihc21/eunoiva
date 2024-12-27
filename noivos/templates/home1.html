@@ -109,14 +109,19 @@
               <br>
               {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</h1>
               <br>
-            <h2>Nossa data: {{ data_casamento }}</h2>
+            <h2>Nossa data: {{ data_casamento|date:"d/m/Y" }}</h2>
             <div class="d-flex">
               <a href="#about" class="btn-get-started">Get Started</a>
               <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
             </div>
           </div>
           <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="100">
-            <img src="{% static 'assets/img/casal.png' %}" class="img-fluid animated" alt="">
+            
+            {% if imagem %}
+              <img src="{{ imagem.url }}" alt="Imagem do perfil" class="rounded-lg shadow-md w-full img-fluid animated">
+            {% else %}
+              <img src="{% static 'assets/img/casal.png' %}" class="img-fluid animated" alt="">
+            {% endif %}
           </div>
         </div>
       </div>
@@ -128,41 +133,41 @@
     <section id="stats" class="stats section">
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
-
+    
         <div class="row gy-4">
-
+    
           <div class="col-lg-3 col-md-6">
             <div class="campo-tempo stats-item text-center w-100 h-100">
               <span id="dias" class="purecounter"></span>
-              <p>Dias</p>
+              <p class="fw-bold">DIAS</p>
             </div>
           </div><!-- End Stats Item -->
-
+    
           <div class="col-lg-3 col-md-6">
             <div class="campo-tempo stats-item text-center w-100 h-100">
               <span id="horas" class="purecounter"></span>
-              <p>Horas</p>
+              <p class="fw-bold">HORAS</p>
             </div>
           </div><!-- End Stats Item -->
-
+    
           <div class="col-lg-3 col-md-6">
             <div class="campo-tempo stats-item text-center w-100 h-100">
               <span id="minutos" class="purecounter"></span>
-              <p>Minutos</p>
+              <p class="fw-bold">MINUTOS</p>
             </div>
           </div><!-- End Stats Item -->
-
+    
           <div class="col-lg-3 col-md-6">
             <div class="campo-tempo stats-item text-center w-100 h-100">
               <span id="segundos" class="purecounter"></span>
-              <p>Segundos</p>
+              <p class="fw-bold">SEGUNDOS</p>
             </div>
           </div><!-- End Stats Item -->
-
+    
         </div>
-
+    
       </div>
-
+    
     </section><!-- /Stats Section -->
 
 
@@ -316,7 +321,6 @@
             <li data-filter=".importance-label low">Pouco importante</li>
             <li data-filter=".importance-label medium">Importante</li>
             <li data-filter=".importance-label high">Muito importante</li>
-            >
           </ul><!-- End Portfolio Filters -->
 
           <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
@@ -688,8 +692,8 @@
               <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
                 <i class="bi bi-geo-alt flex-shrink-0"></i>
                 <div>
-                  <h3>Address</h3>
-                  <p>A108 Adam Street, New York, NY 535022</p>
+                  <h3>Local do casamento</h3>
+                  <p>Rua: {{ perfil.rua }}, {{ perfil.numero }}, Bairro: {{ perfil.bairro }}, {{ perfil.municipio }}, {{ perfil.estado }}, {{ perfil.pais }} - Cep: {{ perfil.cep }}</p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -709,7 +713,7 @@
                 </div>
               </div><!-- End Info Item -->
 
-              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-74.006138!3d40.710059!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a22a3bda30d%3A0xb89d1fe6bc499443!2sDowntown%20Conference%20Center!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus" frameborder="0" style="border:0; width: 100%; height: 270px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              <div id="map" style="width: 100%; height: 400px;"></div>
             </div>
           </div>
 
@@ -855,8 +859,39 @@
 
   <!-- Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
-
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArufezJ1vUqr_syuLuz7ZKDXmzlxVXu88&callback=initMap&v={{ timestamp }}" 
+    async defer></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
+
+    function initMap() {
+            // Obtendo o endereço do casamento
+            const endereco = "{{ perfil.rua }}, {{ perfil.numero }}, {{ perfil.bairro }}, {{ perfil.municipio }}, {{ perfil.estado }}";
+            
+            // Usando o Geocoder do Google Maps para obter as coordenadas a partir do endereço
+            const geocoder = new google.maps.Geocoder();
+            
+            geocoder.geocode({ 'address': endereco }, function(results, status) {
+                if (status === 'OK') {
+                    // Criando o mapa centrado no local
+                    const map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 15,
+                        center: results[0].geometry.location
+                    });
+
+                    // Marcando o local no mapa
+                    const marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location
+                    });
+                } else {
+                    alert('Geocode não foi bem-sucedido: ' + status);
+                }
+            });
+    }
+
+    
     const dataCasamento = "{{ data_casamento|date:'Y-m-d' }}";
 
     function iniciarContador() {
