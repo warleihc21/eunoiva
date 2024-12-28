@@ -22,6 +22,10 @@ import pyautogui
 from io import StringIO
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
+from django.core.files.storage import default_storage
+import os
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 
 
@@ -196,12 +200,12 @@ def lista_convidados(request):
         convidados = Convidados.objects.filter(user=request.user)
         nao_confirmados = convidados.filter(status='AC')
         mensagem = MensagemPersonalizada.objects.filter(user=request.user).first()
-        arquivo_base64 = MensagemPersonalizada.objects.filter(user=request.user)
+        mensagem_url = mensagem.imagem.url if mensagem and mensagem.imagem else None
         return render(request, 'lista_convidados.html', {
             'convidados': convidados, 
             'nao_confirmados': nao_confirmados,
             'mensagem': mensagem.mensagem if mensagem else '',
-            'arquivo_base64': arquivo_base64,
+            'mensagem_url': mensagem_url,
             })
     elif request.method == 'POST':
         nome_convidado = request.POST.get('nome_convidado')
@@ -446,23 +450,52 @@ def excluir_convidado(request, convidado_id):
 
 def enviar_mensagens(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        ids_convidados = data.get('convidados', [])
-        
-        # Buscar os convidados selecionados no banco de dados
-        convidados = Convidados.objects.filter(id__in=ids_convidados)
+        data = request.POST
+        convidados_ids = json.loads(data.get('convidados', []))
+        convidados = Convidados.objects.filter(id__in=convidados_ids)
 
-        # Salvar a mensagem personalizada no banco de dados
+        # Obter a mensagem personalizada
         try:
             mensagem_personalizada = MensagemPersonalizada.objects.filter(user=request.user).latest('data_criacao').mensagem
+            mensagem_personalizada_obj = MensagemPersonalizada.objects.filter(user=request.user).latest('data_criacao')
+            arquivo = mensagem_personalizada_obj.imagem  # Recuperar o arquivo do banco
         except MensagemPersonalizada.DoesNotExist:
             mensagem_personalizada = ""
             return render(request, 'lista_convidados.html', {'mensagem_personalizada': mensagem_personalizada})
+
+        # Verificar se o arquivo é válido (baseado na extensão)
+        if arquivo and not arquivo.name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+            raise ValidationError('O arquivo enviado não é uma imagem válida.')
+
+        # Salvar a imagem temporariamente no disco C:
+        temp_dir = r'C:\Temp'
+        os.makedirs(temp_dir, exist_ok=True)  # Garantir que o diretório existe
+        arquivo_temporario = None
+
+        if arquivo:
+            arquivo_nome = os.path.basename(arquivo.name)
+            arquivo_temporario = os.path.join(temp_dir, arquivo_nome)
+            with open(arquivo_temporario, 'wb') as temp_file:
+                for chunk in arquivo.chunks():
+                    temp_file.write(chunk)
 
         # Abrir WhatsApp Web
         webbrowser.open('https://web.whatsapp.com/')
         print("Aguardando o WhatsApp Web carregar...")
         sleep(30)
+
+            # Enviar o arquivo, se existir
+        if arquivo_temporario:
+            pyautogui.hotkey('ctrl', 'o')  # Atalho para abrir upload de arquivo
+            sleep(2)
+            pyautogui.write(arquivo_temporario)  # Caminho do arquivo
+            sleep(2)
+            pyautogui.press('enter')  # Confirmar upload
+            sleep(2)
+            pyautogui.hotkey('ctrl', 'c')
+            sleep(2)
+            pyautogui.hotkey('alt', 'left')
+            sleep(15)
 
         # Lista para armazenar os convidados que falharam
         erros_envio = []
@@ -474,24 +507,36 @@ def enviar_mensagens(request):
                 telefone = f"55{telefone}"
 
             link = convidado.link_convite
-            
+
             # Substituir as variáveis no template da mensagem
             mensagem = mensagem_personalizada.replace("{nome}", nome).replace("{link}", link)
 
+            # Enviar a mensagem de texto
+            link_mensagem_whatsapp = f'https://web.whatsapp.com/send?phone={telefone}&text={quote(mensagem)}'
+            
+
             try:
-                # Criar link personalizado
-                link_mensagem_whatsapp = f'https://web.whatsapp.com/send?phone={telefone}&text={quote(mensagem)}'
+
+                
                 webbrowser.open(link_mensagem_whatsapp)
                 print(f"Enviando mensagem para {nome}...")
                 sleep(15)
+                pyautogui.press('enter')  # Enviar mensagem
+                sleep(5)
+                pyautogui.hotkey('ctrl', 'v')
+                sleep(2)
                 pyautogui.press('enter')
-                sleep(10)
-                pyautogui.hotkey('ctrl', 'w')
+                sleep(5)
+
+                pyautogui.hotkey('ctrl', 'w')  # Fechar a guia após o envio
                 sleep(10)
             except Exception as e:
                 print(f"Erro ao enviar mensagem para {nome}: {e}")
-                # Adicionar os dados do convidado à lista de erros
                 erros_envio.append({'nome': nome, 'telefone': telefone, 'link': link})
+
+        # Remover arquivo temporário, se foi criado
+        if arquivo_temporario and os.path.exists(arquivo_temporario):
+            os.remove(arquivo_temporario)
 
         # Se houver erros, gerar o arquivo .csv para download
         if erros_envio:
@@ -500,7 +545,7 @@ def enviar_mensagens(request):
             escritor_csv = csv.DictWriter(buffer, fieldnames=['nome', 'telefone', 'link'])
             escritor_csv.writeheader()
             escritor_csv.writerows(erros_envio)
-            
+
             # Configurar a resposta HTTP para o download do arquivo
             buffer.seek(0)
             response = HttpResponse(buffer, content_type='text/csv')
@@ -509,34 +554,33 @@ def enviar_mensagens(request):
 
         # Caso não haja erros, retornar sucesso
         return JsonResponse({'status': 'sucesso'})
+
     
 
 @csrf_exempt
 def salvar_mensagem(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
-            mensagem = data.get('mensagem', '')
+            mensagem = request.POST.get('mensagem', '')
             arquivo = request.FILES.get('arquivo', None)  # Obtém o arquivo enviado
             user = request.user  # Obtendo o usuário logado
 
             # Verificar se já existe uma mensagem para o usuário
             mensagem_existente = MensagemPersonalizada.objects.filter(user=user).first()
 
-            # Codifica o arquivo em Base64 se ele existir
-            arquivo_base64 = None
-            if arquivo:
-                arquivo_base64 = base64.b64encode(arquivo.read()).decode('utf-8')
-                
             if mensagem_existente:
                 # Atualizar a mensagem existente
                 mensagem_existente.mensagem = mensagem
-                if arquivo_base64:
-                    mensagem_existente.arquivo_base64 = arquivo_base64
+                if arquivo:
+                    # Salvar o novo arquivo e substituir o antigo
+                    mensagem_existente.imagem = arquivo
                 mensagem_existente.save()
             else:
                 # Criar uma nova mensagem se não existir
                 nova_mensagem = MensagemPersonalizada(user=user, mensagem=mensagem)
+                if arquivo:
+                    # Salvar a imagem no banco de dados
+                    nova_mensagem.imagem = arquivo
                 nova_mensagem.save()
 
             # Retorna a mensagem salva ou atualizada para o frontend

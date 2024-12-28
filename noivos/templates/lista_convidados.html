@@ -2,6 +2,7 @@
 {% load static %}
 {% block 'body' %}
     {% include "partials/navbar.html" %}
+    
 
     <!-- Bloco de mensagens -->
     <div class="max-w-7xl mx-auto mt-12">
@@ -79,35 +80,52 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <!-- Campo para mensagem personalizada -->
-                                <label for="mensagemPersonalizada" class="block text-sm font-medium text-gray-700">Mensagem personalizada</label>
-                                <textarea id="mensagemPersonalizada" name="mensagemPersonalizada" rows="4" class="mt-1 block w-full text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Digite sua mensagem aqui...">{{ mensagem }}</textarea>
-                                <small class="text-gray-500">Use as palavras-chave {nome} e {link} para personalizar a mensagem.</small>
+                                <div class="border shadow p-4">
+                                    <!-- Campo para mensagem personalizada -->
+                                    <label for="mensagemPersonalizada" class="block text-sm font-medium text-gray-700">Mensagem personalizada</label>
+                                    <textarea id="mensagemPersonalizada" name="mensagemPersonalizada" rows="4" class="mt-1 block w-full text-sm text-gray-900 shadow ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Digite sua mensagem aqui...">{{ mensagem }}</textarea>
+                                    <br>
+                                    <small class="text-gray-500">Use as palavras-chave {nome} e {link} para personalizar a mensagem.</small>
+                                    <button type="button" class="bg-indigo-500 text-white px-2 py-1 rounded-md" onclick="adicionarVariavel('{nome}')">Adicionar {nome}</button>
+                                    <button type="button" class="bg-indigo-500 text-white px-2 py-1 rounded-md" onclick="adicionarVariavel('{link}')">Adicionar {link}</button>
 
-                                <br><br>
+                                    <br><br>
 
-                                <!-- Campo para upload de arquivo -->
-                                <label for="arquivo" class="block text-sm font-medium text-gray-700">Anexar Imagem ou PDF</label>
-                                <input type="file" id="arquivo" name="arquivo" accept=".pdf, .jpg, .jpeg, .png" class="mt-1 block w-full text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <!-- Pré-visualização da imagem -->
-                                {% if mensagem and mensagem.arquivo_base64 %}
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Pré-visualização da Imagem</label>
-                                    <img src="data:image/png;base64,{{ mensagem.arquivo_base64 }}" alt="Prévia da imagem" class="mt-2 block w-20 h-20 object-contain">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <!-- Campo para upload de arquivo -->
+                                            <label for="arquivo" class="block text-sm font-medium text-gray-700">Anexar Imagem ou PDF</label>
+                                            <input type="file" id="arquivo" name="arquivo" accept=".pdf, .jpg, .jpeg, .png" class="mt-1 block w-full text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        </div>
+                                        <!-- Pré-visualização da imagem -->
+                                        <div class="col-md-3" id="previsaoImagem" style="margin-top: 5px;">
+                                            {% if mensagem_url %}
+                                                <a href="#" id="imagemLink">
+                                                    <img id="imagemPreview" src="{{ mensagem_url }}" alt="Pré-visualização da imagem" style="max-width: 100px; max-height: 100px; object-fit: cover; display: block; cursor: pointer;">
+                                                </a>
+                                            {% else %}
+                                                <img id="imagemPreview" src="#" alt="Pré-visualização da imagem" style="max-width: 100px; max-height: 100px; object-fit: cover; display: none;">
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-3 mt-4">
+                                            <i class="bi bi-arrow-left">Clique na imagem para ampliar!</i>
+                                        </div>
+                                    </div>
+
+                                    <br><br>
+                                    <!-- Botões para adicionar variáveis padrões -->
+                                    
+                                    <div class="d-flex justify-content-center">
+                                        <button type="button" id="salvarMensagemBtn" class="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400">
+                                            Salvar Mensagem
+                                        </button>
+                                    </div>
+
                                 </div>
-                                {% endif %}
-
-                                <br><br>
-                                <!-- Botões para adicionar variáveis padrões -->
-                                <button type="button" class="bg-indigo-500 text-white px-2 py-1 rounded-md" onclick="adicionarVariavel('{nome}')">Adicionar {nome}</button>
-                                <button type="button" class="bg-indigo-500 text-white px-2 py-1 rounded-md" onclick="adicionarVariavel('{link}')">Adicionar {link}</button>
-                                <button type="button" id="salvarMensagemBtn" class="rounded-md bg-blue-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400">
-                                    Salvar Mensagem
-                                    </button>
                                 
                                 <br><br>
                                 <!-- Tabela de convidados -->
-                                <table class="table table-bordered">
+                                <table class="table table-success table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th><input type="checkbox" id="selectAll"></th>
@@ -135,6 +153,21 @@
                                 Enviar WhatsApp
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para exibir a imagem ou PDF expandido -->
+            <div class="modal fade" id="modalImagemExpandida" tabindex="-1" aria-labelledby="modalImagemExpandidaLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalImagemExpandidaLabel">Conteúdo Expandido</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div id="conteudoExpandido"></div>
                         </div>
                     </div>
                 </div>
@@ -197,6 +230,8 @@
           </div>
       </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+
     <script>
         // Selecionar/Deselecionar todos os checkboxes
         document.getElementById('selectAll').addEventListener('change', function () {
@@ -221,33 +256,115 @@
         // Função para salvar a mensagem personalizada
         document.getElementById("salvarMensagemBtn").addEventListener("click", function () {
             var mensagemPersonalizada = document.getElementById('mensagemPersonalizada').value;
-            
-            // Enviar a mensagem personalizada para o backend
+            var arquivo = document.getElementById('arquivo').files[0];
+
+            var formData = new FormData();
+            formData.append('mensagem', mensagemPersonalizada);  // Agora estamos usando 'mensagemPersonalizada'
+            if (arquivo) {
+                formData.append('arquivo', arquivo);  // Adiciona o arquivo se ele existir
+            }
+
             fetch("{% url 'salvar_mensagem' %}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value // CSRF Token
-                },
-                body: JSON.stringify({
-                    mensagem: mensagemPersonalizada
-                })
+                method: 'POST',
+                body: formData,
             })
             .then(response => response.json())
             .then(data => {
-                // Exibir a mensagem personalizada no campo textarea após salvar
                 if (data.success) {
-                    document.getElementById('mensagemPersonalizada').value = data.mensagem; // Atualiza o campo com a mensagem salva
-                    alert('Mensagem salva com sucesso!');
+                    alert('Mensagem e imagem salvas com sucesso!');
+                    // Atualize a UI conforme necessário
+                    // Você pode fechar o modal ou atualizar outras partes da página se necessário
                 } else {
-                    alert('Erro ao salvar mensagem!');
+                    alert('Erro ao salvar a mensagem e imagem.');
                 }
             })
-            .catch(error => {
-                console.error('Erro ao enviar a mensagem:', error);
-                alert('Erro ao salvar mensagem!');
-            });
+            .catch(error => console.error('Error:', error));
         });
+
+        // Função para exibir a imagem ou PDF na pré-visualização
+        function exibirPreview() {
+            const imagemUrl = document.getElementById('imagemPreview').src;
+            const fileExtension = imagemUrl.split('.').pop().toLowerCase();
+
+            if (fileExtension === 'pdf') {
+                // Usar PDF.js para renderizar o PDF na pré-visualização como uma imagem
+                const loadingTask = pdfjsLib.getDocument(imagemUrl);
+                loadingTask.promise.then(function(pdf) {
+                    // Renderizar a primeira página do PDF
+                    pdf.getPage(1).then(function(page) {
+                        const scale = 0.2; // Ajuste a escala para o tamanho da imagem na pré-visualização
+                        const viewport = page.getViewport({ scale: scale });
+
+                        // Preparar o canvas
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+
+                        // Renderizar a página no canvas
+                        page.render({ canvasContext: context, viewport: viewport }).promise.then(function() {
+                            // Converter o canvas para uma imagem e exibir
+                            const imageUrl = canvas.toDataURL();
+                            document.getElementById('imagemPreview').src = imageUrl;
+                        });
+                    });
+                }, function(error) {
+                    console.error(error);
+                });
+            } else {
+                // Caso seja uma imagem, exibe diretamente
+                document.getElementById('imagemPreview').src = imagemUrl;
+            }
+        }
+
+        // Chama a função para exibir a pré-visualização assim que a URL for definida
+        exibirPreview();
+
+        // Exibir a imagem ou PDF expandido ao clicar na imagem ou link
+        document.getElementById('imagemLink')?.addEventListener('click', function(event) {
+            event.preventDefault();
+            const imagemUrl = document.getElementById('imagemPreview').src;
+            const fileExtension = imagemUrl.split('.').pop().toLowerCase();
+
+            const modalImagemExpandida = new bootstrap.Modal(document.getElementById('modalImagemExpandida'));
+            const conteudoExpandido = document.getElementById('conteudoExpandido');
+            conteudoExpandido.innerHTML = '';  // Limpar conteúdo anterior
+
+            if (fileExtension === 'pdf') {
+                // Carregar e exibir o PDF
+                const loadingTask = pdfjsLib.getDocument(imagemUrl);
+                loadingTask.promise.then(function(pdf) {
+                    pdf.getPage(1).then(function(page) {
+                        const scale = 1.5;
+                        const viewport = page.getViewport({ scale: scale });
+
+                        // Preparar o canvas
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+
+                        // Renderizar o PDF na tela
+                        page.render({ canvasContext: context, viewport: viewport }).promise.then(function() {
+                            conteudoExpandido.appendChild(canvas);
+                            modalImagemExpandida.show();
+                        });
+                    });
+                }, function(error) {
+                    console.error(error);
+                });
+            } else {
+                // Exibir imagem
+                const img = document.createElement('img');
+                img.src = imagemUrl;
+                img.className = 'img-fluid';
+                conteudoExpandido.appendChild(img);
+                modalImagemExpandida.show();
+            }
+        });
+
+
+        
 
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -293,20 +410,16 @@
             });
 
             // Dados a serem enviados para o servidor
-            const data = {
-                convidados: selectedConvidados,
-            };
+            const formData = new FormData();
+            formData.append('convidados', JSON.stringify(selectedConvidados));
 
             fetch("{% url 'enviar_mensagens' %}", {
                 method: 'POST',
+                body: formData,
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value
-                },
-                body: JSON.stringify(data)
+                }
             })
-
-            
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'sucesso') {

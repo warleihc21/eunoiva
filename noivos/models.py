@@ -37,7 +37,7 @@ class Perfil(models.Model):
 class MensagemPersonalizada(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mensagens_personalizadas')
     mensagem = models.TextField()
-    arquivo_base64 = models.TextField(blank=True, null=True)
+    imagem = models.FileField(upload_to='mensagens_imagens/', null=True, blank=True)  # Campo para imagem
     data_criacao = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
