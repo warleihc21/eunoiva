@@ -6,7 +6,7 @@ import openpyxl
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, JsonResponse
 from core import settings
-from .models import Convidados, Presentes, MensagemPersonalizada
+from .models import Convidados, ImagemGaleria, MensagemSobreNoivoNoiva, Presentes, MensagemPersonalizada
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.core.exceptions import ValidationError
 from django.contrib import messages
@@ -43,10 +43,18 @@ def home(request):
 
         # Buscar os nomes dos cônjuges configurados no Perfil
         perfil = Perfil.objects.get(user=request.user)
+        todas_imagens = ImagemGaleria.objects.all()
         nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
         nome_segundo_conjuge = perfil.nome_segundo_conjuge
+        imagem_noiva = perfil.imagem  # Imagem da noiva
+        imagem_noivo = perfil.imagem  # Imagem do noivo
         data_casamento = perfil.data_casamento
         imagem = perfil.imagem
+
+
+
+        mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
+        mensagem_noivo = perfil.mensagens.filter(tipo='noivo').first()
 
         rua = perfil.rua
         numero = perfil.numero
@@ -70,6 +78,7 @@ def home(request):
             'data_casamento': data_casamento,
             'imagem': imagem,
             'perfil': perfil,
+            'todas_imagens': todas_imagens,
             'timestamp': timestamp,  # Passando o timestamp para o template
             'rua': rua,
             'numero': numero,
@@ -78,9 +87,14 @@ def home(request):
             'estado': estado,
             'pais': pais,
             'cep': cep,
+            'imagem_noiva': imagem_noiva,
+            'imagem_noivo': imagem_noivo,
+            'mensagem_noiva': mensagem_noiva.mensagem if mensagem_noiva else '',
+            'mensagem_noivo': mensagem_noivo.mensagem if mensagem_noivo else '',
         })
 
     elif request.method == "POST":
+        presente_id = request.POST.get('presente_id')
         nome_presente = request.POST.get('nome_presente')
         foto = request.FILES.get('foto')
         preco = request.POST.get('preco')
@@ -89,18 +103,73 @@ def home(request):
         if ',' in preco:
             preco = preco.replace(',', '.')
         preco = float(preco)
-        importancia = int(request.POST.get('importancia'))
+        importancia = int(request.POST.get('importancia', 0) or 0)
 
-        Presentes.objects.create(
-            user=request.user,
-            nome_presente=nome_presente,
-            foto=foto,
-            preco=preco,
-            importancia=importancia,
-            link_sugestao_compra=link_sugestao_compra,
-            link_cobranca=link_cobranca,
-        )
+
+        if presente_id:  # Se um ID foi enviado, editar o presente existente
+            presente = Presentes.objects.get(id=presente_id, user=request.user)
+            presente.nome_presente = nome_presente
+            presente.preco = preco
+            presente.importancia = importancia
+            presente.link_sugestao_compra = link_sugestao_compra
+            presente.link_cobranca = link_cobranca
+
+            if foto:  # Se uma nova foto foi enviada, substituir
+                presente.foto = foto
+
+            presente.save()  # Salvar as alterações
+        else:  # Se não houver ID, criar um novo presente
+            Presentes.objects.create(
+                user=request.user,
+                nome_presente=nome_presente,
+                foto=foto,
+                preco=preco,
+                importancia=importancia,
+                link_sugestao_compra=link_sugestao_compra,
+                link_cobranca=link_cobranca,
+            )
+
     return redirect('home')
+
+@login_required(login_url='/auth/logar/')
+def substituir_imagem(request):
+    if request.method == "POST":
+        imagem_id = request.POST.get("imagem_id")
+        nova_imagem_id = request.POST.get("nova_imagem_id")
+
+        imagem_atual = get_object_or_404(ImagemGaleria, id=imagem_id)
+        nova_imagem = get_object_or_404(ImagemGaleria, id=nova_imagem_id)
+
+        # Atualiza a imagem no perfil
+        imagem_atual.imagem = nova_imagem.imagem
+        imagem_atual.save()
+
+        return JsonResponse({"sucesso": True})
+
+    return JsonResponse({"sucesso": False})
+
+
+@login_required(login_url='/auth/logar/')
+def editar_mensagem(request):
+    if request.method == "POST":
+        perfil = Perfil.objects.get(user=request.user)
+
+        # Atualizar mensagens de noiva e noivo
+        mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
+        if mensagem_noiva:
+            mensagem_noiva.mensagem = request.POST.get('mensagem_noiva')
+            mensagem_noiva.save()
+        else:
+            MensagemSobreNoivoNoiva.objects.create(perfil=perfil, tipo='noiva', mensagem=request.POST.get('mensagem_noiva'))
+
+        mensagem_noivo = perfil.mensagens.filter(tipo='noivo').first()
+        if mensagem_noivo:
+            mensagem_noivo.mensagem = request.POST.get('mensagem_noivo')
+            mensagem_noivo.save()
+        else:
+            MensagemSobreNoivoNoiva.objects.create(perfil=perfil, tipo='noivo', mensagem=request.POST.get('mensagem_noivo'))
+
+        return redirect('home')
 
 
 
@@ -201,13 +270,23 @@ def lista_convidados(request):
         nao_confirmados = convidados.filter(status='AC')
         mensagem = MensagemPersonalizada.objects.filter(user=request.user).first()
         mensagem_url = mensagem.imagem.url if mensagem and mensagem.imagem else None
+
+        perfil = Perfil.objects.get(user=request.user)
+        nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
+        nome_segundo_conjuge = perfil.nome_segundo_conjuge
+        data_casamento = perfil.data_casamento
+
         return render(request, 'lista_convidados.html', {
             'convidados': convidados, 
             'nao_confirmados': nao_confirmados,
             'mensagem': mensagem.mensagem if mensagem else '',
             'mensagem_url': mensagem_url,
+            'nome_primeiro_conjuge': nome_primeiro_conjuge,
+            'nome_segundo_conjuge': nome_segundo_conjuge,
+            'data_casamento': data_casamento
             })
     elif request.method == 'POST':
+        
         nome_convidado = request.POST.get('nome_convidado')
         whatsapp = request.POST.get('whatsapp')
         maximo_acompanhantes = int(request.POST.get('maximo_acompanhantes', 0))
@@ -456,9 +535,10 @@ def enviar_mensagens(request):
 
         # Obter a mensagem personalizada
         try:
-            mensagem_personalizada = MensagemPersonalizada.objects.filter(user=request.user).latest('data_criacao').mensagem
-            mensagem_personalizada_obj = MensagemPersonalizada.objects.filter(user=request.user).latest('data_criacao')
-            arquivo = mensagem_personalizada_obj.imagem  # Recuperar o arquivo do banco
+            mensagem_personalizada      = MensagemPersonalizada.objects.filter(user=request.user).latest('data_criacao').mensagem
+            mensagem_personalizada_obj  = MensagemPersonalizada.objects.filter(user=request.user).latest('data_criacao')
+            arquivo                     = mensagem_personalizada_obj.imagem  # Recuperar o arquivo do banco
+
         except MensagemPersonalizada.DoesNotExist:
             mensagem_personalizada = ""
             return render(request, 'lista_convidados.html', {'mensagem_personalizada': mensagem_personalizada})
@@ -473,9 +553,11 @@ def enviar_mensagens(request):
         arquivo_temporario = None
 
         if arquivo:
-            arquivo_nome = os.path.basename(arquivo.name)
-            arquivo_temporario = os.path.join(temp_dir, arquivo_nome)
+            arquivo_nome        = os.path.basename(arquivo.name)
+            arquivo_temporario  = os.path.join(temp_dir, arquivo_nome)
+
             with open(arquivo_temporario, 'wb') as temp_file:
+
                 for chunk in arquivo.chunks():
                     temp_file.write(chunk)
 
@@ -501,15 +583,14 @@ def enviar_mensagens(request):
         erros_envio = []
 
         for convidado in convidados:
-            nome = convidado.nome_convidado
-            telefone = convidado.whatsapp
+            nome        = convidado.nome_convidado
+            telefone    = convidado.whatsapp
+
             if not telefone.startswith("55"):
                 telefone = f"55{telefone}"
 
-            link = convidado.link_convite
-
-            # Substituir as variáveis no template da mensagem
-            mensagem = mensagem_personalizada.replace("{nome}", nome).replace("{link}", link)
+            link        = convidado.link_convite
+            mensagem    = mensagem_personalizada.replace("{nome}", nome).replace("{link}", link)
 
             # Enviar a mensagem de texto
             link_mensagem_whatsapp = f'https://web.whatsapp.com/send?phone={telefone}&text={quote(mensagem)}'

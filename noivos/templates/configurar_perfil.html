@@ -1,5 +1,91 @@
 {% extends 'base.html' %}
 {% block 'body' %}
+
+<style>
+    h2 {
+        color: #8B4513;
+    }
+
+    .cor-vermelho {
+        color: #be1c3cfd;
+    }
+
+    .cor-marrom {
+        color: #8B4513;
+    }
+
+    h1 {
+        color: #8B4513;
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    
+    /* Estiliza a barra de progresso */
+    .range-slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        background: #be1c3cfd; /* Cor do botão */
+        border-radius: 5px;
+        outline: none;
+        opacity: 0.9;
+        transition: opacity .2s;
+    }
+
+    /* Quando o usuário passa o mouse */
+    .range-slider:hover {
+        opacity: 1;
+    }
+
+    /* Personaliza o botão deslizante no Chrome */
+    .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #be1c3cfd; /* Cor do botão */
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    /* Personaliza o botão deslizante no Firefox */
+    .range-slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: #be1c3cfd; /* Cor do botão */
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .card-img-top {
+        width: 100%;         /* Faz a imagem ocupar toda a largura do card */
+        height: 200px;       /* Altura fixa (ajuste conforme necessário) */
+        object-fit: cover;   /* Faz a imagem cobrir o espaço sem distorcer */
+        border-radius: 8px;  /* Opcional: bordas arredondadas */
+    }
+
+    .edit-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente */
+        padding: 5px;
+        border-radius: 50%;
+        font-size: 18px;
+        color: #be1c3cfd; /* Cor vermelha para combinar com o tema */
+        text-decoration: none;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .edit-icon:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: scale(1.1);
+    }
+
+    
+</style>
+
 <div class="container mt-5">
     <h1 class="text-center mb-4">Configurar Perfil</h1>
     <form action="{% url 'configurar_perfil' %}" method="POST" enctype="multipart/form-data">
@@ -8,23 +94,27 @@
             <!-- Coluna 1 -->
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label for="nome_primeiro_conjuge" class="form-label">Nome do primeiro cônjuge</label>
+                    <label for="nome_primeiro_conjuge" class="form-label cor-vermelho">Nome do primeiro cônjuge</label>
                     <input type="text" id="nome_primeiro_conjuge" name="nome_primeiro_conjuge" class="form-control" value="{{ perfil.nome_primeiro_conjuge }}">
                 </div>
                 <div class="mb-3">
-                    <label for="nome_segundo_conjuge" class="form-label">Nome do segundo cônjuge</label>
+                    <label for="nome_segundo_conjuge" class="form-label cor-vermelho">Nome do segundo cônjuge</label>
                     <input type="text" id="nome_segundo_conjuge" name="nome_segundo_conjuge" class="form-control" value="{{ perfil.nome_segundo_conjuge }}">
                 </div>
                 <div class="mb-3">
-                    <label for="data_casamento" class="form-label">Data do casamento</label>
+                    <label for="data_casamento" class="form-label cor-vermelho">Data do casamento</label>
                     <input type="date" id="data_casamento" name="data_casamento" class="form-control" value="{{ perfil.data_casamento|date:'Y-m-d' }}">
                 </div>
                 <div class="mb-3">
-                    <label for="imagem" class="form-label">Imagem de perfil</label>
+                    <label for="imagem" class="form-label cor-vermelho">Imagem de perfil</label>
                     <input type="file" id="imagem" name="imagem" class="form-control">
                 </div>
                 <div class="mb-3">
-                    <label for="mensagem_noivos" class="form-label">Mensagem</label>
+                    <label for="galeria_imagens" class="form-label cor-vermelho">Imagens da galeria</label>
+                    <input type="file" id="galeria_imagens" name="galeria_imagens" class="form-control" multiple>
+                </div>                
+                <div class="mb-3">
+                    <label for="mensagem_noivos" class="form-label cor-vermelho">Mensagem</label>
                     <textarea id="mensagem_noivos" name="mensagem_noivos" class="form-control" rows="4">{{ perfil.mensagem_noivos }}</textarea>
                 </div>
             </div>
@@ -33,33 +123,33 @@
             <!-- Coluna 2 -->
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label for="cep" class="form-label">CEP</label>
+                    <label for="cep" class="form-label cor-vermelho">CEP</label>
                     <input type="text" id="cep" name="cep" class="form-control" value="{{ perfil.cep }}" onblur="buscarCEP()">
                 </div>
                 <div class="mb-3">
-                    <label for="rua" class="form-label">Rua</label>
+                    <label for="rua" class="form-label cor-vermelho">Rua</label>
                     <input type="text" id="rua" name="rua" class="form-control" value="{{ perfil.rua }}">
                 </div>
                 <div class="mb-3">
-                    <label for="numero" class="form-label">Número</label>
+                    <label for="numero" class="form-label cor-vermelho">Número</label>
                     <input type="text" id="numero" name="numero" class="form-control" value="{{ perfil.numero }}">
                 </div>
                 <div class="mb-3">
-                    <label for="complemento" class="form-label">Complemento</label>
+                    <label for="complemento" class="form-label cor-vermelho">Complemento</label>
                     <input type="text" id="complemento" name="complemento" class="form-control" value="{{ perfil.complemento }}">
                 </div>
                 <div class="mb-3">
-                    <label for="bairro" class="form-label">Bairro</label>
+                    <label for="bairro" class="form-label cor-vermelho">Bairro</label>
                     <input type="text" id="bairro" name="bairro" class="form-control" value="{{ perfil.bairro }}">
                 </div>
                 <div class="mb-3">
-                    <label for="pais" class="form-label">País</label>
+                    <label for="pais" class="form-label cor-vermelho">País</label>
                     <select id="pais" name="pais" class="form-select">
                         <option value="Brasil" {% if perfil.pais == "Brasil" %}selected{% endif %}>Brasil</option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="estado" class="form-label">Estado</label>
+                    <label for="estado" class="form-label cor-vermelho">Estado</label>
                     <select id="estado" name="estado" class="form-select">
                         <option value="" {% if not perfil.estado %}selected{% endif %}>Selecione</option>
                         <option value="AC" {% if perfil.estado == "AC" %}selected{% endif %}>Acre</option>
@@ -92,16 +182,29 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="municipio" class="form-label">Município</label>
+                    <label for="municipio" class="form-label cor-vermelho">Município</label>
                     <input type="text" id="municipio" name="municipio" class="form-control" value="{{ perfil.municipio }}">
                 </div>
             </div>
         </div>
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary">Salvar</button>
+        <div class="text-center mt-4 mb-4">
+            <button type="submit" class="btn btn-danger" style="width: 100%; border-radius: 20px; text-align: center;">Salvar</button>
         </div>
     </form>
 </div>
+<footer class="text-center text-lg-start bg-gray-900 py-12">
+    <!-- Copyright -->
+    <div class="text-center text-white">
+        {{ perfil.nome_primeiro_conjuge }} & {{ perfil.nome_segundo_conjuge }}
+      </div>
+    <div class="text-center text-white">
+      {{ perfil.data_casamento|date:"d/m/Y" }}
+    </div>
+    <div class="text-center text-white">
+        © 2025 Todos os direitos reservados.
+    </div>
+    <!-- Copyright -->
+</footer>
 <script>
     async function buscarCEP() {
         const cep = document.getElementById('cep').value.replace(/\D/g, ''); // Remove caracteres não numéricos

@@ -31,6 +31,21 @@ class Perfil(models.Model):
 
     def __str__(self):
         return f"Perfil de {self.user.username}"
+    
+class ImagemGaleria(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='galeria')
+    imagem = models.ImageField(upload_to='imagems_galeria/', validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])])
+
+    def __str__(self):
+        return f"Imagem de {self.perfil.user.username}"
+    
+class MensagemSobreNoivoNoiva(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='mensagens')
+    tipo = models.CharField(max_length=10, choices=[('noiva', 'Noiva'), ('noivo', 'Noivo')])
+    mensagem = models.TextField()
+
+    def __str__(self):
+        return f"Mensagem de {self.tipo} de {self.perfil.user.username}"
 
 
 # Modelo para armazenar mensagens personalizadas

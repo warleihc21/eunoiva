@@ -16,6 +16,8 @@ urlpatterns = [
  path('guest-details/', views.guest_details, name='guest_details'),
  path('details-gifts/', views.details_gifts, name='details_gifts'),
  path('portfolio-details/', views.portfolio_details, name='portfolio_details'),
+ path('substituir_imagem/', views.substituir_imagem, name='substituir_imagem'),
+ path('editar_mensagem/', views.editar_mensagem, name='editar_mensagem'),
 
  
 ]

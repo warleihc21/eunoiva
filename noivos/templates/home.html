@@ -3,155 +3,127 @@
 {% load static %}
 
 <style>
-    .card {
-        background-color: #f9f6f0;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease-in-out;
+    h2 {
+        color: #8B4513;
+    }
+
+    .cor-vermelho {
+        color: #be1c3cfd;
+    }
+
+    
+    /* Estiliza a barra de progresso */
+    .range-slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        background: #be1c3cfd; /* Cor do botão */
+        border-radius: 5px;
+        outline: none;
+        opacity: 0.9;
+        transition: opacity .2s;
+    }
+
+    /* Quando o usuário passa o mouse */
+    .range-slider:hover {
+        opacity: 1;
+    }
+
+    /* Personaliza o botão deslizante no Chrome */
+    .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #be1c3cfd; /* Cor do botão */
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    /* Personaliza o botão deslizante no Firefox */
+    .range-slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: #be1c3cfd; /* Cor do botão */
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .card-img-top {
+        width: 100%;         /* Faz a imagem ocupar toda a largura do card */
+        height: 200px;       /* Altura fixa (ajuste conforme necessário) */
+        object-fit: cover;   /* Faz a imagem cobrir o espaço sem distorcer */
+        border-radius: 8px;  /* Opcional: bordas arredondadas */
+    }
+
+    .edit-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente */
+        padding: 5px;
+        border-radius: 50%;
+        font-size: 18px;
+        color: #be1c3cfd; /* Cor vermelha para combinar com o tema */
+        text-decoration: none;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .edit-icon:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: scale(1.1);
+    }
+
+    .foto-quadrada {
+        width: 100%;
+        height: 400px;  /* Ajuste a altura conforme necessário */
+        position: relative;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        height: 420px; /* Altura ajustada do card */
-        padding: 8px; /* Espaçamento interno reduzido */
     }
 
-    .card:hover {
-        transform: scale(1.02);
-    }
-
-    .image-container {
-        height: 220px; /* Aumentado para dar mais destaque à imagem */
-        background-color: #ececec;
-        overflow: hidden;
-    }
-
-    .card-image {
+    .foto-quadrada img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Garante que a imagem seja ajustada corretamente */
+        object-fit: cover;
     }
 
-    .card-content {
-        padding: 12px; /* Reduzido para otimizar o espaço */
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start; /* Alinha o conteúdo ao topo */
-        flex-grow: 1;
-        overflow-y: auto;
+    /* Estilo para o ícone de exclusão */
+    .foto-quadrada a i {
+        font-size: 24px;
     }
 
-    .card-title {
-        font-size: 0.875rem; /* Tamanho da fonte reduzido */
-        font-weight: 600;
-        color: #333;
-        text-align: center;
-        margin-bottom: 4px; /* Espaçamento reduzido */
+    /* Estilo para o botão de upload */
+    .foto-quadrada label i {
+        font-size: 24px;
     }
 
-    .reserved-text {
-        font-size: 0.75rem; /* Tamanho da fonte reduzido */
-        color: #666;
-        text-align: center;
-        margin-top: 4px;
+    .overlay-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px;
+        border-radius: 50%;
     }
 
-    .importance-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 4px; /* Espaçamento reduzido */
+    .overlay-icon i {
+        font-size: 20px;
     }
 
-    .importance-label {
-        padding: 4px 6px; /* Reduzido para economizar espaço */
-        font-size: 0.75rem; /* Tamanho menor */
-        font-weight: 500;
-        border-radius: 4px;
-        display: inline-flex;
-        align-items: center;
-        text-align: center;
-    }
-
-    .btn {
-        font-size: 0.75rem; /* Fonte menor para o botão */
-        padding: 6px 10px; /* Ajuste do tamanho do botão */
-    }
-
-    .importance-label.low {
-        color: #388e3c;
-        background-color: #e8f5e9;
-    }
-
-    .importance-label.medium {
-        color: #f57c00;
-        background-color: #fff3e0;
-    }
-
-    .importance-label.high {
-        color: #d32f2f;
-        background-color: #ffebee;
-    }
-
-    .delete-icon {
-        color: #d32f2f;
-        cursor: pointer;
-        font-size: 1.5rem;
-        text-align: center;
-        margin-top: 12px;
-    }
-
-    .delete-icon:hover {
-        color: #b71c1c;
-    }
-    
-    .welcome-message {
-        background-color: #f0f4f8;
-        padding: 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        text-align: center;
-        font-size: 1.25rem;
-        font-weight: bold;
-        color: #333;
-    }
 
     
-
-    #timer {
-    display: flex;
-    justify-content: center;
-    gap: 16px; /* Espaçamento entre os campos */
-    }
-
-    .campo-tempo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-        border: 2px solid #6366F1; /* Cor de borda */
-        border-radius: 12px; /* Borda arredondada */
-        background-color: #F0F4FF; /* Cor de fundo leve */
-        width: 80px; /* Largura padrão dos campos */
-    }
-
-    .valor-tempo {
-        font-size: 2.5rem; /* Tamanho da fonte do valor */
-        font-weight: bold;
-        color: #4F46E5; /* Cor do valor */
-    }
-
-    .rotulo-tempo {
-        font-size: 1rem; /* Tamanho da fonte do rótulo */
-        color: #4B5563; /* Cor do rótulo */
-        margin-top: 8px;
-    }
-
-   
 </style>
+    
+    
 
     {% include "partials/navbar.html" %}
 
-    <div class="max-w-7xl mx-auto mt-12">
+    <div class="max-w-7xl mx-auto mt-20">
         <div class="flex items-center space-x-6">
             <!-- Seção da Imagem -->
             <div class="w-1/3">
@@ -164,9 +136,9 @@
             
             <!-- Seção da Mensagem de Boas-Vindas -->
             <div class="welcome-message w-2/3">
-                <p>Bem-vindos, {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</p>
-                <p>Nossa data</p>
-                <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ data_casamento|date:"d/m/Y" }}</h2>
+                <p class="cor-vermelho">Bem-vindos, {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</p>
+                <p class="cor-vermelho">Nossa data</p>
+                <h2 class="text-2xl font-semibold mb-4 cor-vermelho">{{ data_casamento|date:"d/m/Y" }}</h2>
                 <div id="timer" class="flex justify-center space-x-4">
                     <div class="campo-tempo">
                         <span id="dias" class="valor-tempo">00</span>
@@ -191,36 +163,36 @@
         
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-slate-200/20 p-6 rounded-md">
-                <h2 class="text-balance text-xl font-semibold tracking-tight text-gray-900">Crie sua lista de presentes</h2>
+                <h2 class="text-balance text-xl font-semibold tracking-tight">Crie sua lista de presentes</h2>
                 <br>
                 <form action="{% url 'home' %}" method="POST"  enctype='multipart/form-data'>{% csrf_token %}
-                    <label class="mt-4 block text-sm leading-6 text-gray-900">Nome do presente</label>
-                    <input type="text" name="nome_presente" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+                    <label class="mt-4 block text-sm leading-6">Nome do presente</label>
+                    <input type="text" name="nome_presente" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
                     <div class="w-full">
-                        <label class="mt-4 block text-sm leading-6 text-gray-900">Link de sugestão de compra</label>
-                        <input type="url" name="link_sugestao_compra" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300" placeholder="Insira o link do produto">
+                        <label class="mt-4 block text-sm leading-6">Link de sugestão de compra</label>
+                        <input type="url" name="link_sugestao_compra" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300" placeholder="Insira o link do produto">
                     </div>
                     <div class="w-full">
-                        <label class="mt-4 block text-sm leading-6 text-gray-900">Link de cobrança</label>
-                        <input type="url" name="link_cobranca" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300" placeholder="Insira o link para cobrança">
+                        <label class="mt-4 block text-sm leading-6">Link de cobrança</label>
+                        <input type="url" name="link_cobranca" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300" placeholder="Insira o link para cobrança">
                     </div>
                     <div class="flex space-x-4">
                         <div class="w-full">
-                            <label class="mt-4 block text-sm leading-6 text-gray-900">Foto de exemplo</label>
-                            <input type="file" name="foto" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+                            <label class="mt-4 block text-sm leading-6">Foto de exemplo</label>
+                            <input type="file" name="foto" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
                         </div>
                         <div class="w-full">
-                            <label class="mt-4 block text-sm leading-6 text-gray-900">Preço estimado</label>
-                            <input type="text" name="preco" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+                            <label class="mt-4 block text-sm leading-6">Preço estimado</label>
+                            <input type="text" name="preco" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
                         </div>
                     </div>
                     <div class="flex space-x-4">
                         <div class="w-full">
-                            <label class="mt-4 block text-sm leading-6 text-gray-900">Importância</label>
-                            <input type="range" min="1" max="5" name="importancia" class="block w-full py-3 text-gray-900">
+                            <label class="mt-4 block text-sm leading-6">Importância</label>
+                            <input type="range" min="1" max="5" name="importancia" class="w-full py-3">
                         </div>
                         <div class="w-full">
-                            <input type="submit" class="rounded-md w-full mt-4 bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600">
+                            <input type="submit" class="rounded-md w-full mt-4 bg-[#be1c3cfd] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#DC143C]">
                         </div>
                     </div>
                 </form>
@@ -229,57 +201,112 @@
                 <canvas id="myChart"></canvas>
             </div>
         </div>
+        <br>
 
-        <div class="grid grid-cols-5 mt-4 gap-4">
+        <h2 class="text-balance text-xl font-semibold tracking-tight">Lista de presentes</h2>
+
+        <div class="grid grid-cols-3 mt-4 gap-4">
             {% for presente in presentes %}
-                <div class="card">
-                    <div class="image-container">
-                        {% if presente.foto %}
-                            <img class="card-image object-cover w-full h-full" src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}">
-                        {% else %}
-                            <p class="text-center text-gray-400">Sem imagem</p>
-                        {% endif %}
-                    </div>
-                    <div class="card-content mt-4">
-                        <h3 class="card-title text-lg font-semibold leading-8 text-gray-900">{{ presente.nome_presente }}</h3>
-                        <p class="text-base leading-7 text-gray-600">Valor: R$ {{ presente.preco|floatformat:2 }}</p>
-                        
-                        {% if presente.reservado %}
-                            <p class="reserved-text text-primary">Reservado por {{ presente.reservado_por }}</p>
-                        {% endif %}
-        
-                        {% if presente.link_sugestao_compra %}
-                            <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="mt-2 text-indigo-600 hover:text-indigo-800">
-                                Veja a sugestão de compra
-                            </a>
-                        {% endif %}
-                        
-                        <div class="importance-container mt-2">
-                            {% if presente.importancia <= 2 %}
-                                <span class="importance-label inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400 ring-1 ring-inset ring-green-400/30">
-                                    Pouco Importante
-                                </span>
-                            {% elif presente.importancia < 4 %}
-                                <span class="importance-label inline-flex items-center rounded-md bg-orange-400/10 px-2 py-1 text-xs font-medium text-orange-400 ring-1 ring-inset ring-orange-400/30">
-                                    Importante
-                                </span>
-                            {% else %}
-                                <span class="importance-label inline-flex items-center rounded-md bg-red-400/10 px-2 py-1 text-xs font-medium text-red-400 ring-1 ring-inset ring-red-400/30">
-                                    Muito Importante
-                                </span>
-                            {% endif %}
-                        </div>
-        
-                        <form action="{% url 'excluir_presente' presente.id %}" method="POST" onsubmit="return confirmarExclusao();" class="mt-4">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                Excluir
-                            </button>
-                        </form>
-                    </div>
+            <div class="card" style="width: 25rem; height: 32rem; position: relative;">
+                {% if presente.foto %}
+                <div class="card-img-container" style="height: 20rem; overflow: hidden;">
+                    <img class="w-full h-full object-contain" src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}">
+                    <!-- Ícone de edição -->
+                    <a href="#" class="edit-icon" onclick="abrirModal(
+                        '{{ presente.id }}', 
+                        '{{ presente.nome_presente }}', 
+                        '{{ presente.link_sugestao_compra }}', 
+                        '{{ presente.link_cobranca }}', 
+                        '{{ presente.preco }}'
+                    )">
+                        <i class="fas fa-edit"></i>
+                    </a>
                 </div>
+                {% else %}
+                <p class="text-center text-gray-400">Sem imagem</p>
+                {% endif %}
+                
+                <!-- Informações -->
+                <div class="card-body" style="position: absolute; bottom: 0; width: 100%; padding: 1rem;">
+                    <h3 class="card-title cor-vermelho mb-2">{{ presente.nome_presente }}</h3>
+                    <p class="card-text cor-vermelho mb-2">Valor: R$ {{ presente.preco|floatformat:2 }}</p>
+                    {% if presente.reservado %}
+                    <p class="card-text cor-marrom 0.8rem">Reservado por: {{ presente.reservado_por }}</p>
+                    {% endif %}
+                    {% if presente.link_sugestao_compra %}
+                    <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="cor-vermelho 0.8rem mb-2 hover:text-[#8B4513] underline">
+                        Veja a sugestão de compra
+                    </a>
+                    {% endif %}
+                    <br>
+                    <div class="mb-2 0.8rem">
+                        {% if presente.importancia <= 2 %}
+                                <span class="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400 ring-1 ring-inset ring-green-400/30">
+                                    Pouco importante
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 text-green-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                    </svg>
+                                </span>
+                                {% elif presente.importancia < 4 %}
+                                <span class="inline-flex items-center rounded-md bg-orange-400/10 px-2 py-1 text-xs font-medium text-orange-400 ring-1 ring-inset ring-orange-400/30">
+                                    Importante
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 text-orange-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                    </svg>
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center rounded-md bg-red-400/10 px-2 py-1 text-xs font-medium text-red-400 ring-1 ring-inset ring-red-400/30">
+                                    Muito importante
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 text-red-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                    </svg>
+                                </span>
+                        {% endif %}
+                    </div>
+                    <form action="{% url 'excluir_presente' presente.id %}" method="POST" onsubmit="return confirmarExclusao();">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" style="width: 100%; border-radius: 20px; text-align: center;">
+                            Excluir
+                        </button>
+                    </form>
+                </div>
+            </div>
             {% endfor %}
         </div>
+
+        <!-- Modal de Edição -->
+        <div id="editPresenteModal" class="fixed inset-0 hidden items-center justify-center bg-gray-900 bg-opacity-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+                <h2 class="text-xl font-semibold mb-4 text-[#be1c3cfd]">Editar Presente</h2>
+
+                <form id="editPresenteForm" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" id="presenteId" name="presente_id">
+                    
+                    <label class="block text-sm font-medium">Nome do presente</label>
+                    <input type="text" id="editNome" name="nome_presente" class="w-full rounded-md border px-3 py-2 shadow-sm">
+
+                    <label class="block text-sm font-medium mt-3">Link de sugestão de compra</label>
+                    <input type="url" id="editLinkSugestao" name="link_sugestao_compra" class="w-full rounded-md border px-3 py-2 shadow-sm">
+
+                    <label class="block text-sm font-medium mt-3">Link de cobrança</label>
+                    <input type="url" id="editLinkCobranca" name="link_cobranca" class="w-full rounded-md border px-3 py-2 shadow-sm">
+
+                    <label class="block text-sm font-medium mt-3">Preço estimado</label>
+                    <input type="text" id="editPreco" name="preco" class="w-full rounded-md border px-3 py-2 shadow-sm">
+
+                    <div class="flex justify-end mt-4">
+                        <button type="button" onclick="fecharModal()" class="px-4 py-2 bg-gray-300 rounded-md">Cancelar</button>
+                        <button type="submit" class="ml-2 px-4 py-2 bg-[#be1c3cfd] text-white rounded-md">Salvar alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        
+        
+        
+        
 
         <div class="mt-8 bg-white p-6 rounded-md shadow-md">
             <h2 class="text-xl font-semibold mb-4">Presentes Reservados</h2>
@@ -310,9 +337,128 @@
             </table>
         </div>
 
+
+        <div class="mb-3">
+            <h2 class="text-balance text-xl font-semibold mt-12 tracking-tight">Galeria de fotos</h2>
+            <div class="row mt-4">
+                {% for imagem in perfil.galeria.all|slice:":6" %}  <!-- Limita para 6 imagens -->
+                    <div class="col-md-4 mb-3">  <!-- Usando 'col-md-4' para ter 3 colunas por linha -->
+                        <div class="foto-quadrada">
+                            <img src="{{ imagem.imagem.url }}" class="img-fluid rounded" alt="Imagem da galeria">
+                            <div class="overlay-icon">
+                                <!-- Alterando para o método compatível com Bootstrap 5 -->
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#substituirImagemModal" data-id="{{ imagem.id }}" class="trocar-imagem">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>Nenhuma imagem na galeria.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <div class="mb-3">
+            <h2 class="text-balance text-xl font-semibold mt-12 tracking-tight">Sobre nós</h2>
+            <div class="row mt-4">
+                <div class="col-md-6 mb-3">  <!-- Coluna para a noiva -->
+                    <div class="foto-quadrada">
+                        <img src="{{ imagem_noiva.url }}" class="img-fluid rounded" alt="Imagem da noiva">
+                        <div class="overlay-icon">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#substituirImagemModal" data-id="{{ imagem_noiva.id }}" class="trocar-imagem">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <p>{{ nome_primeiro_conjuge }}</p>
+                    <p>{{ mensagem_noiva }}</p>  <!-- Mensagem sobre a noiva -->
+                </div>
+                <div class="col-md-6 mb-3">  <!-- Coluna para o noivo -->
+                    <div class="foto-quadrada">
+                        <img src="{{ imagem_noivo.url }}" class="img-fluid rounded" alt="Imagem do noivo">
+                        <div class="overlay-icon">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#substituirImagemModal" data-id="{{ imagem_noivo.id }}" class="trocar-imagem">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <p>{{ nome_segundo_conjuge }}</p>
+                    <p>{{ mensagem_noivo }}</p>  <!-- Mensagem sobre o noivo -->
+                </div>
+            </div>
+        </div>
+        <!-- Botão para abrir o modal -->
+        <a href="#" data-bs-toggle="modal" data-bs-target="#editarMensagemModal" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Editar Mensagens
+        </a>
+        <!-- Modal para editar mensagens -->
+        <div class="modal fade" id="editarMensagemModal" tabindex="-1" aria-labelledby="editarMensagemModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarMensagemModalLabel">Editar Mensagens</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{% url 'editar_mensagem' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="mensagem_noiva" class="form-label">Mensagem sobre a Noiva</label>
+                                <textarea class="form-control" id="mensagem_noiva" name="mensagem_noiva" rows="3">{{ mensagem_noiva }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mensagem_noivo" class="form-label">Mensagem sobre o Noivo</label>
+                                <textarea class="form-control" id="mensagem_noivo" name="mensagem_noivo" rows="3">{{ mensagem_noivo }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Salvar Mensagens</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Modal de Substituição de Imagem -->
+        <div class="modal fade" id="substituirImagemModal" tabindex="-1" aria-labelledby="substituirImagemModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="substituirImagemModalLabel">Substituir Imagem</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Escolha uma nova imagem para substituir.</p>
+                        <input type="hidden" name="imagem_id" id="imagem_id">
+                    
+                        <div class="row">
+                            {% for imagem in todas_imagens %}
+                                <div class="col-4">
+                                    <img src="{{ imagem.imagem.url }}" class="img-thumbnail select-image" 
+                                         data-id="{{ imagem.id }}" data-url="{{ imagem.imagem.url }}" style="cursor:pointer;">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        
+        
+        
+        
+
         <div class="mt-8 bg-white p-6 rounded-md shadow-md">
-            <h2 class="text-xl font-semibold mb-4">Local do Casamento</h2>
-            <p>Rua: {{ perfil.rua }}, {{ perfil.numero }}, Bairro: {{ perfil.bairro }}, {{ perfil.municipio }}, {{ perfil.estado }}, {{ perfil.pais }} - Cep: {{ perfil.cep }}</p>
+            <div class="text-center">
+                <h2 class="text-xl font-semibold mb-4"><i class="bi bi-geo-alt flex-shrink-0"></i>Local</h2>
+                <p class="cor-vermelho">Rua: {{ perfil.rua }}, {{ perfil.numero }}, Bairro: {{ perfil.bairro }}, {{ perfil.municipio }}, {{ perfil.estado }}, {{ perfil.pais }} - Cep: {{ perfil.cep }}</p>
+                <hr>
+            </div>
         </div>
 
         <div id="map" style="width: 100%; height: 400px;"></div>
@@ -320,6 +466,19 @@
         <br>
         
     </div>
+    <footer class="text-center text-lg-start bg-gray-900 py-12">
+        <!-- Copyright -->
+        <div class="text-center text-white">
+            {{ perfil.nome_primeiro_conjuge }} & {{ perfil.nome_segundo_conjuge }}
+          </div>
+        <div class="text-center text-white">
+          {{ data_casamento|date:"d/m/Y" }}
+        </div>
+        <div class="text-center text-white">
+            © 2025 Todos os direitos reservados.
+        </div>
+        <!-- Copyright -->
+    </footer>
 
     
 
@@ -334,6 +493,21 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        function abrirModal(id, nome, linkSugestao, linkCobranca, preco) {
+            document.getElementById("presenteId").value = id;
+            document.getElementById("editNome").value = nome;
+            document.getElementById("editLinkSugestao").value = linkSugestao || "";
+            document.getElementById("editLinkCobranca").value = linkCobranca || "";
+            document.getElementById("editPreco").value = preco;
+
+            document.getElementById("editPresenteModal").classList.remove("hidden");
+        }
+
+        function fecharModal() {
+            document.getElementById("editPresenteModal").classList.add("hidden");
+        }
+
+
         function initMap() {
             // Obtendo o endereço do casamento
             const endereco = "{{ perfil.rua }}, {{ perfil.numero }}, {{ perfil.bairro }}, {{ perfil.municipio }}, {{ perfil.estado }}";
@@ -429,7 +603,60 @@
             }, 1000);
         }
 
-        document.addEventListener("DOMContentLoaded", iniciarContador);        
+        document.addEventListener("DOMContentLoaded", iniciarContador);
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let imagemSelecionada = null;
+
+            document.querySelectorAll(".trocar-imagem").forEach(botao => {
+                botao.addEventListener("click", function () {
+                    imagemSelecionada = this.closest(".foto-quadrada").querySelector("img");
+                    document.getElementById("imagem_id").value = this.dataset.id;
+                });
+            });
+
+            document.querySelectorAll(".select-image").forEach(imagem => {
+                imagem.addEventListener("click", function () {
+                    if (imagemSelecionada) {
+                        imagemSelecionada.src = this.dataset.url;
+                        let formData = new FormData();
+                        formData.append("imagem_id", document.getElementById("imagem_id").value);
+                        formData.append("nova_imagem_id", this.dataset.id);
+
+                        fetch("{% url 'substituir_imagem' %}", {
+                            method: "POST",
+                            body: formData,
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            }
+                        }).then(response => response.json())
+                        .then(data => {
+                            if (data.sucesso) {
+                                // Fecha o modal corretamente
+                                let modal = document.getElementById("substituirImagemModal");
+                                let modalInstance = bootstrap.Modal.getInstance(modal);
+                                modalInstance.hide();
+
+                                // Remove fundo escuro
+                                document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
+                                document.body.classList.remove("modal-open");
+
+                                // Opcional: Recarrega a página para garantir atualização completa
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 500);
+                            } else {
+                                alert("Erro ao atualizar imagem.");
+                            }
+                        });
+                    }
+                });
+            });
+        });
+       
+
+
 
     </script>
     

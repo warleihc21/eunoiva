@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .utils import password_is_valid, email_html
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.models import User
-from noivos.models import Perfil
+from noivos.models import ImagemGaleria, Perfil
 from django.contrib.messages import constants
 from django.contrib import messages
 from django.contrib import auth
@@ -152,6 +152,11 @@ def configurar_perfil(request):
             perfil.imagem = request.FILES['imagem']
 
         perfil.save()
+
+        # Salvar múltiplas imagens da galeria
+        imagens = request.FILES.getlist('galeria_imagens')  # Captura todas as imagens enviadas
+        for imagem in imagens:
+            ImagemGaleria.objects.create(perfil=perfil, imagem=imagem)
 
         messages.success(request, "Perfil atualizado com sucesso!")
         return redirect('/noivos/')
