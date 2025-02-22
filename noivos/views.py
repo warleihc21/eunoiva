@@ -6,7 +6,7 @@ import openpyxl
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, JsonResponse
 from core import settings
-from .models import Convidados, ImagemGaleria, MensagemSobreNoivoNoiva, Presentes, MensagemPersonalizada
+from .models import Convidados, ImagemGaleria, ImagemNoivos, MensagemSobreNoivoNoiva, Presentes, MensagemPersonalizada
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.core.exceptions import ValidationError
 from django.contrib import messages
@@ -46,8 +46,6 @@ def home(request):
         todas_imagens = ImagemGaleria.objects.all()
         nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
         nome_segundo_conjuge = perfil.nome_segundo_conjuge
-        imagem_noiva = perfil.imagem  # Imagem da noiva
-        imagem_noivo = perfil.imagem  # Imagem do noivo
         data_casamento = perfil.data_casamento
         imagem = perfil.imagem
 
@@ -55,6 +53,10 @@ def home(request):
 
         mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
         mensagem_noivo = perfil.mensagens.filter(tipo='noivo').first()
+        # Alterar o filtro para ImagemNoivos e não mais usar perfil.imagem
+        imagem_noiva = perfil.fotosnoivos.filter(tipo='noiva').first()
+        imagem_noivo = perfil.fotosnoivos.filter(tipo='noivo').first()
+
 
         rua = perfil.rua
         numero = perfil.numero
@@ -87,10 +89,10 @@ def home(request):
             'estado': estado,
             'pais': pais,
             'cep': cep,
-            'imagem_noiva': imagem_noiva,
-            'imagem_noivo': imagem_noivo,
             'mensagem_noiva': mensagem_noiva.mensagem if mensagem_noiva else '',
             'mensagem_noivo': mensagem_noivo.mensagem if mensagem_noivo else '',
+            'imagem_noiva': imagem_noiva.imagem if imagem_noiva else '',
+            'imagem_noivo': imagem_noivo.imagem if imagem_noivo else '',
         })
 
     elif request.method == "POST":
@@ -148,28 +150,67 @@ def substituir_imagem(request):
 
     return JsonResponse({"sucesso": False})
 
+@login_required(login_url='/auth/logar/')
+def substituir_imagem_noivos(request):
+    if request.method == "POST":
+        perfil = Perfil.objects.get(user=request.user)
+
+        # Verificando se as imagens da noiva e do noivo foram enviadas
+        imagem_noiva = request.FILES.get('imagem_noiva')
+        imagem_noivo = request.FILES.get('imagem_noivo')
+
+        # Atualizando imagem da noiva
+        if imagem_noiva:
+            imagem_noiva_obj = ImagemNoivos.objects.filter(perfil=perfil, tipo='noiva').first()
+            if imagem_noiva_obj:
+                imagem_noiva_obj.imagem = imagem_noiva
+                imagem_noiva_obj.save()
+            else:
+                ImagemNoivos.objects.create(perfil=perfil, tipo='noiva', imagem=imagem_noiva)
+
+        # Atualizando imagem do noivo
+        if imagem_noivo:
+            imagem_noivo_obj = ImagemNoivos.objects.filter(perfil=perfil, tipo='noivo').first()
+            if imagem_noivo_obj:
+                imagem_noivo_obj.imagem = imagem_noivo
+                imagem_noivo_obj.save()
+            else:
+                ImagemNoivos.objects.create(perfil=perfil, tipo='noivo', imagem=imagem_noivo)
+
+        return redirect('home')
+    
+    return redirect('home')
+
 
 @login_required(login_url='/auth/logar/')
 def editar_mensagem(request):
     if request.method == "POST":
         perfil = Perfil.objects.get(user=request.user)
 
-        # Atualizar mensagens de noiva e noivo
-        mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
-        if mensagem_noiva:
-            mensagem_noiva.mensagem = request.POST.get('mensagem_noiva')
-            mensagem_noiva.save()
-        else:
-            MensagemSobreNoivoNoiva.objects.create(perfil=perfil, tipo='noiva', mensagem=request.POST.get('mensagem_noiva'))
+        # Obter os valores do POST
+        mensagem_noiva_texto = request.POST.get('mensagem_noiva', '').strip()
+        mensagem_noivo_texto = request.POST.get('mensagem_noivo', '').strip()
 
-        mensagem_noivo = perfil.mensagens.filter(tipo='noivo').first()
-        if mensagem_noivo:
-            mensagem_noivo.mensagem = request.POST.get('mensagem_noivo')
-            mensagem_noivo.save()
-        else:
-            MensagemSobreNoivoNoiva.objects.create(perfil=perfil, tipo='noivo', mensagem=request.POST.get('mensagem_noivo'))
+        # Atualizar mensagem da noiva
+        if mensagem_noiva_texto:
+            mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
+            if mensagem_noiva:
+                mensagem_noiva.mensagem = mensagem_noiva_texto
+                mensagem_noiva.save()
+            else:
+                MensagemSobreNoivoNoiva.objects.create(perfil=perfil, tipo='noiva', mensagem=mensagem_noiva_texto)
+
+        # Atualizar mensagem do noivo
+        if mensagem_noivo_texto:
+            mensagem_noivo = perfil.mensagens.filter(tipo='noivo').first()
+            if mensagem_noivo:
+                mensagem_noivo.mensagem = mensagem_noivo_texto
+                mensagem_noivo.save()
+            else:
+                MensagemSobreNoivoNoiva.objects.create(perfil=perfil, tipo='noivo', mensagem=mensagem_noivo_texto)
 
         return redirect('home')
+
 
 
 

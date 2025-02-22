@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
 from django.urls import reverse
-from noivos.models import Convidados, Perfil, Presentes, Acompanhante
+from noivos.models import Convidados, ImagemNoivos, MensagemSobreNoivoNoiva, Perfil, Presentes, Acompanhante
 from datetime import datetime
 
 
@@ -11,6 +11,14 @@ def convidados(request):
     token = request.GET.get('token')
     convidado = get_object_or_404(Convidados, token=token)
     presentes = Presentes.objects.filter(reservado=False, user=convidado.user).order_by('-importancia')
+
+    # Recuperando as imagens dos noivos
+    imagem_noiva = ImagemNoivos.objects.filter(tipo='noiva').first()
+    imagem_noivo = ImagemNoivos.objects.filter(tipo='noivo').first()
+
+    # Recuperando as mensagens
+    mensagem_noiva = MensagemSobreNoivoNoiva.objects.filter(tipo='noiva').first()  # Ajuste conforme a lógica que você tem para mensagens
+    mensagem_noivo = MensagemSobreNoivoNoiva.objects.filter(tipo='noivo').first()  # Ajuste conforme a lógica que você tem para mensagens
 
     timestamp = int(datetime.now().timestamp())
 
@@ -25,8 +33,11 @@ def convidados(request):
         'presentes': presentes,
         'token': token,
         'acompanhantes_restantes': acompanhantes_restantes,
-        'timestamp': timestamp
-
+        'timestamp': timestamp,
+        'imagem_noiva': imagem_noiva,
+        'imagem_noivo': imagem_noivo,
+        'mensagem_noiva': mensagem_noiva,
+        'mensagem_noivo': mensagem_noivo
     })
 
 def responder_presenca(request):

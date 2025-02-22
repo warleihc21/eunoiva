@@ -362,8 +362,8 @@
 
         <div class="mb-3">
             <h2 class="text-balance text-xl font-semibold mt-12 tracking-tight">Sobre nós</h2>
-            <div class="row mt-4">
-                <div class="col-md-6 mb-3">  <!-- Coluna para a noiva -->
+            <div class="row mt-4 justify-content-center"> <!-- Centraliza as colunas -->
+                <div class="col-md-5 mb-3 mx-2">  <!-- Coluna para a noiva -->
                     <div class="foto-quadrada">
                         <img src="{{ imagem_noiva.url }}" class="img-fluid rounded" alt="Imagem da noiva">
                         <div class="overlay-icon">
@@ -372,10 +372,10 @@
                             </a>
                         </div>
                     </div>
-                    <p>{{ nome_primeiro_conjuge }}</p>
-                    <p>{{ mensagem_noiva }}</p>  <!-- Mensagem sobre a noiva -->
+                    <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2 tracking-tight">A Noiva</h2>
+                    <p class="fst-italic cor-marrom text-justify text-center text-xl">{{ mensagem_noiva }}</p>
                 </div>
-                <div class="col-md-6 mb-3">  <!-- Coluna para o noivo -->
+                <div class="col-md-5 mb-3 mx-2">  <!-- Coluna para o noivo -->
                     <div class="foto-quadrada">
                         <img src="{{ imagem_noivo.url }}" class="img-fluid rounded" alt="Imagem do noivo">
                         <div class="overlay-icon">
@@ -384,8 +384,8 @@
                             </a>
                         </div>
                     </div>
-                    <p>{{ nome_segundo_conjuge }}</p>
-                    <p>{{ mensagem_noivo }}</p>  <!-- Mensagem sobre o noivo -->
+                    <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2 tracking-tight">O Noivo</h2>
+                    <p class="fst-italic cor-marrom text-justify text-center text-xl">{{ mensagem_noivo }}</p>
                 </div>
             </div>
         </div>
@@ -418,6 +418,33 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal para editar Imagem -->
+        <div class="modal fade" id="editarImagemModal" tabindex="-1" aria-labelledby="editarImagemModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarImagemModalLabel">Substituir fotos dos noivos</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{% url 'substituir_imagem_noivos' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="imagem_noiva" class="form-label">Foto da noiva</label>
+                                <input type="file" class="form-control" id="imagem_noiva" name="imagem_noiva">
+                            </div>
+                            <div class="mb-3">
+                                <label for="imagem_noivo" class="form-label">Foto do noivo</label>
+                                <input type="file" class="form-control" id="imagem_noivo" name="imagem_noivo">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Salvar Imagens</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
 

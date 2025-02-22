@@ -39,6 +39,15 @@ class ImagemGaleria(models.Model):
     def __str__(self):
         return f"Imagem de {self.perfil.user.username}"
     
+class ImagemNoivos(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='fotosnoivos')
+    imagem = models.ImageField(upload_to='imagems_noivos/', validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])])
+    tipo = models.CharField(max_length=10, choices=[('noiva', 'Noiva'), ('noivo', 'Noivo')])
+
+    def __str__(self):
+        return f"Imagem de {self.tipo} de {self.perfil.user.username}"
+
+    
 class MensagemSobreNoivoNoiva(models.Model):
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='mensagens')
     tipo = models.CharField(max_length=10, choices=[('noiva', 'Noiva'), ('noivo', 'Noivo')])
