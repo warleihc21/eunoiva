@@ -35,6 +35,7 @@ class Perfil(models.Model):
 class ImagemGaleria(models.Model):
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='galeria')
     imagem = models.ImageField(upload_to='imagems_galeria/', validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])])
+    
 
     def __str__(self):
         return f"Imagem de {self.perfil.user.username}"

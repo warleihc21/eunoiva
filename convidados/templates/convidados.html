@@ -57,7 +57,7 @@
         width: 100%;         /* Faz a imagem ocupar toda a largura do card */
         height: 200px;       /* Altura fixa (ajuste conforme necessário) */
         object-fit: cover;   /* Faz a imagem cobrir o espaço sem distorcer */
-        border-radius: 8px;  /* Opcional: bordas arredondadas */
+        border-radius: 24px;  /* Opcional: bordas arredondadas */
     }
 
     .edit-icon {
@@ -93,14 +93,14 @@
         width: 100%;
         height: 100%;
         object-fit: cover; /* Faz a imagem cobrir completamente o espaço sem distorcer */
-        transition: transform 0.3s ease-in-out, border-radius 0.3s ease;
-        border-radius: 12px; /* Aplica o arredondamento nas bordas */
+        transition: transform 0.4s ease-in-out, border-radius 0.4s ease;
+        border-radius: 50px; /* Aplica o arredondamento nas bordas */
     }
 
     /* Efeito de zoom no hover */
     .foto-quadrada:hover img {
         transform: translate(-50%, -50%) scale(1.1); /* Aumenta a imagem ao passar o mouse */
-        border-radius: 12px; /* Garante que o arredondamento seja mantido durante o zoom */
+        border-radius: 50px; /* Garante que o arredondamento seja mantido durante o zoom */
     }
 
     .imagem-menor {
@@ -273,49 +273,55 @@
             <div class="centralizar-imagem mt-24 mb-12">
                 <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="mx-auto">
             </div>
-            <div class="mx-auto max-w-2xl text-center">
-                <i class="bi bi-camera icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
-                <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Sobre Nós</p>
-                <p class="text-lg leading-8 cor-marrom">Conheça nossa história.</p>
-            </div>
-        
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8"> <!-- Grid de 2 colunas para telas médias e maiores -->
-                <!-- Coluna para a Noiva -->
-                <div class="mb-3 flex flex-col items-center">
-                    <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
-                        {% if imagem_noiva %}
-                            <img src="{{ imagem_noiva.imagem.url }}" alt="Noiva" class="imagem-menor rounded">
-                        {% else %}
-                            Em breve teremos uma mensagem especial aqui.
-                        {% endif %}
-                    </div>
-                    <h2 class="text-balance text-center text-xl font-semibold tracking-tight">A Noiva</h2>
-                    <p class="fst-italic cor-marrom text-center text-xl mt-2">
-                        {% if mensagem_noiva %}
-                            {{ mensagem_noiva.mensagem }}
-                        {% else %}
-                            Em breve teremos uma mensagem especial aqui.
-                        {% endif %}
-                    </p>
+            <div class="col-12 gap-4">
+                <div class="mx-auto max-w-2xl text-center">
+                    <i class="bi bi-camera icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
+                    <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Sobre Nós</p>
+                    <p class="text-lg leading-8 cor-marrom">Conheça nossa história.</p>
                 </div>
-        
-                <!-- Coluna para o Noivo -->
-                <div class="mb-3 flex flex-col items-center">
-                    <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
-                        {% if imagem_noivo %}
-                            <img src="{{ imagem_noivo.imagem.url }}" alt="Noivo" class="imagem-menor rounded-lg">
-                        {% else %}
-                            Em breve teremos uma mensagem especial aqui.
-                        {% endif %}
+            
+                <div class="col-12 gap-4 mt-8"> <!-- Grid de 2 colunas para telas médias e maiores -->
+                    <div class="container mt-4">
+                        <div class="row mt-4 justify-content-center">
+                            <!-- Coluna para a Noiva -->
+                            <div class="col-md-5 mb-3 mx-2">
+                                <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
+                                    {% if imagem_noiva %}
+                                        <img src="{{ imagem_noiva.imagem.url }}" alt="Noiva" class="mb-4 rounded">
+                                    {% else %}
+                                        Em breve teremos uma mensagem especial aqui.
+                                    {% endif %}
+                                </div>
+                                <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">A Noiva</h2>
+                                <p class="fst-italic cor-marrom text-center text-xl mt-2">
+                                    {% if mensagem_noiva %}
+                                        {{ mensagem_noiva.mensagem }}
+                                    {% else %}
+                                        Em breve teremos uma mensagem especial aqui.
+                                    {% endif %}
+                                </p>
+                            </div>
+                    
+                            <!-- Coluna para o Noivo -->
+                            <div class="col-md-5 mb-3 mx-2">
+                                <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
+                                    {% if imagem_noivo %}
+                                        <img src="{{ imagem_noivo.imagem.url }}" alt="Noivo" class="mb-4 rounded">
+                                    {% else %}
+                                        Em breve teremos uma mensagem especial aqui.
+                                    {% endif %}
+                                </div>
+                                <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">O Noivo</h2>
+                                <p class="fst-italic cor-marrom text-center text-xl mt-2">
+                                    {% if mensagem_noivo %}
+                                        {{ mensagem_noivo.mensagem }}
+                                    {% else %}
+                                        Em breve teremos uma mensagem especial aqui.
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <h2 class="text-balance text-center text-xl font-semibold tracking-tight">O Noivo</h2>
-                    <p class="fst-italic cor-marrom text-center text-xl mt-2">
-                        {% if mensagem_noivo %}
-                            {{ mensagem_noivo.mensagem }}
-                        {% else %}
-                            Em breve teremos uma mensagem especial aqui.
-                        {% endif %}
-                    </p>
                 </div>
             </div>
         </section>
