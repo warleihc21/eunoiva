@@ -1,13 +1,27 @@
 {% load static %}
 
+{% load custom_filters %}  {# Carregue o filtro personalizado #}
+
 <nav class="bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 shadow-md">
     <div class="mx-auto max-w-7xl">
         <div class="relative flex h-16 items-center justify-between">
             <div class="flex flex-shrink-0 items-center">
-                <img class="h-8 w-auto rounded-md" src="{% static 'noivos/img/logo.png' %}" alt="Logo">
+                {% if nome_primeiro_conjuge and nome_segundo_conjuge %}
+                        <a href="/" class="Comfortaa-Bold cor-vermelho text-xl font-bold">
+                            {{ nome_primeiro_conjuge.split.0.0|upper }}{% if nome_primeiro_conjuge.split|length > 1 %}{{ nome_primeiro_conjuge.split.1.0|upper }}{% endif %} 
+                        </a>
+                       <a class="cor-vermelho" href=""> & </a>
+                        <a href="/" class="Comfortaa-Bold cor-vermelho text-xl font-bold">
+                            {{ nome_segundo_conjuge.split.0.0|upper }}{% if nome_segundo_conjuge.split|length > 1 %}{{ nome_segundo_conjuge.split.1.0|upper }}{% endif %}
+                        </a>
+                    {% else %}
+                        <a href="/" class="Comfortaa-Bold cor-vermelho text-xl font-bold">
+                            Iniciais
+                        </a>
+                    {% endif %}
             </div>
             <div class="flex flex-1 items-center justify-center">
-                
+
                 <div class="hidden sm:block">
                     <div class="flex justify-center space-x-4">
                         <a href="#galeria-imagens" class="rounded-md px-3 py-2 text-sm font-medium text-[#be1c3cfd] hover:bg-[#be1c3cfd] hover:text-white"><i class="bi bi-camera icon"></i> Galeria</a>
@@ -19,6 +33,20 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <button id="menu-toggle" class="absolute top-4 right-4 md:hidden">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+        <div id="mobile-menu" class="mt-2"> 
+            <a href="#galeria-imagens" class="block py-2 px-4 hover:bg-gray-100">Galeria</a>
+            <a href="#sobre-nos" class="block py-2 px-4 hover:bg-gray-100">Nossa História</a>
+            <a href="#nossa-data" class="block py-2 px-4 hover:bg-gray-100">Nossa Data</a>
+            <a href="#mensagem-noivos" class="block py-2 px-4 hover:bg-gray-100">Mensagem</a>
+            <a href="#confirmacao-presenca" class="block py-2 px-4 hover:bg-gray-100">Confirmação de presença</a>
+            <a href="#lista-presentes" class="block py-2 px-4 hover:bg-gray-100">Presentes</a>
+            <a href="#localizacao" class="block py-2 px-4 hover:bg-gray-100">Localização</a>
         </div>
     </div>
 </nav>

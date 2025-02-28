@@ -330,7 +330,8 @@ def lista_convidados(request):
         
         nome_convidado = request.POST.get('nome_convidado')
         whatsapp = request.POST.get('whatsapp')
-        maximo_acompanhantes = int(request.POST.get('maximo_acompanhantes', 0))
+        maximo_acompanhantes = request.POST.get('maximo_acompanhantes', '0')  # Obtém o valor ou '0' se vazio
+        maximo_acompanhantes = int(maximo_acompanhantes) if maximo_acompanhantes.isdigit() else 0  # Converte ou usa 0
         Convidados.objects.create(
             user=request.user,
             nome_convidado=nome_convidado,

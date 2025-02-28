@@ -124,6 +124,14 @@
         text-decoration: none;
     }
 
+    /* Ajusta a posição dos botões para ficarem no centro verticalmente */
+    .botao-container {
+        display: flex;
+        align-items: center; /* Centraliza verticalmente */
+        justify-content: center; /* Centraliza horizontalmente */
+        gap: 20px; /* Espaço entre os botões */
+    }
+
     /* Botão de Confirmação de Presença: Branco com texto preto */
     .btn-primary {
         background-color: white;
@@ -152,9 +160,16 @@
         border-color: white;
     }
 
+    /* Ajustes para telas menores */
     @media (max-width: 768px) {
         .foto-quadrada {
-            height: 200px;  /* Ajusta a altura das imagens para telas menores */
+            width: 90%; /* Ocupa 90% da largura da tela */
+            max-width: 400px; /* Limita a largura máxima para evitar imagens muito grandes */
+            margin: 10px auto; /* Centraliza e adiciona margem */
+        }
+
+        .foto-quadrada img {
+            border-radius: 20px; /* Reduz o arredondamento para telas menores */
         }
     }
 
@@ -200,6 +215,16 @@
         }
     }
 
+    /* Em telas menores, os botões ficam um abaixo do outro */
+    @media (max-width: 768px) {
+        .botao-container {
+            flex-direction: column; /* Empilha os botões verticalmente */
+            gap: 16px; /* Ajusta o espaçamento */
+        }
+    }
+
+    
+
     
 </style>
 
@@ -229,7 +254,7 @@
                     & 
                     {{ convidado.user.perfil.nome_segundo_conjuge }}
                 </span>
-                <div class="flex space-x-4">
+                <div class="botao-container">
                     <!-- Botão de Confirmação de Presença: Branco para Transparente ao passar o mouse -->
                     <a href="#confirmacao-presenca" class="btn btn-primary">Confirmação de presença</a>
                     <!-- Botão de Lista de Presentes: Transparente para Branco ao passar o mouse -->
@@ -293,7 +318,7 @@
                                     {% endif %}
                                 </div>
                                 <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">A Noiva</h2>
-                                <p class="fst-italic cor-marrom text-center text-xl mt-2">
+                                <p class="cor-marrom text-center text-xl mt-2">
                                     {% if mensagem_noiva %}
                                         {{ mensagem_noiva.mensagem }}
                                     {% else %}
@@ -312,7 +337,7 @@
                                     {% endif %}
                                 </div>
                                 <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">O Noivo</h2>
-                                <p class="fst-italic cor-marrom text-center text-xl mt-2">
+                                <p class="cor-marrom text-center text-xl mt-2">
                                     {% if mensagem_noivo %}
                                         {{ mensagem_noivo.mensagem }}
                                     {% else %}
@@ -324,14 +349,7 @@
                     </div>
                 </div>
             </div>
-        </section>
-        
-        
-        
-        
-        
-        
-        
+        </section>        
         
         
         <br>        
@@ -339,14 +357,13 @@
             <div class="centralizar-imagem mt-24 mb-12">
                 <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
             </div>
-            <!-- Dados da Data de Casamento -->
             <div class="mx-auto max-w-2xl text-center">
                 <i class="bi bi-calendar4-week icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
                 <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Nossa data</p>
                 <br>
                 <h1 class="text-balance text-4xl fw-bold tracking-tight cor-vermelho sm:text-5xl">{{ convidado.user.perfil.data_casamento|date:"d/m/Y" }}</h1>
                 <br>
-                <div id="timer" class="flex justify-center space-x-4">
+                <div id="timer">
                     <div class="campo-tempo">
                         <span id="dias" class="valor-tempo">00</span>
                         <span class="rotulo-tempo">dias</span>
@@ -377,7 +394,7 @@
                 <i class="bi bi-envelope icon mt-12 text-balance text-4xl cor-vermelho font-semibold tracking-tight sm:text-5xl"></i>
                 <p class="Comfortaa-Bold mb-12 text-balance text-4xl cor-marrom font-semibold tracking-tight sm:text-5xl">Mensagem</p>
                 
-                <p class="fst-italic flex items-center cor-marrom justify-center text-4xl">
+                <p class="fst-italic flex items-center cor-marrom justify-center text-3xl">
                     {{ convidado.user.perfil.mensagem_noivos }}
                 </p>
             </div>
