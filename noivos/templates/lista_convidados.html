@@ -1,6 +1,7 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends 'base.html' %}
 {% block 'body' %}
+{% load static %}
+
 <style>
     h2 {
         color: #8B4513;
@@ -329,7 +330,7 @@
             {{ perfil.nome_primeiro_conjuge }} & {{ perfil.nome_segundo_conjuge }}
           </div>
         <div class="text-center text-white">
-          {{ perfil.data_casamento|date:"d/m/Y" }}
+          {{ data_casamento|date:"d/m/Y" }}
         </div>
         <div class="text-center text-white">
             © 2025 Todos os direitos reservados.

@@ -10,7 +10,10 @@ from datetime import datetime
 def convidados(request):
     token = request.GET.get('token')
     convidado = get_object_or_404(Convidados, token=token)
-    presentes = Presentes.objects.filter(reservado=False, user=convidado.user).order_by('-importancia')
+    presentes = Presentes.objects.filter(user=convidado.user).order_by('-importancia')
+    # Ordenando: primeiro os não reservados, depois os reservados
+    presentes = sorted(presentes, key=lambda p: p.reservado)
+
 
     # Recuperando as imagens dos noivos
     imagem_noiva = ImagemNoivos.objects.filter(tipo='noiva').first()
@@ -63,6 +66,22 @@ def reservar_presente(request, id):
     presente.reservado_por = convidado
     presente.save()
     return redirect(f'{reverse('convidados')}?token={token}')
+
+
+def cancelar_reserva(request, presente_id):
+    convidado_token = request.GET.get('token')
+    presente = get_object_or_404(Presentes, id=presente_id)
+    
+    # Corrigindo a comparação para o campo correto
+    if presente.reservado_por and presente.reservado_por.token == convidado_token:
+        presente.reservado = False
+        presente.reservado_por = None  # Deve setar como None o usuário que fez a reserva
+        presente.save()
+        messages.success(request, "Reserva cancelada com sucesso.")
+    else:
+        messages.error(request, "Você não tem permissão para cancelar esta reserva.")
+    
+    return redirect('lista_presentes')
 
 def adicionar_acompanhante(request, token):
     convidado = get_object_or_404(Convidados, token=token)

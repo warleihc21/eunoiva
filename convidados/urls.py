@@ -8,4 +8,5 @@ urlpatterns = [
     path('convidado/<str:token>/', views.adicionar_acompanhante, 
     name='adicionar_acompanhante'),
     path('excluir-acompanhante/<str:token>/<int:acompanhante_id>/', views.excluir_acompanhante, name='excluir_acompanhante'),
+    path('cancelar_reserva/<int:presente_id>/', views.cancelar_reserva, name='cancelar_reserva'),
 ]

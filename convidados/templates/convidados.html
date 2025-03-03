@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block 'body' %}
 {% load static %}
 
@@ -182,7 +182,7 @@
     }
 
     .relative.w-full.h-screen {
-        height: 100vh; /* Usa altura total da tela */
+        min-height: 100vh; /* Permite que o conteúdo abaixo empurre a imagem */
     }
 
     @media (max-width: 768px) {
@@ -244,10 +244,12 @@
         <!-- Seção de imagem com os nomes dos cônjuges no centro e efeito de escurecimento -->
         <div class="relative w-full h-screen">
             {% if convidado.user.perfil.imagem %}
-                <img src="{{ convidado.user.perfil.imagem.url }}" alt="Imagem do Casamento" class="object-cover w-full h-full absolute inset-0">
+                <img src="{{ convidado.user.perfil.imagem.url }}" 
+                     alt="Imagem do Casamento" 
+                     class="imagem-fundo">
             {% endif %}
             <!-- Camada escura sobre a imagem -->
-            <div class="absolute inset-0 bg-black opacity-40"></div>
+            <div class="imagem-fundo absolute inset-0 bg-black opacity-40"></div>
             <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-5xl font-semibold drop-shadow-lg">
                 <span class="uppercase text-6xl text-white mb-4">
                     {{ convidado.user.perfil.nome_primeiro_conjuge }} 
@@ -255,13 +257,12 @@
                     {{ convidado.user.perfil.nome_segundo_conjuge }}
                 </span>
                 <div class="botao-container">
-                    <!-- Botão de Confirmação de Presença: Branco para Transparente ao passar o mouse -->
                     <a href="#confirmacao-presenca" class="btn btn-primary">Confirmação de presença</a>
-                    <!-- Botão de Lista de Presentes: Transparente para Branco ao passar o mouse -->
                     <a href="#lista-presentes" class="btn btn-secondary">Lista de presentes</a>
                 </div>
             </div>
         </div>
+        
         <br>
 
         <section id="galeria-imagens" class="section-full-height">
@@ -489,54 +490,78 @@
             <div class="centralizar-imagem mt-24 mb-12">
                 <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
             </div>
+            
             <div class="grid grid-cols-1 gap-4">
                 <div class="mx-auto max-w-2xl text-center">
-                    <i class="bi bi-gift icon text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
-                    <h2 class="Comfortaa-Bold mb-6 text-balance text-4xl mt-2 font-semibold tracking-tight sm:text-5xl cor-marrom">
+                    <i class="bi bi-gift icon text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
+                    <h2 class="Comfortaa-Bold mb-6 text-4xl mt-2 font-semibold tracking-tight sm:text-5xl cor-marrom">
                         Presentes
                     </h2>
-                    <p class=" text-lg leading-8 cor-marrom">Agradecemos imensamente sua presença em nosso casamento. Se desejar nos presentear, preparamos uma lista especial de itens que nos ajudarão a construir nosso novo lar.</p>
+                    <p class="text-lg leading-8 cor-marrom">
+                        Agradecemos imensamente sua presença em nosso casamento. Se desejar nos presentear, preparamos uma lista especial de itens que nos ajudarão a construir nosso novo lar.
+                    </p>
                 </div>
+                
                 <div class="container mt-4">
                     <div class="row g-4">
                         {% for presente in presentes %}
                         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-                            <div class="card rounded-2xl shadow-lg overflow-hidden" style="width: 25rem; height: 32rem; position: relative;">
-                                {% if presente.foto %}
+                            <div class="card rounded-2xl shadow-lg overflow-hidden {% if presente.reservado %} presente-reservado {% endif %}"
+                                 style="width: 25rem; height: 32rem; position: relative;">
+        
+                                <!-- Exibição da imagem do presente -->
                                 <div class="card-img-container rounded-top-2xl" style="height: 20rem; overflow: hidden;">
-                                    <img class="w-100 h-100 object-fit-contain rounded-top-2xl" src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}">
+                                    {% if presente.foto %}
+                                        <img class="w-100 h-100 object-fit-contain rounded-top-2xl" src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}">
+                                    {% else %}
+                                        <p class="text-center text-gray-400">Sem imagem</p>
+                                    {% endif %}
                                 </div>
-                                {% else %}
-                                <p class="text-center text-gray-400">Sem imagem</p>
-                                {% endif %}
-                            
+                                
                                 <div class="card-body rounded-bottom-2xl p-4 bg-white" style="position: absolute; bottom: 0; width: 100%;">
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <h3 class="card-title cor-vermelho m-0">{{ presente.nome_presente }}</h3>
-                                        <p class="card-text cor-vermelho m-0">R$ {{ presente.preco|floatformat:2 }}</p>
+                                        <p class="card-text cor-vermelho m-0">R$ {{ presente.preco|floatformat:2|default:"0.00" }}</p>
+
                                     </div>
+        
                                     <div class="d-flex justify-content-center gap-2 mt-3">
                                         {% if presente.link_sugestao_compra %}
-                                            <a class="btn btn-danger btn-sm flex-grow-1 rounded-pill text-center" 
+                                            <a class="btn btn-danger btn-sm flex-grow-1 rounded-pill text-center {% if presente.reservado %} disabled {% endif %}" 
                                                href="{{ presente.link_sugestao_compra }}" 
                                                target="_blank">
                                                 Comprar
                                             </a>
                                         {% endif %}
-                                        
+        
                                         <button type="button" 
                                                 class="btn btn-danger btn-sm flex-grow-1 rounded-pill text-center" 
                                                 data-bs-toggle="modal" 
-                                                data-bs-target="#modal{{ presente.id }}">
+                                                data-bs-target="#modal{{ presente.id }}"
+                                                {% if presente.reservado %} disabled aria-disabled="true" {% endif %}>
                                             Reservar
                                         </button>
-                                    </div>                                                               
+                                    </div>
+        
+                                    {% if presente.reservado_por and presente.reservado_por.token == convidado_token %}
+                                        <form action="{% url 'cancelar_reserva' presente.id %}?token={{ convidado.token }}" method="POST">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-warning btn-sm w-100 mt-2">Cancelar Reserva</button>
+                                        </form>
+                                    {% endif %}
+        
+                                    {% if presente.reservado %}
+                                        <p class="text-center mt-2 text-danger">
+                                            <strong aria-live="polite">RESERVADO</strong>
+                                        </p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
-                        <!-- Modal -->
+        
+                        <!-- Modal de reserva -->
                         <div class="modal fade" id="modal{{ presente.id }}" tabindex="-1" aria-labelledby="modalLabel{{ presente.id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-lg"> <!-- Corrigi o tamanho do modal para consistência -->
+                            <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="modalLabel{{ presente.id }}">{{ presente.nome_presente }}</h5>
@@ -544,6 +569,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <p><strong>Valor:</strong> R$ {{ presente.preco|floatformat:2 }}</p>
+                                        
                                         {% if presente.link_sugestao_compra %}
                                         <p><strong>Sugestão de compra:</strong>
                                             <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="text-indigo-600 hover:text-indigo-800">Veja a sugestão</a>
@@ -557,10 +583,10 @@
                                         {% endif %}
                                     </div>
                                     <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                                         <form action="{% url 'reservar_presente' presente.id %}?token={{ convidado.token }}" method="POST">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                                         </form>
                                     </div>
                                 </div>
@@ -568,8 +594,10 @@
                         </div>
                         {% endfor %}
                     </div>
+                </div>
             </div>
         </section>
+        
 
         <section id="local-casamento">
             <div class="centralizar-imagem mt-24 mb-12">
@@ -603,6 +631,11 @@
         </div>
         <!-- Copyright -->
     </footer>
+    
+    <!-- Botão para rolar até o topo -->
+    <button id="scrollToTopBtn" title="Voltar ao topo">↑</button>
+
+
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArufezJ1vUqr_syuLuz7ZKDXmzlxVXu88&callback=initMap&v={{ timestamp }}" 
     async defer></script>
     <script>
@@ -697,6 +730,27 @@
     
         // Iniciar o contador assim que o conteúdo da página for carregado
         document.addEventListener("DOMContentLoaded", iniciarContador); 
+
+
+        // Obter o botão
+        var mybutton = document.getElementById("scrollToTopBtn");
+
+        // Quando o usuário rolar para baixo 20px da parte superior da página, mostre o botão
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        };
+
+        // Quando o usuário clicar no botão, rolar para o topo da página
+        mybutton.onclick = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth" // Rolagem suave
+            });
+        };
         
     </script>
        
