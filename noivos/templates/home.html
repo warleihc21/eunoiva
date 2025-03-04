@@ -123,23 +123,25 @@
 
     {% include "partials/navbar.html" %}
 
-    <div class="max-w-7xl mx-auto mt-20">
-        <div class="flex items-center space-x-6">
+    <div class="max-w-7xl mx-auto mt-20 px-4">
+        <div class="flex flex-col md:flex-row items-center md:space-x-6">
             <!-- Seção da Imagem -->
-            <div class="w-1/3">
+            <div class="w-full md:w-1/3 mb-4 md:mb-0">
                 {% if imagem %}
                     <img src="{{ imagem.url }}" alt="Imagem do perfil" class="rounded-lg shadow-md w-full">
                 {% else %}
-                    <p>Imagem não definida</p>
+                    <p class="text-center">Imagem não definida</p>
                 {% endif %}
             </div>
-            
+    
             <!-- Seção da Mensagem de Boas-Vindas -->
-            <div class="welcome-message w-2/3">
+            <div class="w-full md:w-2/3 text-center md:text-left">
                 <p class="cor-vermelho">Bem-vindos, {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</p>
                 <p class="cor-vermelho">Nossa data</p>
                 <h2 class="text-2xl font-semibold mb-4 cor-vermelho">{{ data_casamento|date:"d/m/Y" }}</h2>
-                <div id="timer" class="flex justify-center space-x-4">
+                
+                <!-- Contador regressivo -->
+                <div id="timer" class="flex justify-center md:justify-start flex-wrap gap-4">
                     <div class="campo-tempo">
                         <span id="dias" class="valor-tempo">00</span>
                         <span class="rotulo-tempo">dias</span>
@@ -161,22 +163,27 @@
         </div>
         
         
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Formulário -->
             <div class="bg-slate-200/20 p-6 rounded-md">
                 <h2 class="text-balance text-xl font-semibold tracking-tight">Crie sua lista de presentes</h2>
                 <br>
-                <form action="{% url 'home' %}" method="POST"  enctype='multipart/form-data'>{% csrf_token %}
+                <form action="{% url 'home' %}" method="POST" enctype='multipart/form-data'>{% csrf_token %}
                     <label class="mt-4 block text-sm leading-6">Nome do presente</label>
                     <input type="text" name="nome_presente" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
+                    
                     <div class="w-full">
                         <label class="mt-4 block text-sm leading-6">Link de sugestão de compra</label>
                         <input type="url" name="link_sugestao_compra" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300" placeholder="Insira o link do produto">
                     </div>
+        
                     <div class="w-full">
                         <label class="mt-4 block text-sm leading-6">Link de cobrança</label>
                         <input type="url" name="link_cobranca" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300" placeholder="Insira o link para cobrança">
                     </div>
-                    <div class="flex space-x-4">
+        
+                    <!-- Empilha os campos em telas pequenas -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="w-full">
                             <label class="mt-4 block text-sm leading-6">Foto de exemplo</label>
                             <input type="file" name="foto" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
@@ -186,7 +193,8 @@
                             <input type="text" name="preco" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
                         </div>
                     </div>
-                    <div class="flex space-x-4">
+        
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="w-full">
                             <label class="mt-4 block text-sm leading-6">Importância</label>
                             <input type="range" min="1" max="5" name="importancia" class="w-full py-3">
@@ -197,15 +205,18 @@
                     </div>
                 </form>
             </div>
-            <div class="mx-auto">
+        
+            <!-- Gráfico -->
+            <div class="mx-auto w-full">
                 <canvas id="myChart"></canvas>
             </div>
         </div>
+        
         <br>
 
         <h2 class="text-balance text-xl font-semibold tracking-tight">Lista de presentes</h2>
 
-        <div class="grid grid-cols-3 mt-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-4">
             {% for presente in presentes %}
             <div class="card" style="width: 25rem; height: 32rem; position: relative;">
                 {% if presente.foto %}
@@ -507,7 +518,8 @@
         <!-- Copyright -->
     </footer>
 
-    
+    <!-- Botão para rolar até o topo -->
+    <button id="scrollToTopBtn" title="Voltar ao topo">↑</button>    
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArufezJ1vUqr_syuLuz7ZKDXmzlxVXu88&callback=initMap&v={{ timestamp }}" 
     async defer></script>
@@ -681,6 +693,26 @@
                 });
             });
         });
+
+        // Obter o botão
+        var mybutton = document.getElementById("scrollToTopBtn");
+
+        // Quando o usuário rolar para baixo 20px da parte superior da página, mostre o botão
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        };
+
+        // Quando o usuário clicar no botão, rolar para o topo da página
+        mybutton.onclick = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth" // Rolagem suave
+            });
+        };
        
 
 
