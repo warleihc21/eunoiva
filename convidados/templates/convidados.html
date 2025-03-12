@@ -3,6 +3,11 @@
 {% load static %}
 
 <style>
+    .btn-cancelar-reserva {
+        pointer-events: auto !important;
+        opacity: 1 !important;
+    }
+
     h2 {
         color: #8B4513;
     }
@@ -506,8 +511,10 @@
                     <div class="row g-4">
                         {% for presente in presentes %}
                         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-                            <div class="card rounded-2xl shadow-lg overflow-hidden {% if presente.reservado %} presente-reservado {% endif %}"
-                                 style="width: 25rem; height: 32rem; position: relative;">
+                            <div class="card rounded-2xl shadow-lg overflow-hidden 
+                                {% if presente.reservado %} presente-reservado {% endif %}
+                                {% if presente.reservado_por.token == token %} reservado-pelo-convidado {% endif %}"
+                                style="width: 25rem; height: 32rem; position: relative;">
         
                                 <!-- Exibição da imagem do presente -->
                                 <div class="card-img-container rounded-top-2xl" style="height: 20rem; overflow: hidden;">
@@ -528,70 +535,85 @@
                                     <div class="d-flex justify-content-center gap-2 mt-3">
                                         {% if presente.link_sugestao_compra %}
                                             <a class="btn btn-danger btn-sm flex-grow-1 rounded-pill text-center {% if presente.reservado %} disabled {% endif %}" 
-                                               href="{{ presente.link_sugestao_compra }}" 
-                                               target="_blank">
-                                                Comprar
+                                            href="{{ presente.link_sugestao_compra }}" 
+                                            target="_blank">
+                                                <i class="fas fa-shopping-cart"></i> Comprar
                                             </a>
                                         {% endif %}
-        
-                                        <button type="button" 
-                                                class="btn btn-danger btn-sm flex-grow-1 rounded-pill text-center" 
+                                    
+                                        {% if presente.reservado %}
+                                            <button type="button" class="btn btn-success btn-sm flex-grow-1 rounded-pill text-center" disabled>
+                                                Reservado
+                                            </button>
+                                        {% else %}
+                                            <button type="button" 
+                                                class="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill text-center" 
                                                 data-bs-toggle="modal" 
-                                                data-bs-target="#modal{{ presente.id }}"
-                                                {% if presente.reservado %} disabled aria-disabled="true" {% endif %}>
-                                            Reservar
-                                        </button>
+                                                data-bs-target="#modal{{ presente.id }}">
+                                                Reservar
+                                            </button>
+                                        {% endif %}
                                     </div>
         
-                                    {% if presente.reservado_por and presente.reservado_por.token == convidado_token %}
-                                        <form action="{% url 'cancelar_reserva' presente.id %}?token={{ convidado.token }}" method="POST">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-warning btn-sm w-100 mt-2">Cancelar Reserva</button>
-                                        </form>
+                                    {% if presente.reservado_por and presente.reservado_por.token == token %}
+                                    <form action="{% url 'cancelar_reserva' presente.id %}?token={{ token }}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100 mt-2">Cancelar Reserva</button>
+                                    </form>
+                                    
                                     {% endif %}
         
-                                    {% if presente.reservado %}
-                                        <p class="text-center mt-2 text-danger">
-                                            <strong aria-live="polite">RESERVADO</strong>
-                                        </p>
-                                    {% endif %}
                                 </div>
                             </div>
                         </div>
         
                         <!-- Modal de reserva -->
                         <div class="modal fade" id="modal{{ presente.id }}" tabindex="-1" aria-labelledby="modalLabel{{ presente.id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="modalLabel{{ presente.id }}">{{ presente.nome_presente }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Centralizado verticalmente -->
+                                <div class="modal-content shadow-lg rounded-4"> <!-- Borda arredondada e sombra suave -->
+                                    
+                                    <!-- Cabeçalho do Modal -->
+                                    <div class="modal-header bg-danger text-white"> <!-- Fundo colorido para destaque -->
+                                        <h5 class="modal-title fw-bold" id="modalLabel{{ presente.id }}">{{ presente.nome_presente }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                     </div>
+
+                                    <!-- Corpo do Modal -->
                                     <div class="modal-body">
-                                        <p><strong>Valor:</strong> R$ {{ presente.preco|floatformat:2 }}</p>
-                                        
+                                        <p class="fs-5"><strong>Valor:</strong> <span class="text-success">R$ {{ presente.preco|floatformat:2 }}</span></p>
+
                                         {% if presente.link_sugestao_compra %}
                                         <p><strong>Sugestão de compra:</strong>
-                                            <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="text-indigo-600 hover:text-indigo-800">Veja a sugestão</a>
+                                            <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-shopping-cart"></i> Veja a sugestão
+                                            </a>
                                         </p>
                                         {% endif %}
-                                        
+
                                         {% if presente.link_cobranca %}
                                         <p><strong>Pague pelo presente dentro da plataforma:</strong>
-                                            <a href="{{ presente.link_cobranca }}" target="_blank" class="text-indigo-600 hover:text-indigo-800">Pague aqui</a>
+                                            <a href="{{ presente.link_cobranca }}" target="_blank" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-credit-card"></i> Pague aqui
+                                            </a>
                                         </p>
                                         {% endif %}
                                     </div>
-                                    <div class="modal-footer">
+
+                                    <!-- Rodapé do Modal -->
+                                    <div class="modal-footer d-flex justify-content-between"> <!-- Alinhamento flexível -->
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                                         <form action="{% url 'reservar_presente' presente.id %}?token={{ convidado.token }}" method="POST">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-check-circle"></i> Confirmar Reserva
+                                            </button>
                                         </form>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
+
                         {% endfor %}
                     </div>
                 </div>

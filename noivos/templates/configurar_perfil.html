@@ -87,6 +87,7 @@
 </style>
 
 <div class="container mt-5">
+    <a href="{% url 'home' %}" class="btn btn-secondary">Voltar</a>
     <h1 class="text-center mb-4">Configurar Perfil</h1>
     <form action="{% url 'configurar_perfil' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}

@@ -1,16 +1,20 @@
-from django.test import TestCase
+import requests
 
-import openpyxl
+CLIENT_ID = "3067363791536171"
+CLIENT_SECRET = "vGbrXs3eYQFGwypQ4AlAIA5qnENn8Q69"
 
-# Caminho do arquivo Excel
-arquivo_excel = 'C:/Users/junio/Downloads/Pasta1.xlsx'  # Substitua pelo caminho do seu arquivo
+url = "https://api.mercadolibre.com/oauth/token"
+data = {
+    "grant_type": "client_credentials",
+    "client_id": CLIENT_ID,
+    "client_secret": CLIENT_SECRET
+}
 
-# Carregar o arquivo Excel
-wb = openpyxl.load_workbook(arquivo_excel)
+response = requests.post(url, data=data)
 
-# Selecionar a primeira planilha (active é a planilha atual, geralmente a primeira)
-sheet = wb.active
-
-# Iterar sobre as linhas e colunas da planilha
-for row in sheet.iter_rows(values_only=True):  # values_only=True retorna apenas os valores das células
-    print(row)  # Imprime a linha no terminal
+if response.status_code == 200:
+    token_info = response.json()
+    access_token = token_info.get("access_token")
+    print(f"Access Token: {access_token}")
+else:
+    print(f"Erro ao obter token: {response.json()}")

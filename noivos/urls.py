@@ -19,6 +19,7 @@ urlpatterns = [
  path('substituir_imagem/', views.substituir_imagem, name='substituir_imagem'),
  path('substituir_imagem_noivos/', views.substituir_imagem_noivos, name='substituir_imagem_noivos'),
  path('editar_mensagem/', views.editar_mensagem, name='editar_mensagem'),
+ path("buscar_produto/", views.buscar_detalhes_produto, name="buscar_produto"),
 
  
 ]

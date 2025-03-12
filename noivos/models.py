@@ -110,20 +110,20 @@ def __str__(self):
 
 class Presentes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='presentes')
-    nome_presente = models.CharField(max_length=100)
+    nome_presente = models.CharField(max_length=1000)
     foto = models.ImageField(upload_to='presentes/', blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     importancia = models.IntegerField()
     reservado = models.BooleanField(default=False)
     reservado_por = models.ForeignKey('Convidados', null=True, blank=True, on_delete=models.SET_NULL)
-    link_sugestao_compra = models.URLField(max_length=500, blank=True, null=True)
+    link_sugestao_compra = models.URLField(max_length=1000, blank=True, null=True)
     link_cobranca = models.URLField(max_length=500, blank=True, null=True)
 
     def clean(self):
         # Validar links longos
-        if self.link_sugestao_compra and len(self.link_sugestao_compra) > 500:
+        if self.link_sugestao_compra and len(self.link_sugestao_compra) > 1000:
             raise ValidationError("O link de sugestão é muito longo.")
-        if self.link_cobranca and len(self.link_cobranca) > 500:
+        if self.link_cobranca and len(self.link_cobranca) > 1000:
             raise ValidationError("O link de cobrança é muito longo.")
 
     def save(self, *args, **kwargs):

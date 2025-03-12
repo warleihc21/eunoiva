@@ -69,19 +69,18 @@ def reservar_presente(request, id):
 
 
 def cancelar_reserva(request, presente_id):
-    convidado_token = request.GET.get('token')
+    token = request.GET.get('token')  # Pegando o token correto
     presente = get_object_or_404(Presentes, id=presente_id)
-    
-    # Corrigindo a comparação para o campo correto
-    if presente.reservado_por and presente.reservado_por.token == convidado_token:
+
+    if presente.reservado_por and presente.reservado_por.token == token:
         presente.reservado = False
-        presente.reservado_por = None  # Deve setar como None o usuário que fez a reserva
+        presente.reservado_por = None
         presente.save()
         messages.success(request, "Reserva cancelada com sucesso.")
     else:
         messages.error(request, "Você não tem permissão para cancelar esta reserva.")
-    
-    return redirect('lista_presentes')
+
+    return redirect(f'{reverse("convidados")}?token={token}')
 
 def adicionar_acompanhante(request, token):
     convidado = get_object_or_404(Convidados, token=token)

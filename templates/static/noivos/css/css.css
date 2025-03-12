@@ -186,6 +186,12 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
     pointer-events: none; /* Impede cliques nos botões */
 }
 
+/* Se o convidado reservou, permitir interação */
+.presente-reservado.reservado-pelo-convidado {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 #scrollToTopBtn {
     position: fixed;
     bottom: 20px;

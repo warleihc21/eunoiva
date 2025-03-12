@@ -173,8 +173,13 @@
                     <input type="text" name="nome_presente" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
                     
                     <div class="w-full">
-                        <label class="mt-4 block text-sm leading-6">Link de sugestão de compra</label>
-                        <input type="url" name="link_sugestao_compra" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300" placeholder="Insira o link do produto">
+                        <label class="mt-4 block text-sm leading-6">Link do presente</label>
+                        <div class="flex gap-2">
+                            <input type="url" id="link_presente" name="link_sugestao_compra"
+                                class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300"
+                                placeholder="Insira o link do produto">
+                            <button type="button" id="buscar_detalhes" class="px-4 py-2 bg-blue-600 text-white rounded-md">Buscar</button>
+                        </div>
                     </div>
         
                     <div class="w-full">
@@ -186,11 +191,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="w-full">
                             <label class="mt-4 block text-sm leading-6">Foto de exemplo</label>
-                            <input type="file" name="foto" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
+                            <input type="file" name="foto" id="foto_presente" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
+                            <img id="preview_imagem" class="hidden w-32 h-32 object-cover mt-2 rounded-md">
+                            <input type="hidden" name="imagem_url" id="imagem_url">
                         </div>
                         <div class="w-full">
                             <label class="mt-4 block text-sm leading-6">Preço estimado</label>
-                            <input type="text" name="preco" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
+                            <input type="text" name="preco" id="preco_presente" class="block w-full rounded-md border-0 px-3.5 py-2 shadow-sm ring-1 ring-inset ring-gray-300">
                         </div>
                     </div>
         
@@ -216,7 +223,7 @@
 
         <h2 class="text-balance text-xl font-semibold tracking-tight">Lista de presentes</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-4 justify-items-center">
             {% for presente in presentes %}
             <div class="card" style="width: 25rem; height: 32rem; position: relative;">
                 {% if presente.foto %}
@@ -286,8 +293,8 @@
         </div>
 
         <!-- Modal de Edição -->
-        <div id="editPresenteModal" class="fixed inset-0 hidden items-center justify-center bg-gray-900 bg-opacity-50">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+        <div id="editPresenteModal" class="mt-20 fixed inset-0 hidden items-center justify-center bg-gray-900 bg-opacity-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
                 <h2 class="text-xl font-semibold mb-4 text-[#be1c3cfd]">Editar Presente</h2>
 
                 <form id="editPresenteForm" method="POST">
@@ -322,36 +329,39 @@
         <div class="mt-8 bg-white p-6 rounded-md shadow-md">
             <h2 class="text-xl font-semibold mb-4">Presentes Reservados</h2>
             
-            <table class="min-w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr>
-                        <th class="border border-gray-300 px-4 py-2 text-left">Nome do Presente</th>
-                        <th class="border border-gray-300 px-4 py-2 text-left">Reservado por</th>
-                        <th class="border border-gray-300 px-4 py-2 text-right">Preço</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for presente in presentes_reservados %}
-                    <tr>
-                        <td class="border border-gray-300 px-4 py-2">{{ presente.nome_presente }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ presente.reservado_por }}</td>
-                        <td class="border border-gray-300 px-4 py-2 text-right">R$ {{ presente.preco|floatformat:2 }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2" class="border border-gray-300 px-4 py-2 font-semibold text-right">Total</td>
-                        <td class="border border-gray-300 px-4 py-2 text-right font-semibold">R$ {{ total_reservado|floatformat:2 }}</td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-300 min-w-[400px]">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 text-left">Nome do Presente</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Reservado por</th>
+                            <th class="border border-gray-300 px-4 py-2 text-right">Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for presente in presentes_reservados %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="border border-gray-300 px-4 py-2">{{ presente.nome_presente }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ presente.reservado_por }}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-right">R$ {{ presente.preco|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-gray-100">
+                            <td colspan="2" class="border border-gray-300 px-4 py-2 font-semibold text-right">Total</td>
+                            <td class="border border-gray-300 px-4 py-2 text-right font-semibold">R$ {{ total_reservado|floatformat:2 }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
+        
 
 
         <div class="mb-3">
             <h2 class="text-balance text-xl font-semibold mt-12 tracking-tight">Galeria de fotos</h2>
-            <div class="row mt-4">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-4">
                 {% for imagem in perfil.galeria.all|slice:":6" %}  <!-- Limita para 6 imagens -->
                     <div class="col-md-4 mb-3">  <!-- Usando 'col-md-4' para ter 3 colunas por linha -->
                         <div class="foto-quadrada">
@@ -583,6 +593,7 @@
             datasets: [{
             label: 'Presentes',
             data: JSON.parse('{{ data | safe }}'),
+            backgroundColor: ['#8B4513', '#be1c3cfd'], // Cores personalizadas
             borderWidth: 1
             }]
         },
@@ -713,6 +724,40 @@
                 behavior: "smooth" // Rolagem suave
             });
         };
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const btnBuscar = document.getElementById("buscar_detalhes");
+            const inputLink = document.getElementById("link_presente");
+            const inputNome = document.querySelector('input[name="nome_presente"]');
+            const inputPreco = document.querySelector('input[name="preco"]');
+            const imgPreview = document.getElementById("preview_imagem");
+
+            btnBuscar.addEventListener("click", function () {
+                const url = inputLink.value.trim();
+
+                if (!url) {
+                    alert("Por favor, insira um link do Mercado Livre.");
+                    return;
+                }
+
+                fetch(`/noivos/buscar_produto/?url=${encodeURIComponent(url)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            inputNome.value = data.nome;
+                            inputPreco.value = data.preco;
+                            imgPreview.src = data.imagem;
+                            imgPreview.classList.remove("hidden");
+                        }
+                    })
+                    .catch(error => console.error("Erro na requisição:", error));
+            });
+        });
+
+
        
 
 

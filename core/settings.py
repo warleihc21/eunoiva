@@ -30,17 +30,18 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    '94bd-2804-14c-5bb0-85c5-597e-1d0d-2c9b-1b01.ngrok-free.app'
+    'b5d2-2804-14c-5bb0-85c5-a921-f527-87e6-bee7.ngrok-free.app'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://94bd-2804-14c-5bb0-85c5-597e-1d0d-2c9b-1b01.ngrok-free.app'
+    'https://b5d2-2804-14c-5bb0-85c5-a921-f527-87e6-bee7.ngrok-free.app'
 ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

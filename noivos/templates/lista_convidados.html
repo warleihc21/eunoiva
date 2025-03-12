@@ -84,6 +84,46 @@
         transform: scale(1.1);
     }
 
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+        }
+
+        .card {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            padding: 10px;
+        }
+
+        .btn {
+            font-size: 1rem;
+            padding: 10px;
+        }
+
+        .card-img-top {
+            height: 150px; /* Ajuste para telas menores */
+        }
+
+        .edit-icon {
+            top: 5px;
+            right: 5px;
+            font-size: 14px;
+            padding: 3px;
+        }
+
+        .modal-dialog {
+            max-width: 95%;
+        }
+    }
+
     
 </style>
     {% include "partials/navbar.html" %}
@@ -104,43 +144,42 @@
                 <h1 class="text-center">Controle de Convidados</h1>
                 <hr>
                 <br>
-                <!-- Formulário de Cadastro de Convidado -->
-                <div class="col-md-6">
+                
+                <div class="col-lg-6 col-md-6 col-12">
                     <div class="card p-4">
-                        <form action="{% url 'lista_convidados' %}" method="POST">{% csrf_token %}
-                            <h2 class="h4">Cadastre seus convidados</h2>
+                        <h2 class="h4">Cadastre seus convidados</h2>
+                        <form action="{% url 'lista_convidados' %}" method="POST">
+                            {% csrf_token %}
                             <div class="mb-3">
                                 <label class="form-label cor-marrom">Nome do convidado</label>
                                 <input type="text" name="nome_convidado" class="form-control">
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-12 col-sm-6">
                                     <label class="form-label cor-marrom">WhatsApp</label>
                                     <input type="text" name="whatsapp" class="form-control">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-12 col-sm-6">
                                     <label class="form-label cor-marrom">Máximo de acompanhantes</label>
                                     <input type="number" name="maximo_acompanhantes" class="form-control">
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-danger mt-3" style="width: 100%; border-radius: 20px; text-align: center;">Adicionar convidado</button>
+                            <button type="submit" class="btn btn-danger mt-3 w-100">Adicionar convidado</button>
                         </form>
                     </div>
                 </div>
-        
-                <!-- Formulário de Cadastro de Convidados em Lote -->
-                <div class="col-md-6">
+            
+                <div class="col-lg-6 col-md-6 col-12">
                     <div class="card p-4">
-                        <!-- Formulário para cadastro em lote -->
+                        <h2 class="h4 mb-3">Cadastrar convidados em lote</h2>
+                        <br>
                         <form action="{% url 'cadastrar_convidados_em_lote' %}" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <h2 class="h4">Cadastrar convidados em lote</h2>
-                            <br>
-                            <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}" class="btn btn-outline-danger mt-1" download>Baixar Arquivo de Exemplo</a>
-                            <br><br>
-                            <label for="arquivo_convidados" class="form-label cor-marrom">Escolha um arquivo (CSV ou Excel)</label>
-                            <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" required class="form-control">
-                            <button type="submit" class="btn btn-danger mt-3" style="width: 100%; border-radius: 20px; text-align: center;">Enviar</button>
+                            <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}" class="btn btn-outline-danger w-100 mb-4" download>Baixar Arquivo de Exemplo</a>
+                            
+                            <label for="arquivo_convidados" class="form-label cor-marrom">Escolha um arquivo</label>
+                            <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" class="form-control">
+                            <button type="submit" class="btn btn-danger mt-3 w-100">Enviar</button>
                         </form>
                     </div>
                 </div>
@@ -161,7 +200,7 @@
         
         <!-- Modal -->
         <div class="modal fade" id="modalEnviarMensagens" tabindex="-1" aria-labelledby="modalEnviarMensagensLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-fullscreen-sm-down">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalEnviarMensagensLabel">Selecionar Convidados para Envio de Mensagem</h5>
@@ -276,9 +315,9 @@
             <br>
 
             <h2 class="h3 mb-4">Lista de Convidados e Acompanhantes</h2>
-            <div class="">
-                <table class="table table-danger table-bordered">
-                    <thead >
+            <div class="table-responsive">
+                <table class="table  table-bordered">
+                    <thead class="table-secondary text-white">
                         <tr>
                             <th class="text-center font-weight-bold">Nome</th>
                             <th class="text-center font-weight-bold">Status</th>
@@ -308,7 +347,7 @@
                                         {% endfor %}
                                     </ul>
                                 {% else %}
-                                    Nenhum acompanhante
+                                    
                                 {% endif %}
                             </td>
                             <td style="font-size: 0.8rem;">{{ convidado.link_convite }}</td>
@@ -337,6 +376,7 @@
         </div>
         <!-- Copyright -->
     </footer>
+</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
     <script>

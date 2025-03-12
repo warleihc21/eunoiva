@@ -1,10 +1,12 @@
 import base64
 import json
+import re
 import pandas as pd
 import csv
 import openpyxl
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, JsonResponse
+import requests
 from core import settings
 from .models import Convidados, ImagemGaleria, ImagemNoivos, MensagemSobreNoivoNoiva, Presentes, MensagemPersonalizada
 from django.contrib.auth.decorators import login_required # type: ignore
@@ -26,6 +28,7 @@ from django.core.files.storage import default_storage
 import os
 from io import BytesIO
 from django.core.files.base import ContentFile
+from urllib.parse import unquote
 
 
 
@@ -41,54 +44,36 @@ def home(request):
         presentes_reservados = presentes.filter(reservado=True)
         total_reservado = sum(presente.preco for presente in presentes_reservados)
 
-        # Buscar os nomes dos cônjuges configurados no Perfil
         perfil = Perfil.objects.get(user=request.user)
         todas_imagens = ImagemGaleria.objects.all()
-        nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
-        nome_segundo_conjuge = perfil.nome_segundo_conjuge
-        data_casamento = perfil.data_casamento
-        imagem = perfil.imagem
-
-
-
+        
         mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
         mensagem_noivo = perfil.mensagens.filter(tipo='noivo').first()
-        # Alterar o filtro para ImagemNoivos e não mais usar perfil.imagem
+
         imagem_noiva = perfil.fotosnoivos.filter(tipo='noiva').first()
         imagem_noivo = perfil.fotosnoivos.filter(tipo='noivo').first()
 
-
-        rua = perfil.rua
-        numero = perfil.numero
-        bairro = perfil.bairro
-        municipio = perfil.municipio
-        estado = perfil.estado
-        pais = perfil.pais
-        cep = perfil.cep
-
-        # Gerando timestamp
         timestamp = int(datetime.now().timestamp())
 
-        # Passar o perfil completo para o template
         return render(request, 'home.html', {
             'presentes': presentes,
             'data': [nao_reservado, reservado],
             'presentes_reservados': presentes_reservados,
             'total_reservado': total_reservado,
-            'nome_primeiro_conjuge': nome_primeiro_conjuge,
-            'nome_segundo_conjuge': nome_segundo_conjuge,
-            'data_casamento': data_casamento,
-            'imagem': imagem,
+            'nome_primeiro_conjuge': perfil.nome_primeiro_conjuge,
+            'nome_segundo_conjuge': perfil.nome_segundo_conjuge,
+            'data_casamento': perfil.data_casamento,
+            'imagem': perfil.imagem,
             'perfil': perfil,
             'todas_imagens': todas_imagens,
-            'timestamp': timestamp,  # Passando o timestamp para o template
-            'rua': rua,
-            'numero': numero,
-            'bairro': bairro,
-            'municipio': municipio,
-            'estado': estado,
-            'pais': pais,
-            'cep': cep,
+            'timestamp': timestamp,
+            'rua': perfil.rua,
+            'numero': perfil.numero,
+            'bairro': perfil.bairro,
+            'municipio': perfil.municipio,
+            'estado': perfil.estado,
+            'pais': perfil.pais,
+            'cep': perfil.cep,
             'mensagem_noiva': mensagem_noiva.mensagem if mensagem_noiva else '',
             'mensagem_noivo': mensagem_noivo.mensagem if mensagem_noivo else '',
             'imagem_noiva': imagem_noiva.imagem if imagem_noiva else '',
@@ -101,14 +86,14 @@ def home(request):
         foto = request.FILES.get('foto')
         preco = request.POST.get('preco')
         link_sugestao_compra = request.POST.get('link_sugestao_compra')
-        link_cobranca = request.POST.get('link_cobranca')  # Novo campo
+        link_cobranca = request.POST.get('link_cobranca')
+
         if ',' in preco:
             preco = preco.replace(',', '.')
         preco = float(preco)
         importancia = int(request.POST.get('importancia', 0) or 0)
 
-
-        if presente_id:  # Se um ID foi enviado, editar o presente existente
+        if presente_id:
             presente = Presentes.objects.get(id=presente_id, user=request.user)
             presente.nome_presente = nome_presente
             presente.preco = preco
@@ -116,22 +101,25 @@ def home(request):
             presente.link_sugestao_compra = link_sugestao_compra
             presente.link_cobranca = link_cobranca
 
-            if foto:  # Se uma nova foto foi enviada, substituir
+            if foto:  
                 presente.foto = foto
 
-            presente.save()  # Salvar as alterações
-        else:  # Se não houver ID, criar um novo presente
-            Presentes.objects.create(
-                user=request.user,
-                nome_presente=nome_presente,
-                foto=foto,
-                preco=preco,
-                importancia=importancia,
-                link_sugestao_compra=link_sugestao_compra,
-                link_cobranca=link_cobranca,
-            )
+            presente.save()
+        else:
+            # Antes de criar um novo, verifica se já foi salvo pela API
+            if not Presentes.objects.filter(nome_presente=nome_presente, user=request.user).exists():
+                Presentes.objects.create(
+                    user=request.user,
+                    nome_presente=nome_presente,
+                    foto=foto,
+                    preco=preco,
+                    importancia=importancia,
+                    link_sugestao_compra=link_sugestao_compra,
+                    link_cobranca=link_cobranca,
+                )
 
     return redirect('home')
+
 
 @login_required(login_url='/auth/logar/')
 def substituir_imagem(request):
@@ -322,6 +310,7 @@ def lista_convidados(request):
             'nao_confirmados': nao_confirmados,
             'mensagem': mensagem.mensagem if mensagem else '',
             'mensagem_url': mensagem_url,
+            'perfil': perfil,
             'nome_primeiro_conjuge': nome_primeiro_conjuge,
             'nome_segundo_conjuge': nome_segundo_conjuge,
             'data_casamento': data_casamento
@@ -716,3 +705,84 @@ def salvar_mensagem(request):
                 'success': False,
                 'error': str(e)
             })
+        
+
+
+
+import requests
+from django.core.files.base import ContentFile
+from io import BytesIO
+from PIL import Image
+
+def buscar_detalhes_produto(request):
+    url = request.GET.get("url", "")
+    if not url:
+        return JsonResponse({"error": "Nenhuma URL fornecida."}, status=400)
+
+    url_decodificada = unquote(url)
+    print(f"URL Decodificada: {url_decodificada}")
+    
+    # Ajustando a expressão regular para capturar item_id, wid e também IDs com hífen
+    match = re.search(r'(item_id:MLB\d+|wid=MLB\d+|MLB-\d+)', url_decodificada)
+
+    if not match:
+        return JsonResponse({"error": "ID do produto não encontrado no link."}, status=400)
+
+    # Verificando qual ID foi encontrado (item_id, wid ou o ID com hífen)
+    produto_id = match.group(0).split(":")[-1] if "item_id" in match.group(0) else match.group(0).split("=")[-1]
+
+    # Removendo o hífen, caso presente
+    produto_id = produto_id.replace('-', '')
+    
+    print(f"ID do produto extraído: {produto_id}")
+
+    try:
+        api_url = f"https://api.mercadolibre.com/items/{produto_id}"
+        print(f"link completo da api: {api_url}")
+        headers = {
+            "Authorization": "Bearer APP_USR-3067363791536171-031019-828942187465facb5d271cc2ada31dcc-153067470",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.get(api_url, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+
+            pictures = data.get("pictures", [])
+            imagem_url = pictures[0].get("secure_url", "") if pictures else ""
+
+            img_file = None
+            if imagem_url:
+                img_response = requests.get(imagem_url)
+                if img_response.status_code == 200:
+                    img = Image.open(BytesIO(img_response.content))
+                    img_name = f"produto_{produto_id}.jpg"
+                    img_io = BytesIO()
+                    img.save(img_io, format='JPEG')
+                    img_file = ContentFile(img_io.getvalue(), name=img_name)
+
+            # Verifica se já existe um presente com esse nome para evitar duplicidade
+            nome_presente = data.get("title", "")
+            if not Presentes.objects.filter(nome_presente=nome_presente, user=request.user).exists():
+                Presentes.objects.create(
+                    user=request.user,
+                    nome_presente=nome_presente,
+                    foto=img_file,
+                    preco=data.get("price", 0),
+                    importancia=0,
+                    link_sugestao_compra=data.get("permalink", ""),
+                )
+
+            return JsonResponse({
+                "nome": nome_presente,
+                "preco": f"{data.get('price', '0,00')}",
+                "imagem": imagem_url,
+            })
+        else:
+            return JsonResponse({"error": "Produto não encontrado ou erro na API."}, status=404)
+
+    except Exception as e:
+        return JsonResponse({"error": f"Erro ao buscar o produto: {str(e)}"}, status=500)
+
+
