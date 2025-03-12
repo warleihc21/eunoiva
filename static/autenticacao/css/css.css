@@ -1,0 +1,91 @@
+.green-background {
+    background-color: rgb(28, 203, 104);
+}
+
+.sidebar{
+    background-color: #ffffff;
+    
+}
+
+.logo_sidebar{
+    text-align: center;
+}
+
+.img_logo_sidebar{
+    width: 100%;
+}
+
+.sidebar{
+    background-image: url("/static/autenticacao/img/fundo_background.png");
+}
+
+.area_cadastrar{
+    
+    margin-top: 8%;
+    margin-left: 15%;
+    width: 70%;
+}
+    
+.titulo{
+    font-weight: bold;
+}
+
+    
+.sub-titulo{
+    color: gray;
+}
+
+   
+.input-form{
+    margin-top: 15px;
+    width: 100%;
+    padding: 5px;
+    outline: 0;
+}
+
+.input-form:focus{
+    border: 2px solid #ffffff !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+    
+.bold{
+    font-weight: bold;  
+}
+    
+.btn-first{
+    border: none;
+    padding: 5px 15px 5px 15px;
+    font-size: 25px;
+    background-color: #000000;
+    color: white;
+    font-weight: bold;
+}
+
+
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #6ea6ff; /* Azul padrão do Google */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%; /* Ajuste conforme necessário */
+}
+
+.btn-google img {
+    height: 20px; /* Ajuste o tamanho da imagem aqui */
+    width: auto;
+    margin-right: 10px; /* Espaçamento entre a imagem e o texto */
+}
+
+.btn-google:hover {
+    background-color: #6ea6ff;
+    color: white;
+}

@@ -295,6 +295,31 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
 
 
 
+/* Animação para o botão "X" */
+.rotate-45 {
+    transform: rotate(45deg);
+}
+
+/* Quando o menu está aberto, o ícone "X" deve mostrar a transformação */
+#menu-icon path {
+    transition: all 0.3s ease;
+}
+
+#menu-toggle.open svg #line-1 {
+    transform: rotate(45deg);
+}
+
+#menu-toggle.open svg #line-2 {
+    opacity: 0;
+}
+
+#menu-toggle.open svg #line-3 {
+    transform: rotate(-45deg);
+}
+
+
+
+
 
 
 

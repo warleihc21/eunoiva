@@ -30,16 +30,40 @@
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
             const menuLinks = mobileMenu.querySelectorAll('a');
+            const menuIcon = document.getElementById('menu-icon');
+            const lines = menuIcon.querySelectorAll('path');
+            
+            // Função para alternar o ícone entre hambúrguer e X
+            function toggleMenuIcon() {
+                if (mobileMenu.classList.contains('show')) {
+                    // Mudar para X
+                    lines[0].setAttribute('d', 'M4 6h16');
+                    lines[1].setAttribute('d', 'M4 12h16');
+                    lines[2].setAttribute('d', 'M4 18h16');
+                    menuIcon.classList.add('rotate-45');
+                } else {
+                    // Voltar para hambúrguer
+                    lines[0].setAttribute('d', 'M4 6h16');
+                    lines[1].setAttribute('d', 'M4 12h16');
+                    lines[2].setAttribute('d', 'M4 18h16');
+                    menuIcon.classList.remove('rotate-45');
+                }
+            }
     
+            // Evento para abrir/fechar o menu ao clicar no toggle
             menuToggle.addEventListener('click', function() {
                 mobileMenu.classList.toggle('show');
+                toggleMenuIcon();
             });
     
+            // Evento para fechar o menu ao clicar em um item
             menuLinks.forEach(link => {
                 link.addEventListener('click', function() {
                     mobileMenu.classList.remove('show');
+                    toggleMenuIcon(); // Resetar o ícone para hambúrguer quando o menu fechar
                 });
             });
+    
         });
     </script>
 </body>
