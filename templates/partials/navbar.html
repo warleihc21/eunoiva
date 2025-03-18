@@ -29,12 +29,12 @@
                     </div>
                 </div>
                 <div class="ml-auto hidden sm:block">
-                    <span class="text-[#be1c3cfd]" style="margin-right: 10px;">Bem-vindo(a), {{ user.username }} !</span>
+                    <span class="cor-vermelho" style="margin-right: 10px;">Bem-vindo(a), {{ user.username }} !</span>
                     <a href="{% url 'sair' %}" class="rounded-md px-3 py-2 text-sm font-medium text-[#be1c3cfd] hover:bg-[#be1c3cfd] hover:text-white">Sair</a>
                 </div>
             </div>
         </div>
-        <button id="menu-toggle" class="absolute top-4 right-4 md:hidden">
+        <button id="menu-toggle" class="absolute top-4 cor-vermelho right-4 md:hidden">
             <svg id="menu-icon" class="w-6 h-6 transition-transform duration-300 ease-in-out" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path id="line-1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16"></path>
                 <path id="line-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
@@ -42,11 +42,11 @@
             </svg>
         </button>
         <div id="mobile-menu" class="mt-2"> 
-            <span class="block py-2 px-4 hover:bg-gray-100">Bem-vindo(a), {{ user.username }} !</span>
-            <a href="{% url 'home' %}" class="block py-2 px-4 hover:bg-gray-100">Home</a>
-            <a href="{% url 'lista_convidados' %}" class="block py-2 px-4 hover:bg-gray-100">Controle de Convidados</a>
-            <a href="{% url 'configurar_perfil' %}" class="block py-2 px-4 hover:bg-gray-100">Editar Perfil</a>
-            <a href="{% url 'sair' %}" class="block py-2 px-4 hover:bg-gray-100">Sair</a>
+            <span class="block py-2 px-4 hover:bg-gray-100 cor-vermelho">Bem-vindo(a), {{ user.username }} !</span>
+            <a href="{% url 'home' %}" class="block py-2 px-4 hover:bg-gray-100 text-[#be1c3cfd]">Home</a>
+            <a href="{% url 'lista_convidados' %}" class="block py-2 px-4 hover:bg-gray-100 text-[#be1c3cfd]">Controle de Convidados</a>
+            <a href="{% url 'configurar_perfil' %}" class="block py-2 px-4 hover:bg-gray-100 text-[#be1c3cfd]">Editar Perfil</a>
+            <a href="{% url 'sair' %}" class="block py-2 px-4 hover:bg-gray-100 text-[#be1c3cfd]">Sair</a>
         </div>
     </div>
  </nav>

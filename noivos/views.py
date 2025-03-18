@@ -63,6 +63,7 @@ def home(request):
             'nome_primeiro_conjuge': perfil.nome_primeiro_conjuge,
             'nome_segundo_conjuge': perfil.nome_segundo_conjuge,
             'data_casamento': perfil.data_casamento,
+            'horario_casamento': perfil.horario_casamento,
             'imagem': perfil.imagem,
             'perfil': perfil,
             'todas_imagens': todas_imagens,
@@ -740,7 +741,7 @@ def buscar_detalhes_produto(request):
         api_url = f"https://api.mercadolibre.com/items/{produto_id}"
         print(f"link completo da api: {api_url}")
         headers = {
-            "Authorization": "Bearer APP_USR-3067363791536171-031019-828942187465facb5d271cc2ada31dcc-153067470",
+            "Authorization": "Bearer APP_USR-3067363791536171-031721-e204233808c50e32fcc2bc4780664921-153067470",
             "Content-Type": "application/json"
         }
 

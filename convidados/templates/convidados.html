@@ -12,13 +12,12 @@
         color: #8B4513;
     }
 
-    .cor-vermelho {
-        color: #be1c3cfd;
+    #confirmacao-presenca {
+        min-height: auto;
+        padding: 40px 20px; /* Ajuste os valores conforme necessário */
     }
 
-    .cor-marrom {
-        color: #8B4513;
-    }
+    
 
     
     /* Estiliza a barra de progresso */
@@ -65,6 +64,11 @@
         border-radius: 24px;  /* Opcional: bordas arredondadas */
     }
 
+    .container {
+    max-width: 1100px; /* Reduza conforme necessário */
+}
+    
+
     .edit-icon {
         position: absolute;
         top: 10px;
@@ -85,9 +89,10 @@
 
     .foto-quadrada {
         width: 100%;
-        aspect-ratio: 1; /* Garante que a altura e a largura sejam iguais, criando um quadrado */
+        aspect-ratio: 1; /* Mantém o formato quadrado */
         position: relative;
         overflow: hidden;
+        border-radius: 30px; /* Arredondamento maior */
     }
 
     .foto-quadrada img {
@@ -95,17 +100,17 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Faz a imagem cobrir completamente o espaço sem distorcer */
+        width: 110%; /* Tornando um pouco maior */
+        height: 110%;
+        object-fit: cover; /* Mantém o enquadramento correto */
         transition: transform 0.4s ease-in-out, border-radius 0.4s ease;
-        border-radius: 50px; /* Aplica o arredondamento nas bordas */
+        border-radius: 30px; /* Aumento do arredondamento */
     }
 
     /* Efeito de zoom no hover */
     .foto-quadrada:hover img {
-        transform: translate(-50%, -50%) scale(1.1); /* Aumenta a imagem ao passar o mouse */
-        border-radius: 50px; /* Garante que o arredondamento seja mantido durante o zoom */
+        transform: translate(-50%, -50%) scale(1.15); /* Leve aumento ao passar o mouse */
+        border-radius: 30px; /* Mantendo o arredondamento */
     }
 
     .imagem-menor {
@@ -117,7 +122,7 @@
     /* Estilo base para os botões */
     .btn {
         display: inline-block;
-        padding: 12px 32px;
+        padding: 6px 16px;
         text-align: center;
         font-size: 14px;
         font-weight: 600;
@@ -125,7 +130,7 @@
         border-radius: 9999px;
         transition: all 0.3s ease;
         cursor: pointer;
-        width: 200px;  /* Define um tamanho fixo para os botões */
+        width: 210px;  /* Define um tamanho fixo para os botões */
         text-decoration: none;
     }
 
@@ -252,112 +257,25 @@
                 <img src="{{ convidado.user.perfil.imagem.url }}" 
                      alt="Imagem do Casamento" 
                      class="imagem-fundo">
+            {% else %}
+            <img src="{% static 'noivos/img/aliancas.jpg' %}" alt="Imagem do Casamento" class="imagem-fundo">
             {% endif %}
             <!-- Camada escura sobre a imagem -->
             <div class="imagem-fundo absolute inset-0 bg-black opacity-40"></div>
             <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-5xl font-semibold drop-shadow-lg">
-                <span class="uppercase text-6xl text-white mb-4">
+                <span class="Comfortaa-Bold uppercase text-5xl text-white mb-4">
                     {{ convidado.user.perfil.nome_primeiro_conjuge }} 
                     & 
                     {{ convidado.user.perfil.nome_segundo_conjuge }}
                 </span>
                 <div class="botao-container">
-                    <a href="#confirmacao-presenca" class="btn btn-primary">Confirmação de presença</a>
+                    <a href="#confirmacao-presenca" class="btn btn-primary">Confirmar presença</a>
                     <a href="#lista-presentes" class="btn btn-secondary">Lista de presentes</a>
                 </div>
+                <p class="Comfortaa-Bold text-lg leading-8 text-white mt-4">{{ convidado.user.perfil.data_casamento|date:"d/m/Y" }} às {{ convidado.user.perfil.horario_casamento|time:"H:i" }}</p>
             </div>
         </div>
-        
-        <br>
 
-        <section id="galeria-imagens" class="section-full-height">
-            <div class="centralizar-imagem mt-24 mb-12">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
-            </div>
-            <div class="grid grid-cols-1 gap-4">
-                <div class="mx-auto max-w-2xl text-center">
-                    <i class="bi bi-camera icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
-                    <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Galeria de fotos</p>
-                    <p class=" text-lg leading-8 cor-marrom">Nossos momentos.</p>
-                </div>
-                <div class="container mt-4">
-                    <div class="row g-4">                        
-                        {% if convidado.user.perfil.galeria.all|length > 0 %}
-                            {% for imagem in convidado.user.perfil.galeria.all|slice:":6" %}
-                                <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-                                    <div class="foto-quadrada">
-                                        <img src="{{ imagem.imagem.url }}" class="img-fluid rounded-4" alt="Imagem da galeria">
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <p>Nenhuma imagem na galeria.</p>
-                        {% endif %}
-
-                    </div>
-                </div>
-            </div>
-        </section>
-        <br>
-
-        <section id="sobre-nos" class="section-full-height">
-            <div class="centralizar-imagem mt-24 mb-12">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="mx-auto">
-            </div>
-            <div class="col-12 gap-4">
-                <div class="mx-auto max-w-2xl text-center">
-                    <i class="bi bi-camera icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
-                    <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Sobre Nós</p>
-                    <p class="text-lg leading-8 cor-marrom">Conheça nossa história.</p>
-                </div>
-            
-                <div class="col-12 gap-4 mt-8"> <!-- Grid de 2 colunas para telas médias e maiores -->
-                    <div class="container mt-4">
-                        <div class="row mt-4 justify-content-center">
-                            <!-- Coluna para a Noiva -->
-                            <div class="col-md-5 mb-3 mx-2">
-                                <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
-                                    {% if imagem_noiva %}
-                                        <img src="{{ imagem_noiva.imagem.url }}" alt="Noiva" class="mb-4 rounded">
-                                    {% else %}
-                                        Em breve teremos uma mensagem especial aqui.
-                                    {% endif %}
-                                </div>
-                                <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">A Noiva</h2>
-                                <p class="cor-marrom text-center text-xl mt-2">
-                                    {% if mensagem_noiva %}
-                                        {{ mensagem_noiva.mensagem }}
-                                    {% else %}
-                                        Em breve teremos uma mensagem especial aqui.
-                                    {% endif %}
-                                </p>
-                            </div>
-                    
-                            <!-- Coluna para o Noivo -->
-                            <div class="col-md-5 mb-3 mx-2">
-                                <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
-                                    {% if imagem_noivo %}
-                                        <img src="{{ imagem_noivo.imagem.url }}" alt="Noivo" class="mb-4 rounded">
-                                    {% else %}
-                                        Em breve teremos uma mensagem especial aqui.
-                                    {% endif %}
-                                </div>
-                                <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">O Noivo</h2>
-                                <p class="cor-marrom text-center text-xl mt-2">
-                                    {% if mensagem_noivo %}
-                                        {{ mensagem_noivo.mensagem }}
-                                    {% else %}
-                                        Em breve teremos uma mensagem especial aqui.
-                                    {% endif %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>        
-        
-        
         <br>        
         <section id="nossa-data" class="section-full-height">
             <div class="centralizar-imagem mt-24 mb-12">
@@ -367,7 +285,8 @@
                 <i class="bi bi-calendar4-week icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
                 <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Nossa data</p>
                 <br>
-                <h1 class="text-balance text-4xl fw-bold tracking-tight cor-vermelho sm:text-5xl">{{ convidado.user.perfil.data_casamento|date:"d/m/Y" }}</h1>
+                
+                <p class=" text-lg leading-8 cor-vermelho sm:text-4xl">{{ convidado.user.perfil.data_casamento|date:"d/m/Y" }} às {{ convidado.user.perfil.horario_casamento|time:"H:i" }}</p>
                 <br>
                 <div id="timer">
                     <div class="campo-tempo">
@@ -389,6 +308,100 @@
                 </div>
             </div>
         </section>
+        
+        <br>
+
+        {% if convidado.user.perfil.galeria.all %}  {# Verifica se a variável imagens contém alguma foto #}
+            <section id="galeria-imagens" class="section-full-height">
+                <div class="centralizar-imagem mt-24 mb-12">
+                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="mx-auto max-w-2xl text-center">
+                        <i class="bi bi-camera icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
+                        <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Galeria de fotos</p>
+                        <p class=" text-lg leading-8 cor-marrom">Nossos momentos.</p>
+                    </div>
+                    <div class="container mt-4">
+                        <div class="row g-4">                        
+                            {% if convidado.user.perfil.galeria.all|length > 0 %}
+                                {% for imagem in convidado.user.perfil.galeria.all|slice:":6" %}
+                                    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+                                        <div class="foto-quadrada">
+                                            <img src="{{ imagem.imagem.url }}" class="img-fluid rounded-4" alt="Imagem da galeria">
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>Nenhuma imagem na galeria.</p>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+        <br>
+
+        <section id="sobre-nos" class="section-full-height">
+            <div class="centralizar-imagem mt-24 mb-12">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="mx-auto">
+            </div>
+            <div class="col-12 gap-4">
+                <div class="mx-auto max-w-2xl text-center">
+                    <i class="bi bi-emoji-smile icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
+                    <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Sobre Nós</p>
+                    <p class="text-lg leading-8 cor-marrom">Conheça nossa história.</p>
+                </div>
+            
+                <div class="col-12 gap-4 mt-8"> <!-- Grid de 2 colunas para telas médias e maiores -->
+                    <div class="container mt-4">
+                        <div class="row mt-4 justify-content-center">
+                            <!-- Coluna para a Noiva -->
+                            <div class="col-md-5 mb-3 mx-3">
+                                <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
+                                    {% if imagem_noiva %}
+                                        <img src="{{ imagem_noiva.imagem.url }}" alt="Noiva" class="mb-4 rounded">
+                                    {% else %}
+                                        Em breve teremos uma mensagem especial aqui.
+                                    {% endif %}
+                                </div>
+                                <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">A Noiva</h2>
+                                <p class="cor-marrom text-center mt-2">
+                                    {% if mensagem_noiva %}
+                                        {{ mensagem_noiva.mensagem }}
+                                    {% else %}
+                                        Em breve teremos uma mensagem especial aqui.
+                                    {% endif %}
+                                </p>
+                            </div>
+                    
+                            <!-- Coluna para o Noivo -->
+                            <div class="col-md-5 mb-3 mx-3">
+                                <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
+                                    {% if imagem_noivo %}
+                                        <img src="{{ imagem_noivo.imagem.url }}" alt="Noivo" class="mb-4 rounded">
+                                    {% else %}
+                                        Em breve teremos uma mensagem especial aqui.
+                                    {% endif %}
+                                </div>
+                                <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">O Noivo</h2>
+                                <p class="cor-marrom text-center mt-2">
+                                    {% if mensagem_noivo %}
+                                        {{ mensagem_noivo.mensagem }}
+                                    {% else %}
+                                        Em breve teremos uma mensagem especial aqui.
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>        
+        
+        
+        
         <br>
         <hr class="mt-12 mb-12"> 
         
@@ -400,7 +413,7 @@
                 <i class="bi bi-envelope icon mt-12 text-balance text-4xl cor-vermelho font-semibold tracking-tight sm:text-5xl"></i>
                 <p class="Comfortaa-Bold mb-12 text-balance text-4xl cor-marrom font-semibold tracking-tight sm:text-5xl">Mensagem</p>
                 
-                <p class="fst-italic flex items-center cor-marrom justify-center text-3xl">
+                <p class="fst-italic flex items-center cor-marrom justify-center text-2xl">
                     {{ convidado.user.perfil.mensagem_noivos }}
                 </p>
             </div>
@@ -514,10 +527,10 @@
                             <div class="card rounded-2xl shadow-lg overflow-hidden 
                                 {% if presente.reservado %} presente-reservado {% endif %}
                                 {% if presente.reservado_por.token == token %} reservado-pelo-convidado {% endif %}"
-                                style="width: 25rem; height: 32rem; position: relative;">
+                                style="width: 22rem; height: 28rem; position: relative;">
         
                                 <!-- Exibição da imagem do presente -->
-                                <div class="card-img-container rounded-top-2xl" style="height: 20rem; overflow: hidden;">
+                                <div class="card-img-container rounded-top-2xl" style="height: 15rem; overflow: hidden;">
                                     {% if presente.foto %}
                                         <img class="w-100 h-100 object-fit-contain rounded-top-2xl" src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}">
                                     {% else %}
@@ -525,45 +538,40 @@
                                     {% endif %}
                                 </div>
                                 
-                                <div class="card-body rounded-bottom-2xl p-4 bg-white" style="position: absolute; bottom: 0; width: 100%;">
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <h3 class="card-title cor-vermelho m-0">{{ presente.nome_presente }}</h3>
-                                        <p class="card-text cor-vermelho m-0">R$ {{ presente.preco|floatformat:2|default:"0.00" }}</p>
-
-                                    </div>
-        
-                                    <div class="d-flex justify-content-center gap-2 mt-3">
+                                <div class="card-body rounded-bottom-2xl p-4 bg-white d-flex flex-column justify-content-center align-items-center text-center gap-3">
+                                    <h3 class="card-title cor-vermelho m-0">{{ presente.nome_presente }}</h3>
+                                    <p class="card-text cor-vermelho">R$ {{ presente.preco|floatformat:2|default:"0.00" }}</p>
+                                
+                                    <div class="d-flex justify-content-center gap-2 w-100">
                                         {% if presente.link_sugestao_compra %}
-                                            <a class="btn btn-danger btn-sm flex-grow-1 rounded-pill text-center {% if presente.reservado %} disabled {% endif %}" 
-                                            href="{{ presente.link_sugestao_compra }}" 
-                                            target="_blank">
+                                            <a class="btn btn-danger btn-sm flex-grow-1 rounded-pill {% if presente.reservado %} disabled {% endif %}" 
+                                               href="{{ presente.link_sugestao_compra }}" target="_blank">
                                                 <i class="fas fa-shopping-cart"></i> Comprar
                                             </a>
                                         {% endif %}
                                     
                                         {% if presente.reservado %}
-                                            <button type="button" class="btn btn-success btn-sm flex-grow-1 rounded-pill text-center" disabled>
+                                            <button type="button" class="btn btn-success btn-sm flex-grow-1 rounded-pill" disabled>
                                                 Reservado
                                             </button>
                                         {% else %}
                                             <button type="button" 
-                                                class="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill text-center" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modal{{ presente.id }}">
-                                                Reservar
+                                                    class="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#modal{{ presente.id }}">
+                                                    <i class="fa fa-check"></i> Reservar
                                             </button>
                                         {% endif %}
                                     </div>
-        
+                                
                                     {% if presente.reservado_por and presente.reservado_por.token == token %}
-                                    <form action="{% url 'cancelar_reserva' presente.id %}?token={{ token }}" method="POST">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100 mt-2">Cancelar Reserva</button>
-                                    </form>
-                                    
+                                        <form action="{% url 'cancelar_reserva' presente.id %}?token={{ token }}" method="POST" class="w-100">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100 mt-2">Cancelar Reserva</button>
+                                        </form>
                                     {% endif %}
-        
                                 </div>
+                                
                             </div>
                         </div>
         
@@ -625,7 +633,7 @@
             <div class="centralizar-imagem mt-24 mb-12">
                 <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
             </div>
-            <div class="mt-8 bg-white p-6 rounded-md shadow-md">
+            <div class="mt-8 p-6 rounded-md shadow-md">
                 <div class="text-center">
                     <i class="bi bi-geo-alt icon text-balance text-4xl font-semibold cor-vermelho sm:text-5xl"></i>
                     <h2 class="Comfortaa-Bold mb-12 text-balance text-4xl mt-2 font-semibold tracking-tight sm:text-5xl cor-marrom">
@@ -704,29 +712,27 @@
 
         // Certifique-se de que a data seja passada corretamente do Django para o JavaScript
         const dataCasamento = "{{ convidado.user.perfil.data_casamento|date:'Y-m-d' }}";
+        const horarioCasamento = "{{ convidado.user.perfil.horario_casamento|time:'H:i:s' }}";
 
         function iniciarContador() {
-            if (!dataCasamento || isNaN(new Date(dataCasamento))) {
-                console.error("A data de casamento fornecida é inválida.");
+            if (!dataCasamento || !horarioCasamento) {
+                console.error("A data ou o horário do casamento não foram fornecidos.");
                 return;
             }
-    
-            const fim = new Date(dataCasamento).getTime();
-    
-            // Verifique se os elementos do timer existem
-            if (!document.getElementById("dias") || 
-                !document.getElementById("horas") || 
-                !document.getElementById("minutos") || 
-                !document.getElementById("segundos")) {
-                console.error("Elementos do contador não encontrados no HTML.");
+
+            // Criando a string completa da data e hora
+            const casamentoDataHora = new Date(`${dataCasamento}T${horarioCasamento}`);
+            const fim = casamentoDataHora.getTime();
+
+            if (isNaN(fim)) {
+                console.error("A data e hora do casamento são inválidas.");
                 return;
             }
-    
-            // Função do contador regressivo
+
             const contador = setInterval(() => {
-                const agora = Date.now();
+                const agora = new Date().getTime();
                 const tempoRestante = fim - agora;
-    
+
                 if (tempoRestante <= 0) {
                     clearInterval(contador);
                     document.getElementById("timer").innerHTML = `
@@ -735,15 +741,14 @@
                         </div>`;
                     return;
                 }
-    
+
                 const tempo = {
                     dias: Math.floor(tempoRestante / (1000 * 60 * 60 * 24)),
                     horas: Math.floor((tempoRestante / (1000 * 60 * 60)) % 24),
                     minutos: Math.floor((tempoRestante / (1000 * 60)) % 60),
                     segundos: Math.floor((tempoRestante / 1000) % 60)
                 };
-    
-                // Atualizar os valores no HTML
+
                 for (const unidade in tempo) {
                     document.getElementById(unidade).innerText = String(tempo[unidade]).padStart(2, '0');
                 }

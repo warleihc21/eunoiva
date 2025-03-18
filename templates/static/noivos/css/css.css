@@ -101,11 +101,11 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
 }
 
 .card-title {
-    font-size: 1.3rem; /* Tamanho da fonte reduzido */
+    font-size: 1.0rem; /* Tamanho da fonte reduzido */
     font-weight: 600;
     color: #333;
     text-align: center;
-    margin-bottom: 4px; /* Espaçamento reduzido */
+    margin-bottom: 3px; /* Espaçamento reduzido */
 }
 
 .reserved-text {
@@ -315,6 +315,15 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
 
 #menu-toggle.open svg #line-3 {
     transform: rotate(-45deg);
+}
+
+
+.cor-vermelho {
+    color: #be1c3cfd;
+}
+
+.cor-marrom {
+    color: #8B4513;
 }
 
 

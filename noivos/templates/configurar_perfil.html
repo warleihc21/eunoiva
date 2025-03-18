@@ -102,9 +102,15 @@
                     <label for="nome_segundo_conjuge" class="form-label cor-vermelho">Nome do segundo cônjuge</label>
                     <input type="text" id="nome_segundo_conjuge" name="nome_segundo_conjuge" class="form-control" value="{{ perfil.nome_segundo_conjuge }}">
                 </div>
-                <div class="mb-3">
-                    <label for="data_casamento" class="form-label cor-vermelho">Data do casamento</label>
-                    <input type="date" id="data_casamento" name="data_casamento" class="form-control" value="{{ perfil.data_casamento|date:'Y-m-d' }}">
+                <div class="row">
+                    <div class="col-8 mb-3">
+                        <label for="data_casamento" class="form-label cor-vermelho">Data do casamento</label>
+                        <input type="date" id="data_casamento" name="data_casamento" class="form-control" value="{{ perfil.data_casamento|date:'Y-m-d' }}">
+                    </div>
+                    <div class="col-4 mb-3">
+                        <label for="data_casamento" class="form-label cor-vermelho">horário do casamento</label>
+                        <input type="time" id="horario_casamento" name="horario_casamento" class="form-control" value="{{ perfil.horario_casamento|time:'H:i' }}">
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="imagem" class="form-label cor-vermelho">Imagem de perfil</label>

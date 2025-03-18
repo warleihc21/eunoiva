@@ -116,6 +116,7 @@ def configurar_perfil(request):
         nome_primeiro_conjuge = request.POST.get('nome_primeiro_conjuge')
         nome_segundo_conjuge = request.POST.get('nome_segundo_conjuge')
         data_casamento = request.POST.get('data_casamento')
+        horario_casamento = request.POST.get('horario_casamento')
         mensagem_noivos = request.POST.get('mensagem_noivos')
 
         # Campos do endereço
@@ -137,6 +138,7 @@ def configurar_perfil(request):
         perfil.nome_primeiro_conjuge = nome_primeiro_conjuge
         perfil.nome_segundo_conjuge = nome_segundo_conjuge
         perfil.data_casamento = data_casamento
+        perfil.horario_casamento = horario_casamento
         perfil.mensagem_noivos = mensagem_noivos
         perfil.cep = cep
         perfil.rua = rua

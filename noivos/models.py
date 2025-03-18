@@ -10,12 +10,12 @@ from django.core.validators import FileExtensionValidator
 
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nome_primeiro_conjuge = models.CharField(max_length=100, blank=True, null=True)  # Primeiro cônjuge
-    nome_segundo_conjuge = models.CharField(max_length=100, blank=True, null=True)  # Segundo cônjuge
+    nome_primeiro_conjuge = models.CharField(max_length=100, blank=True, null=True)
+    nome_segundo_conjuge = models.CharField(max_length=100, blank=True, null=True)
     data_casamento = models.DateField(blank=True, null=True)
+    horario_casamento = models.TimeField(blank=True, null=True)  # Novo campo para horário do casamento
     imagem = models.ImageField(upload_to='imagens_perfil/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])])
     mensagem_noivos = models.TextField(blank=True, null=True)
-
 
     configurado = models.BooleanField(default=False)
 

@@ -138,7 +138,7 @@
             <div class="w-full md:w-2/3 text-center md:text-left">
                 <p class="cor-vermelho">Bem-vindos, {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</p>
                 <p class="cor-vermelho">Nossa data</p>
-                <h2 class="text-2xl font-semibold mb-4 cor-vermelho">{{ data_casamento|date:"d/m/Y" }}</h2>
+                <h2 class="text-2xl font-semibold mb-4 cor-vermelho">{{ data_casamento|date:"d/m/Y" }} às {{ horario_casamento|time:"H:i" }}</h2>
                 
                 <!-- Contador regressivo -->
                 <div id="timer" class="flex justify-center md:justify-start flex-wrap gap-4">
@@ -610,25 +610,25 @@
 
 
         const dataCasamento = "{{ data_casamento|date:'Y-m-d' }}";
+        const horarioCasamento = "{{ horario_casamento|time:'H:i:s' }}";
 
         function iniciarContador() {
-            if (!dataCasamento || isNaN(new Date(dataCasamento))) {
-                console.error("A data de casamento fornecida é inválida.");
+            if (!dataCasamento || !horarioCasamento) {
+                console.error("A data ou o horário do casamento não foram fornecidos.");
                 return;
             }
 
-            const fim = new Date(dataCasamento).getTime();
+            // Criando a string completa da data e hora
+            const casamentoDataHora = new Date(`${dataCasamento}T${horarioCasamento}`);
+            const fim = casamentoDataHora.getTime();
 
-            if (!document.getElementById("dias") || 
-                !document.getElementById("horas") || 
-                !document.getElementById("minutos") || 
-                !document.getElementById("segundos")) {
-                console.error("Elementos do contador não encontrados no HTML.");
+            if (isNaN(fim)) {
+                console.error("A data e hora do casamento são inválidas.");
                 return;
             }
 
             const contador = setInterval(() => {
-                const agora = Date.now();
+                const agora = new Date().getTime();
                 const tempoRestante = fim - agora;
 
                 if (tempoRestante <= 0) {
