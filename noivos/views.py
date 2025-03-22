@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, JsonResponse
 import requests
 from core import settings
-from .models import Convidados, ImagemGaleria, ImagemNoivos, MensagemSobreNoivoNoiva, Presentes, MensagemPersonalizada
+from .models import Convidados, ImagemGaleria, ImagemNoivos, MensagemAosNoivos, MensagemSobreNoivoNoiva, Presentes, MensagemPersonalizada
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.core.exceptions import ValidationError
 from django.contrib import messages
@@ -45,6 +45,7 @@ def home(request):
         total_reservado = sum(presente.preco for presente in presentes_reservados)
 
         perfil = Perfil.objects.get(user=request.user)
+        mensagens = MensagemAosNoivos.objects.filter(user=request.user).order_by('-data_envio')
         todas_imagens = ImagemGaleria.objects.all()
         
         mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
@@ -66,6 +67,7 @@ def home(request):
             'horario_casamento': perfil.horario_casamento,
             'imagem': perfil.imagem,
             'perfil': perfil,
+            'mensagens': mensagens,
             'todas_imagens': todas_imagens,
             'timestamp': timestamp,
             'rua': perfil.rua,
@@ -120,6 +122,8 @@ def home(request):
                 )
 
     return redirect('home')
+
+
 
 
 @login_required(login_url='/auth/logar/')
@@ -201,96 +205,6 @@ def editar_mensagem(request):
         return redirect('home')
 
 
-
-
-
-def home1(request):
-    if request.method == "GET":
-        presentes = Presentes.objects.filter(user=request.user)
-        nao_reservado = presentes.filter(reservado=False).count()
-        reservado = presentes.filter(reservado=True).count()
-
-        presentes_reservados = presentes.filter(reservado=True)
-        total_reservado = sum(presente.preco for presente in presentes_reservados)
-        convidados = Convidados.objects.filter(user=request.user)
-        nao_confirmados = convidados.filter(status='AC')
-
-        # Buscar os nomes dos cônjuges configurados no Perfil
-        perfil = Perfil.objects.get(user=request.user)
-        nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
-        nome_segundo_conjuge = perfil.nome_segundo_conjuge
-        data_casamento = perfil.data_casamento
-        imagem = perfil.imagem
-
-        rua = perfil.rua
-        numero = perfil.numero
-        bairro = perfil.bairro
-        municipio = perfil.municipio
-        estado = perfil.estado
-        pais = perfil.pais
-        cep = perfil.cep
-
-        data = [nao_reservado, reservado]
-        return render(request, 'home1.html', {
-            'presentes': presentes,
-            'data': data,
-            'presentes_reservados': presentes_reservados,
-            'total_reservado': total_reservado,
-            'convidados': convidados,
-            'nao_confirmados': nao_confirmados,
-            'nome_primeiro_conjuge': nome_primeiro_conjuge,
-            'nome_segundo_conjuge': nome_segundo_conjuge,
-            'data_casamento': data_casamento,
-            'imagem': imagem,
-            'perfil': perfil,
-            'rua': rua,
-            'numero': numero,
-            'bairro': bairro,
-            'municipio': municipio,
-            'estado': estado,
-            'pais': pais,
-            'cep': cep,
-        })
-
-    elif request.method == "POST":
-        nome_presente = request.POST.get('nome_presente')
-        foto = request.FILES.get('foto')
-        preco = request.POST.get('preco')
-        link_sugestao_compra = request.POST.get('link_sugestao_compra')
-        link_cobranca = request.POST.get('link_cobranca')  # Novo campo
-        if ',' in preco:
-            preco = preco.replace(',', '.')
-        preco = float(preco)
-        importancia = int(request.POST.get('importancia'))
-
-        Presentes.objects.create(
-            user=request.user,
-            nome_presente=nome_presente,
-            foto=foto,
-            preco=preco,
-            importancia=importancia,
-            link_sugestao_compra=link_sugestao_compra,
-            link_cobranca=link_cobranca,
-        )
-        
-    elif request.method == 'POST':
-        nome_convidado = request.POST.get('nome_convidado')
-        whatsapp = request.POST.get('whatsapp')
-        maximo_acompanhantes = int(request.POST.get('maximo_acompanhantes', 0))
-        Convidados.objects.create(
-            user=request.user,
-            nome_convidado=nome_convidado,
-            whatsapp=whatsapp,
-            maximo_acompanhantes=maximo_acompanhantes
-        )
-        
-    return redirect('home1')
-
-    
-
-def service_details(request):
-    return render(request, 'service-details.html'   )
-
    
 
 
@@ -330,91 +244,7 @@ def lista_convidados(request):
         )
         return redirect('lista_convidados')
 
-def guest_details(request):
-    if request.method == 'GET':
-        filtro = request.GET.get('filtro', 'Todos')  # 'Todos' será o padrão
-        convidados = Convidados.objects.filter(user=request.user).order_by('nome_convidado')
 
-        if filtro == 'Confirmados':
-            convidados = convidados.filter(status='C')  # Confirmados
-        elif filtro == 'Aguardando Confirmacao':
-            convidados = convidados.filter(status='AC')  # Aguardando confirmação
-        elif filtro == 'Com Acompanhantes':
-            convidados = convidados.filter(status='C', acompanhantes__isnull=False)  # Confirmados com acompanhantes
-        elif filtro == 'Sem Acompanhantes':
-            convidados = convidados.filter(status='C').exclude(acompanhantes__isnull=False)  # Confirmados sem acompanhantes
-
-        return render(request, 'guest-details.html', {
-            'convidados': convidados,
-            'filtro': filtro
-        })
-    elif request.method == "POST":
-        nome_presente = request.POST.get('nome_presente')
-        foto = request.FILES.get('foto')
-        preco = request.POST.get('preco')
-        link_sugestao_compra = request.POST.get('link_sugestao_compra')
-        link_cobranca = request.POST.get('link_cobranca')  # Novo campo
-        if ',' in preco:
-            preco = preco.replace(',', '.')
-        preco = float(preco)
-        importancia = int(request.POST.get('importancia'))
-
-        Presentes.objects.create(
-            user=request.user,
-            nome_presente=nome_presente,
-            foto=foto,
-            preco=preco,
-            importancia=importancia,
-            link_sugestao_compra=link_sugestao_compra,
-            link_cobranca=link_cobranca,
-        )
-        return redirect('guest_details')
-    
-
-def details_gifts(request):
-    if request.method == "GET":
-        presentes = Presentes.objects.filter(user=request.user)
-        nao_reservado = presentes.filter(reservado=False).count()
-        reservado = presentes.filter(reservado=True).count()
-
-        presentes_reservados = presentes.filter(reservado=True)
-        total_reservado = sum(presente.preco for presente in presentes_reservados)
-        
-        data = [nao_reservado, reservado]
-        return render(request, 'detail-gifts.html', {
-            'presentes': presentes,
-            'data': data,
-            'presentes_reservados': presentes_reservados,
-            'total_reservado': total_reservado,
-
-        })
-    
-
-
-    elif request.method == "POST":
-        nome_presente = request.POST.get('nome_presente')
-        foto = request.FILES.get('foto')
-        preco = request.POST.get('preco')
-        link_sugestao_compra = request.POST.get('link_sugestao_compra')
-        link_cobranca = request.POST.get('link_cobranca')  # Novo campo
-        if ',' in preco:
-            preco = preco.replace(',', '.')
-        preco = float(preco)
-        importancia = int(request.POST.get('importancia'))
-
-        Presentes.objects.create(
-            user=request.user,
-            nome_presente=nome_presente,
-            foto=foto,
-            preco=preco,
-            importancia=importancia,
-            link_sugestao_compra=link_sugestao_compra,
-            link_cobranca=link_cobranca,
-        )
-        return redirect('details_gifts')
-    
-def portfolio_details(request):
-    return render(request, 'portfolio-details.html')
 
 
 
@@ -741,7 +571,7 @@ def buscar_detalhes_produto(request):
         api_url = f"https://api.mercadolibre.com/items/{produto_id}"
         print(f"link completo da api: {api_url}")
         headers = {
-            "Authorization": "Bearer APP_USR-3067363791536171-031721-e204233808c50e32fcc2bc4780664921-153067470",
+            "Authorization": "Bearer APP_USR-3067363791536171-032207-48a3d7e64b373bf09c0f3cd9b5d763d0-153067470",
             "Content-Type": "application/json"
         }
 

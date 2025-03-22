@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
 from django.urls import reverse
-from noivos.models import Convidados, ImagemNoivos, MensagemSobreNoivoNoiva, Perfil, Presentes, Acompanhante
+from noivos.models import Convidados, ImagemNoivos, MensagemAosNoivos, MensagemSobreNoivoNoiva, Perfil, Presentes, Acompanhante
 from datetime import datetime
 
 
@@ -106,3 +106,23 @@ def excluir_acompanhante(request, token, acompanhante_id):
         messages.success(request, 'Acompanhante excluído com sucesso!')
 
     return redirect(f"{reverse('convidados')}?token={token}")
+
+
+def mensagem_aos_noivos(request):
+    token = request.GET.get('token')
+    convidado = get_object_or_404(Convidados, token=token)
+
+    if request.method == 'POST':
+        texto_mensagem = request.POST.get('texto_mensagem')
+        if texto_mensagem:
+            MensagemAosNoivos.objects.create(
+                user=convidado.user,
+                texto_mensagem=texto_mensagem,
+                escrita_por=convidado
+            )
+            messages.success(request, 'Mensagem enviada com sucesso!')
+        else:
+            messages.error(request, 'A mensagem não pode estar vazia.')
+
+    return redirect(f"{reverse('convidados')}?token={token}")
+

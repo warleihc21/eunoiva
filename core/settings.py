@@ -30,11 +30,11 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'be6a-2804-14c-5bb0-85c5-6f2e-7299-81f4-199.ngrok-free.app'
+    'c476-2804-14c-5bb0-85c5-6f2e-7299-81f4-199.ngrok-free.app'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://be6a-2804-14c-5bb0-85c5-6f2e-7299-81f4-199.ngrok-free.app'
+    'https://c476-2804-14c-5bb0-85c5-6f2e-7299-81f4-199.ngrok-free.app'
 ]
 
 
@@ -56,7 +56,16 @@ INSTALLED_APPS = [
     'noivos',
     'convidados',
     'autenticacao',
+    'ckeditor',
 ]
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',  # Barra de ferramentas completa
+        'height': 300,       # Altura do editor
+        'width': '100%',     # Largura do editor
+    },
+}
 
 SITE_ID = 1
 

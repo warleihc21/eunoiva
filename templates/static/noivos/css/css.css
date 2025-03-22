@@ -275,11 +275,10 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
 }
 
 .imagem-fundo {
-    position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Faz a imagem cobrir a tela sem distorção */
-    object-position: center;
+    object-fit: cover; /* Faz a imagem cobrir o espaço sem distorção */
+    object-position: center; /* Centraliza a imagem */
 }
 
 @media (max-width: 768px) {
@@ -292,6 +291,8 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
         width: 100%;
     }
 }
+
+
 
 
 
@@ -326,7 +327,63 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
     color: #8B4513;
 }
 
+.mensagem {
+    transition: transform 0.2s ease-in-out;
+}
 
+.mensagem:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Estilos para o botão de toggler */
+.navbar-toggler {
+    border: none; /* Remove a borda padrão */
+    padding: 0.5rem; /* Adiciona um pouco de padding */
+}
+
+.navbar-toggler:focus {
+    outline: none; /* Remove o outline ao focar */
+    box-shadow: none; /* Remove a sombra ao focar */
+}
+
+/* Estilos para o ícone do botão de toggler */
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(190, 28, 60, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Estilos para o menu colapsável em dispositivos móveis */
+@media (max-width: 768px) {
+    .navbar-collapse {
+        background-color: rgba(255, 255, 255, 0.95); /* Fundo levemente transparente */
+        padding: 1rem; /* Adiciona padding */
+        border-radius: 8px; /* Bordas arredondadas */
+        margin-top: 0.5rem; /* Espaçamento acima do menu */
+    }
+
+    .navbar-nav {
+        margin-top: 0.5rem; /* Espaçamento entre os itens do menu */
+    }
+
+    .navbar-nav .nav-item {
+        text-align: center; /* Centraliza os itens do menu */
+    }
+
+    .navbar-nav .nav-link {
+        padding: 0.5rem 1rem; /* Adiciona padding aos links */
+    }
+
+    .navbar-text {
+        text-align: center; /* Centraliza o texto de boas-vindas */
+        margin: 0.5rem 0; /* Adiciona margem */
+    }
+
+    .btn {
+        width: 100%; /* Faz o botão ocupar a largura total */
+        margin-top: 0.5rem; /* Adiciona margem acima do botão */
+    }
+}
 
 
 

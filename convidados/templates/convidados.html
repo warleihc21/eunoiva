@@ -17,6 +17,18 @@
         padding: 40px 20px; /* Ajuste os valores conforme necessário */
     }
 
+
+    /* Estilo para o botão de buscar */
+    .btn-danger {
+        background-color: #be1c3cfd;
+        border-color: #be1c3cfd;
+    }
+
+    .btn-danger:hover {
+        background-color: #DC143C;
+        border-color: #DC143C;
+    }
+
     
 
     
@@ -65,8 +77,8 @@
     }
 
     .container {
-    max-width: 1100px; /* Reduza conforme necessário */
-}
+        max-width: 1100px; /* Reduza conforme necessário */
+    }
     
 
     .edit-icon {
@@ -170,6 +182,7 @@
         border-color: white;
     }
 
+
     /* Ajustes para telas menores */
     @media (max-width: 768px) {
         .foto-quadrada {
@@ -241,9 +254,9 @@
 
 
 {% include "partials/navbar_convidados.html" %}
-    <div class="max-w-8xl mx-auto mt-14">
+    <div class="container-fluid p-0" style="padding-top: 56px;">
         {% if messages %}
-            <div class="max-w-7xl mx-auto mt-12">
+            <div class="container mt-4">
                 {% for message in messages %}
                     <div class="alert {{ message.tags }}">
                         {{ message }}
@@ -251,44 +264,60 @@
                 {% endfor %}
             </div>
         {% endif %}
+
         <!-- Seção de imagem com os nomes dos cônjuges no centro e efeito de escurecimento -->
-        <div class="relative w-full h-screen">
+        <div class="position-relative vh-100" style="padding-top: 56px;">
             {% if convidado.user.perfil.imagem %}
                 <img src="{{ convidado.user.perfil.imagem.url }}" 
-                     alt="Imagem do Casamento" 
-                     class="imagem-fundo">
+                    alt="Imagem do Casamento" 
+                    class="imagem-fundo w-100 h-100 object-fit-cover">
             {% else %}
-            <img src="{% static 'noivos/img/aliancas.jpg' %}" alt="Imagem do Casamento" class="imagem-fundo">
+                <img src="{% static 'noivos/img/aliancas.jpg' %}" 
+                    alt="Imagem do Casamento" 
+                    class="imagem-fundo w-100 h-100 object-fit-cover">
             {% endif %}
+
             <!-- Camada escura sobre a imagem -->
-            <div class="imagem-fundo absolute inset-0 bg-black opacity-40"></div>
-            <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-5xl font-semibold drop-shadow-lg">
-                <span class="Comfortaa-Bold uppercase text-5xl text-white mb-4">
+            <div class="position-absolute top-0 start-0 w-100 h-100 bg-black" style="opacity: 0.4;"></div>
+
+            <!-- Conteúdo centralizado sobre a imagem -->
+            <div class="position-absolute top-50 start-50 translate-middle text-center">
+                <span class="text-uppercase display-4 mb-4 text-white">
                     {{ convidado.user.perfil.nome_primeiro_conjuge }} 
                     & 
                     {{ convidado.user.perfil.nome_segundo_conjuge }}
                 </span>
-                <div class="botao-container">
+                <div class="d-flex justify-content-center gap-3 mb-4 mt-2">
                     <a href="#confirmacao-presenca" class="btn btn-primary">Confirmar presença</a>
                     <a href="#lista-presentes" class="btn btn-secondary">Lista de presentes</a>
                 </div>
-                <p class="Comfortaa-Bold text-lg leading-8 text-white mt-4">{{ convidado.user.perfil.data_casamento|date:"d/m/Y" }} às {{ convidado.user.perfil.horario_casamento|time:"H:i" }}</p>
+                <p class="lead text-white">
+                    {{ convidado.user.perfil.data_casamento|date:"d/m/Y" }} às {{ convidado.user.perfil.horario_casamento|time:"H:i" }}
+                </p>
             </div>
         </div>
 
         <br>        
-        <section id="nossa-data" class="section-full-height">
-            <div class="centralizar-imagem mt-24 mb-12">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
-            </div>
-            <div class="mx-auto max-w-2xl text-center">
-                <i class="bi bi-calendar4-week icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
-                <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Nossa data</p>
-                <br>
-                
-                <p class=" text-lg leading-8 cor-vermelho sm:text-4xl">{{ convidado.user.perfil.data_casamento|date:"d/m/Y" }} às {{ convidado.user.perfil.horario_casamento|time:"H:i" }}</p>
-                <br>
-                <div id="timer">
+        <section id="nossa-data" class="py-5">
+            <div class="container text-center">
+                <!-- Imagem centralizada -->
+                <div class="mb-4">
+                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
+                </div>
+        
+                <!-- Ícone e título -->
+                <div class="mb-4">
+                    <i class="bi bi-calendar4-week fs-1 cor-vermelho"></i>
+                    <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Nossa data</h2>
+                </div>
+        
+                <!-- Data e horário do casamento -->
+                <p class="fs-4 cor-vermelho mb-4">
+                    {{ convidado.user.perfil.data_casamento|date:"d/m/Y" }} às {{ convidado.user.perfil.horario_casamento|time:"H:i" }}
+                </p>
+        
+                <!-- Contador regressivo -->
+                <div id="timer" class="d-flex justify-content-center gap-3">
                     <div class="campo-tempo">
                         <span id="dias" class="valor-tempo">00</span>
                         <span class="rotulo-tempo">dias</span>
@@ -312,155 +341,179 @@
         <br>
 
         {% if convidado.user.perfil.galeria.all %}  {# Verifica se a variável imagens contém alguma foto #}
-            <section id="galeria-imagens" class="section-full-height">
-                <div class="centralizar-imagem mt-24 mb-12">
-                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
+            <section id="galeria-imagens" class="py-5">
+                <div class="text-center mb-5">
+                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid" style="max-width: 200px;">
                 </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="mx-auto max-w-2xl text-center">
-                        <i class="bi bi-camera icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
-                        <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Galeria de fotos</p>
-                        <p class=" text-lg leading-8 cor-marrom">Nossos momentos.</p>
+                <div class="container">
+                    <div class="text-center">
+                        <i class="bi bi-camera fs-1 cor-vermelho"></i>
+                        <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Galeria de fotos</h2>
+                        <p class="lead cor-marrom">Nossos momentos.</p>
                     </div>
-                    <div class="container mt-4">
-                        <div class="row g-4">                        
-                            {% if convidado.user.perfil.galeria.all|length > 0 %}
-                                {% for imagem in convidado.user.perfil.galeria.all|slice:":6" %}
-                                    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-                                        <div class="foto-quadrada">
-                                            <img src="{{ imagem.imagem.url }}" class="img-fluid rounded-4" alt="Imagem da galeria">
-                                        </div>
+                    <div class="row mt-4 g-4">
+                        {% if convidado.user.perfil.galeria.all|length > 0 %}
+                            {% for imagem in convidado.user.perfil.galeria.all|slice:":6" %}
+                                <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+                                    <div class="foto-quadrada">
+                                        <img src="{{ imagem.imagem.url }}" class="img-fluid rounded" alt="Imagem da galeria" style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
-                                {% endfor %}
-                            {% else %}
-                                <p>Nenhuma imagem na galeria.</p>
-                            {% endif %}
-
-                        </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-center">Nenhuma imagem na galeria.</p>
+                        {% endif %}
                     </div>
                 </div>
             </section>
         {% endif %}
         <br>
 
-        <section id="sobre-nos" class="section-full-height">
-            <div class="centralizar-imagem mt-24 mb-12">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="mx-auto">
+        <section id="sobre-nos" class="py-5">
+            <div class="text-center mb-5">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid mx-auto">
             </div>
-            <div class="col-12 gap-4">
-                <div class="mx-auto max-w-2xl text-center">
-                    <i class="bi bi-emoji-smile icon mt-24 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
-                    <p class="Comfortaa-Bold text-balance text-4xl mt-2 font-semibold cor-marrom tracking-tight sm:text-5xl">Sobre Nós</p>
-                    <p class="text-lg leading-8 cor-marrom">Conheça nossa história.</p>
+            <div class="container">
+                <div class="text-center">
+                    <i class="bi bi-emoji-smile fs-1 cor-vermelho"></i>
+                    <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Sobre Nós</h2>
+                    <p class="lead cor-marrom">Conheça nossa história.</p>
                 </div>
-            
-                <div class="col-12 gap-4 mt-8"> <!-- Grid de 2 colunas para telas médias e maiores -->
-                    <div class="container mt-4">
-                        <div class="row mt-4 justify-content-center">
-                            <!-- Coluna para a Noiva -->
-                            <div class="col-md-5 mb-3 mx-3">
-                                <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
-                                    {% if imagem_noiva %}
-                                        <img src="{{ imagem_noiva.imagem.url }}" alt="Noiva" class="mb-4 rounded">
-                                    {% else %}
-                                        Em breve teremos uma mensagem especial aqui.
-                                    {% endif %}
-                                </div>
-                                <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">A Noiva</h2>
-                                <p class="cor-marrom text-center mt-2">
-                                    {% if mensagem_noiva %}
-                                        {{ mensagem_noiva.mensagem }}
-                                    {% else %}
-                                        Em breve teremos uma mensagem especial aqui.
-                                    {% endif %}
-                                </p>
-                            </div>
-                    
-                            <!-- Coluna para o Noivo -->
-                            <div class="col-md-5 mb-3 mx-3">
-                                <div class="foto-quadrada"> <!-- Definindo altura e largura fixas para manter quadrado -->
-                                    {% if imagem_noivo %}
-                                        <img src="{{ imagem_noivo.imagem.url }}" alt="Noivo" class="mb-4 rounded">
-                                    {% else %}
-                                        Em breve teremos uma mensagem especial aqui.
-                                    {% endif %}
-                                </div>
-                                <h2 class="text-balance text-center text-xl font-semibold mt-4 mb-2tracking-tight">O Noivo</h2>
-                                <p class="cor-marrom text-center mt-2">
-                                    {% if mensagem_noivo %}
-                                        {{ mensagem_noivo.mensagem }}
-                                    {% else %}
-                                        Em breve teremos uma mensagem especial aqui.
-                                    {% endif %}
-                                </p>
-                            </div>
+        
+                <div class="row mt-4 justify-content-center">
+                    <!-- Coluna para a Noiva -->
+                    <div class="col-md-5 mb-4">
+                        <div class="foto-quadrada">
+                            {% if imagem_noiva %}
+                                <img src="{{ imagem_noiva.imagem.url }}" alt="Noiva" class="img-fluid rounded">
+                            {% else %}
+                                <p>Em breve teremos uma mensagem especial aqui.</p>
+                            {% endif %}
                         </div>
+                        <h2 class="text-center mt-4 mb-2">A Noiva</h2>
+                        <p class="text-center cor-marrom">
+                            {% if mensagem_noiva %}
+                                {{ mensagem_noiva.mensagem }}
+                            {% else %}
+                                Em breve teremos uma mensagem especial aqui.
+                            {% endif %}
+                        </p>
+                    </div>
+        
+                    <!-- Coluna para o Noivo -->
+                    <div class="col-md-5 mb-4">
+                        <div class="foto-quadrada">
+                            {% if imagem_noivo %}
+                                <img src="{{ imagem_noivo.imagem.url }}" alt="Noivo" class="img-fluid rounded">
+                            {% else %}
+                                <p>Em breve teremos uma mensagem especial aqui.</p>
+                            {% endif %}
+                        </div>
+                        <h2 class="text-center mt-4 mb-2">O Noivo</h2>
+                        <p class="text-center cor-marrom">
+                            {% if mensagem_noivo %}
+                                {{ mensagem_noivo.mensagem }}
+                            {% else %}
+                                Em breve teremos uma mensagem especial aqui.
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>
-        </section>        
+        </section>      
         
         
         
         <br>
         <hr class="mt-12 mb-12"> 
         
-        <section id="mensagem-noivos" class="section-full-height">
-            <div class="centralizar-imagem mt-24 mb-24">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
-            </div> 
-            <div class="text-center max-w-7xl mx-auto px-6">
-                <i class="bi bi-envelope icon mt-12 text-balance text-4xl cor-vermelho font-semibold tracking-tight sm:text-5xl"></i>
-                <p class="Comfortaa-Bold mb-12 text-balance text-4xl cor-marrom font-semibold tracking-tight sm:text-5xl">Mensagem</p>
-                
-                <p class="fst-italic flex items-center cor-marrom justify-center text-2xl">
+        <section id="mensagem-noivos" class="py-5">
+            <div class="text-center mb-5">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
+            </div>
+            <div class="container text-center">
+                <i class="bi bi-envelope fs-1 cor-vermelho"></i>
+                <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Mensagem</h2>
+                <p class="fst-italic cor-marrom lead">
                     {{ convidado.user.perfil.mensagem_noivos }}
                 </p>
             </div>
-        </section>   
+        </section>
+        
+        <br>
+
+        <section id="mensagem-aos-noivos" class="py-5">
+            <div class="container">
+                <!-- Imagem centralizada -->
+                <div class="text-center my-5">
+                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
+                </div>
+        
+                <!-- Título e ícone -->
+                <div class="text-center">
+                    <i class="bi bi-chat-heart fs-1 cor-vermelho"></i>
+                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Deixe sua mensagem para os noivos</h2>
+                </div>
+        
+                <!-- Formulário -->
+                <div class="bg-white p-4 shadow rounded">
+                    <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={ token %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="mensagem" class="form-label">Mensagem:</label>
+                            <textarea name="texto_mensagem" class="form-control" rows="5" placeholder="Escreva sua mensagem aqui..."></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-danger">Enviar Mensagem</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        
+        
+        <br>
 
         <section id="confirmacao-presenca" class="section-full-height">
-            
-            <div class="centralizar-imagem mt-24 mb-24">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
+            <div class="text-center mt-5 mb-5">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
             </div>
             <div class="text-center">
-                <i class="bi bi-clipboard-heart icon mt-12 text-balance text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
-                
-                <h2 class="Comfortaa-Bold mb-6 text-balance text-4xl mt-2 font-semibold tracking-tight sm:text-5xl cor-marrom">
-                    Confirmação de presença
-                </h2>
-                <p class="mb-6 text-lg leading-8 cor-marrom">Por favor, confirme sua presença e de seus acompanhantes para que possamos preparar tudo com muito carinho.</p>
+                <i class="bi bi-clipboard-heart fs-1 cor-vermelho"></i>
+                <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Confirmação de presença</h2>
+                <p class="mb-4 text-lg cor-marrom">Por favor, confirme sua presença e de seus acompanhantes para que possamos preparar tudo com muito carinho.</p>
             </div>
-            <div class="grid gap-4 grid-cols-2">
-                <div class="mx-auto max-w-2xl text-center">
-                    <h2 class="mt-12 mb-12 text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-                        Olá, {{convidado.nome_convidado}}
+        
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <h2 class="mt-4 mb-4 text-4xl">
+                        Olá, {{ convidado.nome_convidado }}
                     </h2>
-            
+        
                     {% if convidado.status == 'AC' %}
-                        <p class="mt-12 mb-12 text-lg leading-8 flex items-center justify-center">
-                            <span class="text-balance text-4xl tracking-tight cor-marrom sm:text-5xl">Confirme sua presença no casamento:</span>
+                        <p class="mt-4 mb-4 text-lg cor-marrom">
+                            Confirme sua presença no casamento:
                         </p>
-                        <div class="mt-12 mb-12">
-                            <a href="{% url 'responder_presenca' %}?resposta=C&token={{convidado.token}}" 
-                                class="btn btn-outline-danger btn-lg" style="width: 100%; border-radius: 30px; text-align: center;">
+                        <div class="mt-4 mb-4">
+                            <a href="{% url 'responder_presenca' %}?resposta=C&token={{ convidado.token }}" 
+                                class="btn btn-outline-danger btn-lg w-100 rounded-pill">
                                 Confirmar
                             </a>
-                            
                         </div>
                     {% elif convidado.status == 'C' %}
-                        <p class="mt-12 mb-12 text-lg leading-8 cor-marrom">Presença confirmada! Estamos ansiosos para vê-lo no nosso casamento.</p>
+                        <p class="mt-4 mb-4 text-lg cor-marrom">Presença confirmada! Estamos ansiosos para vê-lo no nosso casamento.</p>
                     {% elif convidado.status == 'R' %}
-                        <p class="mt-12 mb-12 text-lg leading-8 cor-marrom">Presença recusada. Sentiremos sua falta, esperamos vê-lo em outra oportunidade!</p>
+                        <p class="mt-4 mb-4 text-lg cor-marrom">Presença recusada. Sentiremos sua falta, esperamos vê-lo em outra oportunidade!</p>
                     {% endif %}
                 </div>
-                <div>
-                    {% if convidado.maximo_acompanhantes > 0 %}
-                    <div class="p-6  drop-shadow-lg ring-1 ring-gray-600/20">
-                        <h2 class="text-xl font-semibold tracking-tight text-center">Adicione seus acompanhantes</h2>
-                        <br>
-                        
+        
+                {% if convidado.maximo_acompanhantes > 0 %}
+                <div class="col-md-6">
+                    <div class="p-4 shadow-sm border rounded">
+                        <h2 class="text-center mb-4">Adicione seus acompanhantes</h2>
+        
                         {% if acompanhantes_restantes > 0 %}
                             <form action="{% url 'adicionar_acompanhante' convidado.token %}" method="POST">
                                 {% csrf_token %}
@@ -468,56 +521,49 @@
                                     type="text" 
                                     id="nome" 
                                     name="nome" 
-                                    class="block w-full rounded-md border border-gray-300 px-3.5 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+                                    class="form-control mb-3"
                                     placeholder="Digite o nome do acompanhante"
                                     required
                                 >
-                                <br>
-
-                                <button type="submit" class="btn btn-outline-danger" style="width: 100%; border-radius: 20px; text-align: center;">
+                                <button type="submit" class="btn btn-outline-danger w-100 rounded-pill">
                                     Adicionar
                                 </button>
                             </form>
-                            <p class="cor-vermelho mt-2">Você ainda pode adicionar <strong>{{ acompanhantes_restantes }}</strong> acompanhante(s).</p>
+                            <p class="text-center mt-2 cor-vermelho">Você ainda pode adicionar <strong>{{ acompanhantes_restantes }}</strong> acompanhante(s).</p>
                         {% else %}
-                            <p class="text-red-500 mt-2">Você já atingiu o número máximo de acompanhantes permitidos.</p>
+                            <p class="text-center mt-2 text-danger">Você já atingiu o número máximo de acompanhantes permitidos.</p>
                         {% endif %}
-
+        
                         <hr class="my-4">
-                        <ul>
+                        <ul class="list-unstyled">
                             {% for acompanhante in convidado.acompanhantes.all %}
-                                <li class="bg-slate-100 p-4 flex justify-between items-center cor-marrom">
-                                    {{ acompanhante.nome }}
-                                    <form action="{% url 'excluir_acompanhante' convidado.token acompanhante.id %}" method="POST" class="inline">
+                                <li class="bg-light p-3 mb-2 d-flex justify-content-between align-items-center rounded">
+                                    <span class="cor-marrom">{{ acompanhante.nome }}</span>
+                                    <form action="{% url 'excluir_acompanhante' convidado.token acompanhante.id %}" method="POST" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-semibold">Excluir</button>
+                                        <button type="submit" class="btn btn-link text-danger p-0">Excluir</button>
                                     </form>
                                 </li>
                             {% endfor %}
                         </ul>
                     </div>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
-            
-        </section> 
+        </section>
 
         <br>
 
         <section id="lista-presentes" class="section-full-height">
-            <div class="centralizar-imagem mt-24 mb-12">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
+            <div class="text-center mt-5 mb-5">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
             </div>
             
             <div class="grid grid-cols-1 gap-4">
                 <div class="mx-auto max-w-2xl text-center">
-                    <i class="bi bi-gift icon text-4xl font-semibold cor-vermelho tracking-tight sm:text-5xl"></i>
-                    <h2 class="Comfortaa-Bold mb-6 text-4xl mt-2 font-semibold tracking-tight sm:text-5xl cor-marrom">
-                        Presentes
-                    </h2>
-                    <p class="text-lg leading-8 cor-marrom">
-                        Agradecemos imensamente sua presença em nosso casamento. Se desejar nos presentear, preparamos uma lista especial de itens que nos ajudarão a construir nosso novo lar.
-                    </p>
+                    <i class="bi bi-gift fs-1 cor-vermelho cor-vermelho"></i>
+                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Presentes</h2>
+                    <p class="mb-4 text-lg cor-marrom">Agradecemos imensamente sua presença em nosso casamento. Se desejar nos presentear, preparamos uma lista especial de itens que nos ajudarão a construir nosso novo lar.</p>
                 </div>
                 
                 <div class="container mt-4">
@@ -627,18 +673,17 @@
                 </div>
             </div>
         </section>
+        <br>
         
 
-        <section id="local-casamento">
+        <section id="local-casamento mt-12">
             <div class="centralizar-imagem mt-24 mb-12">
                 <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
             </div>
             <div class="mt-8 p-6 rounded-md shadow-md">
                 <div class="text-center">
-                    <i class="bi bi-geo-alt icon text-balance text-4xl font-semibold cor-vermelho sm:text-5xl"></i>
-                    <h2 class="Comfortaa-Bold mb-12 text-balance text-4xl mt-2 font-semibold tracking-tight sm:text-5xl cor-marrom">
-                        Local
-                    </h2>
+                    <i class="bi bi-geo-alt fs-1 cor-vermelho"></i>
+                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Local</h2>
                     <p class="cor-marrom">Rua: {{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }}, Bairro: {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }}, {{ convidado.user.perfil.estado }}, {{ convidado.user.perfil.pais }} - Cep: {{ convidado.user.perfil.cep }}</p>
                     <hr>
                 </div>
@@ -647,8 +692,9 @@
             <br>
             <br>
         </section>
+        
     </div>
-    <footer class="text-center text-lg-start bg-gray-900 py-12">
+    <footer class="text-center bg-dark py-4">
         <!-- Copyright -->
         <div class="text-center text-white">
             {{ convidado.user.perfil.nome_primeiro_conjuge }} & {{ convidado.user.perfil.nome_segundo_conjuge }}
@@ -669,47 +715,6 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArufezJ1vUqr_syuLuz7ZKDXmzlxVXu88&callback=initMap&v={{ timestamp }}" 
     async defer></script>
     <script>
-        function initMap() {
-            // Obtendo o endereço do casamento
-            const endereco = "{{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }}, {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }}, {{ convidado.user.perfil.estado }}";
-            // Usando o Geocoder do Google Maps para obter as coordenadas a partir do endereço
-            const geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ 'address': endereco }, function(results, status) {
-                if (status === 'OK') {
-                    // Criando o mapa centrado no local
-                    const map = new google.maps.Map(document.getElementById('map'), {
-                        zoom: 15,
-                        center: results[0].geometry.location
-                    });
-
-                    // Marcando o local no mapa
-                    const marker = new google.maps.Marker({
-                        map: map,
-                        position: results[0].geometry.location
-                    });
-                } else {
-                    alert('Geocode não foi bem-sucedido: ' + status);
-                }
-            });
-        }
-
-
-        function alterarStatus(status) {
-                var mensagemElemento = document.getElementById("mensagem-presenca");
-                
-                if (status === 'confirmado') {
-                    mensagemElemento.innerHTML = '<span class="text-green-500 text-xl font-semibold">Presença confirmada!</span>';
-                } else if (status === 'recusado') {
-                    mensagemElemento.innerHTML = '<span class="text-red-500 text-xl font-semibold">Presença recusada.</span>';
-                }
-                
-                // Esconde os botões após confirmação ou recusa
-                document.querySelectorAll('a').forEach(function(button) {
-                    button.style.display = 'none';
-                });
-            }
-
-
         // Certifique-se de que a data seja passada corretamente do Django para o JavaScript
         const dataCasamento = "{{ convidado.user.perfil.data_casamento|date:'Y-m-d' }}";
         const horarioCasamento = "{{ convidado.user.perfil.horario_casamento|time:'H:i:s' }}";
@@ -754,9 +759,64 @@
                 }
             }, 1000);
         }
-    
+
         // Iniciar o contador assim que o conteúdo da página for carregado
-        document.addEventListener("DOMContentLoaded", iniciarContador); 
+        document.addEventListener("DOMContentLoaded", iniciarContador);
+
+
+        tinymce.init({
+            selector: 'textarea',  // Aplica o TinyMCE a todos os textareas
+            plugins: 'emoticons link lists charmap preview code',
+            toolbar: 'undo redo | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link emoticons | preview code',
+            menubar: false,
+            statusbar: false,
+            height: 300,
+        });
+
+
+        
+        function initMap() {
+            // Obtendo o endereço do casamento
+            const endereco = "{{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }}, {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }}, {{ convidado.user.perfil.estado }}";
+            // Usando o Geocoder do Google Maps para obter as coordenadas a partir do endereço
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'address': endereco }, function(results, status) {
+                if (status === 'OK') {
+                    // Criando o mapa centrado no local
+                    const map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 15,
+                        center: results[0].geometry.location
+                    });
+
+                    // Marcando o local no mapa
+                    const marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location
+                    });
+                } else {
+                    alert('Geocode não foi bem-sucedido: ' + status);
+                }
+            });
+        }
+
+
+        function alterarStatus(status) {
+                var mensagemElemento = document.getElementById("mensagem-presenca");
+                
+                if (status === 'confirmado') {
+                    mensagemElemento.innerHTML = '<span class="text-green-500 text-xl font-semibold">Presença confirmada!</span>';
+                } else if (status === 'recusado') {
+                    mensagemElemento.innerHTML = '<span class="text-red-500 text-xl font-semibold">Presença recusada.</span>';
+                }
+                
+                // Esconde os botões após confirmação ou recusa
+                document.querySelectorAll('a').forEach(function(button) {
+                    button.style.display = 'none';
+                });
+            }
+
+
+        
 
 
         // Obter o botão

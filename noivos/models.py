@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from PIL import Image, ImageOps
 from django.core.files.base import ContentFile
 from django.core.validators import FileExtensionValidator
+from ckeditor.fields import RichTextField
 
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -148,3 +149,11 @@ class Presentes(models.Model):
         return self.nome_presente
     
 
+class MensagemAosNoivos(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mensagens_aos_noivos')
+    texto_mensagem = RichTextField()  # Substitua o TextField por RichTextField
+    escrita_por = models.ForeignKey('Convidados', null=True, blank=True, on_delete=models.SET_NULL)
+    data_envio = models.DateTimeField(auto_now_add=True)  # Data de envio automática
+
+    def __str__(self):
+        return f"Mensagem de {self.escrita_por.nome_convidado} para {self.user.username}"
