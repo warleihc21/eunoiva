@@ -20,7 +20,7 @@ from .models import Perfil
 import webbrowser
 from urllib.parse import quote
 from time import sleep
-import pyautogui
+
 from io import StringIO
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
@@ -30,6 +30,12 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 from urllib.parse import unquote
 
+
+
+if os.environ.get('DISPLAY', None):  # Verifica se a variável de ambiente DISPLAY está configurada
+    import pyautogui
+else:
+    print("Ambiente sem display gráfico. pyautogui não será usado.")
 
 
 
