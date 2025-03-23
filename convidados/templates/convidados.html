@@ -254,7 +254,7 @@
 
 
 {% include "partials/navbar_convidados.html" %}
-    <div class="container-fluid p-0" style="padding-top: 56px;">
+    <div class="container-fluid p-0">
         {% if messages %}
             <div class="container mt-4">
                 {% for message in messages %}
@@ -343,7 +343,7 @@
         {% if convidado.user.perfil.galeria.all %}  {# Verifica se a variável imagens contém alguma foto #}
             <section id="galeria-imagens" class="py-5">
                 <div class="text-center mb-5">
-                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid" style="max-width: 200px;">
+                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
                 </div>
                 <div class="container">
                     <div class="text-center">
