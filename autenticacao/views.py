@@ -49,7 +49,7 @@ def cadastro(request):
                 'Cadastro confirmado',
                 [email],
                 username=username,
-                link_ativacao=f"http://127.0.0.1:8000/auth/ativar_conta/{token}"  # Adicionado "http://"
+                link_ativacao=f"http://69.62.92.62:8000/auth/ativar_conta/{token}"  # Adicionado "http://"
             )
             
             

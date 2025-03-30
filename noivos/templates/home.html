@@ -151,36 +151,36 @@
     <div class="container mt-5" style="padding-top: 56px;">
         <div class="row align-items-center">
             <!-- Seção da Imagem -->
-            <div class="col-md-4 mb-4 mb-md-0">
+            <div class="col-12 col-md-4 mb-4 mb-md-0">
                 {% if imagem %}
                     <img src="{{ imagem.url }}" alt="Imagem do perfil" class="img-fluid rounded shadow">
                 {% else %}
                     <p class="text-center">Imagem não definida</p>
                 {% endif %}
             </div>
-        
+    
             <!-- Seção da Mensagem de Boas-Vindas -->
-            <div class="col-md-8 d-flex flex-column justify-content-center align-items-center text-center">
+            <div class="col-12 col-md-8 fs-4 mb-4 text-center">
                 <h5 class="cor-vermelho">Bem-vindos, {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</h5>
                 <h4 class="cor-vermelho">Nossa data</h4>
-                <h3 class=" mb-4 cor-vermelho">{{ data_casamento|date:"d/m/Y" }} às {{ horario_casamento|time:"H:i" }}</h3>
-        
+                <h3 class="mb-4 cor-vermelho">{{ data_casamento|date:"d/m/Y" }} às {{ horario_casamento|time:"H:i" }}</h3>
+    
                 <!-- Contador regressivo -->
-                <div id="timer" class="d-flex justify-content-center flex-wrap gap-3">
-                    <div class="campo-tempo text-center p-3 rounded text-white">
-                        <span id="dias" class="valor-tempo display-4 fw-bold">00</span>
+                <div id="timer" class="d-flex justify-content-center gap-3">
+                    <div class="campo-tempo">
+                        <span id="dias" class="valor-tempo">00</span>
                         <span class="rotulo-tempo">Dias</span>
                     </div>
-                    <div class="campo-tempo text-center p-3 rounded text-white">
-                        <span id="horas" class="valor-tempo display-4 fw-bold">00</span>
+                    <div class="campo-tempo">
+                        <span id="horas" class="valor-tempo">00</span>
                         <span class="rotulo-tempo">Horas</span>
                     </div>
-                    <div class="campo-tempo text-center p-3 rounded text-white">
-                        <span id="minutos" class="valor-tempo display-4 fw-bold">00</span>
+                    <div class="campo-tempo">
+                        <span id="minutos" class="valor-tempo">00</span>
                         <span class="rotulo-tempo">Minutos</span>
                     </div>
-                    <div class="campo-tempo text-center p-3 rounded text-white">
-                        <span id="segundos" class="valor-tempo display-4 fw-bold">00</span>
+                    <div class="campo-tempo">
+                        <span id="segundos" class="valor-tempo">00</span>
                         <span class="rotulo-tempo">Segundos</span>
                     </div>
                 </div>
@@ -243,8 +243,8 @@
             </div>
         
             <!-- Gráfico -->
-            <div class="col-md-6 mt-5">
-                <canvas id="myChart"></canvas>
+            <div class="col-md-6 mt-5 text-center">
+                <canvas class="text-center" id="myChart"></canvas>
             </div>
         </div>
         

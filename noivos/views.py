@@ -577,7 +577,7 @@ def buscar_detalhes_produto(request):
         api_url = f"https://api.mercadolibre.com/items/{produto_id}"
         print(f"link completo da api: {api_url}")
         headers = {
-            "Authorization": "Bearer APP_USR-3067363791536171-032207-48a3d7e64b373bf09c0f3cd9b5d763d0-153067470",
+            "Authorization": "Bearer APP_USR-3067363791536171-033011-3982c8ddfb2550b2adf623611d3d7529-153067470",
             "Content-Type": "application/json"
         }
 
