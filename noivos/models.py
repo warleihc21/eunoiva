@@ -89,7 +89,7 @@ class Convidados(models.Model):
 
     @property  # Adicione este decorador
     def link_convite(self):
-        return f'http://http://69.62.92.62:8000{reverse("convidados")}?token={self.token}'
+        return f'http://69.62.92.62:8000{reverse("convidados")}?token={self.token}'
 
     def __str__(self):
         return self.nome_convidado
