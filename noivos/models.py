@@ -16,7 +16,11 @@ class Perfil(models.Model):
     data_casamento = models.DateField(blank=True, null=True)
     horario_casamento = models.TimeField(blank=True, null=True)  # Novo campo para horário do casamento
     imagem = models.ImageField(upload_to='imagens_perfil/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])])
-    mensagem_noivos = models.TextField(blank=True, null=True)
+    mensagem_noivos = models.TextField(
+        blank=True,
+        null=True,
+        default="O grande dia está chegando e estamos cheios de alegria por poder compartilhar com nossa família e amigos um dos momentos mais especiais de nossas vidas! Será um dia repleto de amor, diversão e muita emoção, e queremos muito contar com sua presença para tornar essa celebração ainda mais inesquecível. Vamos comemorar juntos e criar memórias que ficarão para sempre em nossos corações!"
+    )
 
     configurado = models.BooleanField(default=False)
 
@@ -55,9 +59,28 @@ class MensagemSobreNoivoNoiva(models.Model):
     tipo = models.CharField(max_length=10, choices=[('noiva', 'Noiva'), ('noivo', 'Noivo')])
     mensagem = models.TextField()
 
+    def save(self, *args, **kwargs):
+        # Adicionar as mensagens padrão se o objeto for novo (não tem mensagem definida)
+        if not self.mensagem:
+            if self.tipo == 'noiva':
+                self.mensagem = (
+                    "Ela é a luz que ilumina todos ao seu redor, com um sorriso capaz de derreter qualquer coração. "
+                    "Sua beleza, inteligência e graça são apenas algumas das suas qualidades, mas é o seu coração generoso "
+                    "e a paciência com o noivo que realmente a definem. Ela é, sem dúvida, a pessoa mais incrível que você vai "
+                    "conhecer – e todos nós torcemos para que ele saiba o quanto ela merece ser amada a cada dia."
+                )
+            elif self.tipo == 'noivo':
+                self.mensagem = (
+                    "Ele é o mestre das piadas, sempre pronto para fazer todos rirem, mesmo nas situações mais inesperadas. "
+                    "Com um coração enorme e o talento de fazer a noiva sorrir até nos momentos mais sérios, ele é a verdadeira "
+                    "prova de que o amor existe. Mesmo sendo um pouco desastrado (quem nunca derrubou algo em um jantar de família?), "
+                    "ele traz leveza e diversão a cada momento. Ele pode não ser perfeito, mas é perfeito para ela – e é isso que "
+                    "realmente importa."
+                )
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Mensagem de {self.tipo} de {self.perfil.user.username}"
-
 
 # Modelo para armazenar mensagens personalizadas
 class MensagemPersonalizada(models.Model):

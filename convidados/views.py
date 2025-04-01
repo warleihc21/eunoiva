@@ -126,3 +126,4 @@ def mensagem_aos_noivos(request):
 
     return redirect(f"{reverse('convidados')}?token={token}")
 
+

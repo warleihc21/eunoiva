@@ -457,7 +457,7 @@
         
                 <!-- Formulário -->
                 <div class="bg-white p-4 shadow rounded">
-                    <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={ token %}">
+                    <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="mensagem" class="form-label">Mensagem:</label>
