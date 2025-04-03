@@ -29,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
 
-SRF_TRUSTED_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = [
     "https://inoivos.site",
     "https://www.inoivos.site",
 ]
