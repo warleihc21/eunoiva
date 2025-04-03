@@ -65,7 +65,7 @@ def reservar_presente(request, id):
     presente.reservado = True
     presente.reservado_por = convidado
     presente.save()
-    return redirect(f'{reverse('convidados')}?token={token}')
+    return redirect(f'{reverse("convidados")}?token={token}')
 
 
 def cancelar_reserva(request, presente_id):

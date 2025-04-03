@@ -149,6 +149,13 @@
     {% include "partials/navbar.html" %}
 
     <div class="container mt-5" style="padding-top: 56px;">
+            {% if messages %}
+                <div class="alert alert-info" role="alert">
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         <div class="row align-items-center">
             <!-- Seção da Imagem -->
             <div class="col-12 col-md-4 mb-4 mb-md-0">

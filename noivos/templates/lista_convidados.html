@@ -126,257 +126,257 @@
 
     
 </style>
+
+
     {% include "partials/navbar.html" %}
-
-
     <!-- Bloco de mensagens -->
-<div class="container pt-1 mt-5">
-        {% if messages %}
-            <div class="alert alert-info" role="alert">
-                {% for message in messages %}
-                    <div class="alert {{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
+    <div class="container pt-1 mt-5">
+            {% if messages %}
+                <div class="alert alert-info" role="alert">
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-        <div>
-            <div class="row mt-5">
-                <h1 class="text-center">Controle de Convidados</h1>
-                <hr>
-                <br>
-                
-                <div class="col-lg-6 col-md-6 col-12">
-                    <div class="card p-4">
-                        <h2 class="h4">Cadastre seus convidados</h2>
-                        <form action="{% url 'lista_convidados' %}" method="POST">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label class="form-label cor-marrom">Nome do convidado</label>
-                                <input type="text" name="nome_convidado" class="form-control">
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-sm-6">
-                                    <label class="form-label cor-marrom">WhatsApp</label>
-                                    <input type="text" name="whatsapp" class="form-control">
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <label class="form-label cor-marrom">Máximo de acompanhantes</label>
-                                    <input type="number" name="maximo_acompanhantes" class="form-control">
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-danger mt-3 w-100">Adicionar convidado</button>
-                        </form>
-                    </div>
-                </div>
-            
-                <div class="col-lg-6 col-md-6 col-12">
-                    <div class="card p-4">
-                        <h2 class="h4 mb-3">Cadastrar convidados em lote</h2>
-                        <br>
-                        <form action="{% url 'cadastrar_convidados_em_lote' %}" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}" class="btn btn-outline-danger w-100 mb-4" download>Baixar Arquivo de Exemplo</a>
-                            
-                            <label for="arquivo_convidados" class="form-label cor-marrom">Escolha um arquivo</label>
-                            <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" class="form-control">
-                            <button type="submit" class="btn btn-danger mt-3 w-100">Enviar</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        
-            <!-- Botão para exportar para Excel -->
-            <div class="row mt-5">
-                <h2 class="text-center">Exportar lista de Convidados</h2>
-                <br>
-                <div class="col-md-12 d-flex justify-content-center">
+            <div>
+                <div class="row mt-5">
+                    <h1 class="text-center">Controle de Convidados</h1>
+                    <hr>
+                    <br>
                     
-                    <form action="{% url 'exportar_convidados_excel' %}" method="get">
-                        <button type="submit" class="btn btn-danger" style="width: 100%; border-radius: 20px; text-align: center;">Exportar Planilha de Excel</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Modal -->
-        <div class="modal fade" id="modalEnviarMensagens" tabindex="-1" aria-labelledby="modalEnviarMensagensLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-fullscreen-sm-down">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalEnviarMensagensLabel">Selecionar Convidados para Envio de Mensagem</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="border shadow p-4">
-                            <!-- Campo para mensagem personalizada -->
-                            <label for="mensagemPersonalizada" class="block text-sm font-medium text-gray-700">Mensagem personalizada</label>
-                            <br>
-                            <textarea id="mensagemPersonalizada" name="mensagemPersonalizada" rows="4" class="mt-1 block w-full text-sm text-gray-900 shadow ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Digite sua mensagem aqui...">{{ mensagem }}</textarea>
-                            <br>
-                            <small class="text-gray-500">Use as palavras-chave {nome} e {link} para personalizar a mensagem.</small>
-                            <button type="button" class="btn btn-outline-danger" style="border-radius: 20px; text-align: center;"  onclick="adicionarVariavel('{nome}')">Adicionar {nome}</button>
-                            <button type="button" class="btn btn-outline-danger" style="border-radius: 20px; text-align: center;" onclick="adicionarVariavel('{link}')">Adicionar {link}</button>
-
-                            <br><br>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <!-- Campo para upload de arquivo -->
-                                    <label for="arquivo" class="block text-sm font-medium text-gray-700">Anexar Imagem ou PDF</label>
-                                    <input type="file" id="arquivo" name="arquivo" accept=".pdf, .jpg, .jpeg, .png" class="mt-1 block w-full text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <div class="card p-4">
+                            <h2 class="h4">Cadastre seus convidados</h2>
+                            <form action="{% url 'lista_convidados' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label cor-marrom">Nome do convidado</label>
+                                    <input type="text" name="nome_convidado" class="form-control">
                                 </div>
-                                <!-- Pré-visualização da imagem -->
-                                <div class="col-md-3" id="previsaoImagem" style="margin-top: 5px;">
-                                    {% if mensagem_url %}
-                                        <a href="#" id="imagemLink">
-                                            <img id="imagemPreview" src="{{ mensagem_url }}" alt="Pré-visualização da imagem" style="max-width: 100px; max-height: 100px; object-fit: cover; display: block; cursor: pointer;">
-                                        </a>
-                                    {% else %}
-                                        <img id="imagemPreview" src="#" alt="Pré-visualização da imagem" style="max-width: 100px; max-height: 100px; object-fit: cover; display: none;">
-                                    {% endif %}
+                                <div class="row">
+                                    <div class="col-12 col-sm-6">
+                                        <label class="form-label cor-marrom">WhatsApp</label>
+                                        <input type="text" name="whatsapp" class="form-control">
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <label class="form-label cor-marrom">Máximo de acompanhantes</label>
+                                        <input type="number" name="maximo_acompanhantes" class="form-control">
+                                    </div>
                                 </div>
-                                <div class="col-md-3 mt-4">
-                                    <i class="bi bi-arrow-left">Clique na imagem para ampliar!</i>
-                                </div>
-                            </div>
-
-                            <br><br>
-                            <!-- Botões para adicionar variáveis padrões -->
-                            
-                            <div class="d-flex justify-content-center">
-                                <button type="button" id="salvarMensagemBtn" class="btn btn-danger btn-lg" style="border-radius: 20px; text-align: center;">
-                                    Salvar Mensagem
-                                </button>
-                            </div>
-
+                                <button type="submit" class="btn btn-danger mt-3 w-100">Adicionar convidado</button>
+                            </form>
                         </div>
-                        
-                        <br><br>
-                        <!-- Tabela de convidados -->
-                        <table class="table table-danger table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" id="selectAll"></th>
-                                    <th>Nome</th>
-                                    <th>Whatsapp</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for convidado in nao_confirmados %}
-                                <tr>
-                                    <td><input type="checkbox" class="convidado-checkbox" data-id="{{ convidado.id }}"></td>
-                                    <td>{{ convidado.nome_convidado }}</td>
-                                    <td>{{ convidado.whatsapp }}</td>
-                                    <td>{{ convidado.get_status_display }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light btn-lg" style="border-radius: 20px; text-align: center;" data-bs-dismiss="modal">Cancelar</button>
-                        
-                        <button type="button" id="enviarMensagensBtn" class="btn btn-success btn-lg" style="border-radius: 20px; text-align: center;" disabled>
-                        Enviar WhatsApp
-                        </button>
+                
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <div class="card p-4">
+                            <h2 class="h4 mb-3">Cadastrar convidados em lote</h2>
+                            <br>
+                            <form action="{% url 'cadastrar_convidados_em_lote' %}" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}" class="btn btn-outline-danger w-100 mb-4" download>Baixar Arquivo de Exemplo</a>
+                                
+                                <label for="arquivo_convidados" class="form-label cor-marrom">Escolha um arquivo</label>
+                                <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" class="form-control">
+                                <button type="submit" class="btn btn-danger mt-3 w-100">Enviar</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Modal para exibir a imagem ou PDF expandido -->
-        <div class="modal fade" id="modalImagemExpandida" tabindex="-1" aria-labelledby="modalImagemExpandidaLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalImagemExpandidaLabel">Conteúdo Expandido</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div id="conteudoExpandido"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-
-        <div class="mt-4">
-            <h2 class="mb-2">Enviar mensagens em massa</h2>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalEnviarMensagens">
-                <i class="fab fa-whatsapp me-2"></i> Enviar WhatsApp
-            </button>
-        </div>
-
-        <!-- Lista de convidados -->
-        <div class="container mt-4">
             
-            <br>
+                <!-- Botão para exportar para Excel -->
+                <div class="row mt-5">
+                    <h2 class="text-center">Exportar lista de Convidados</h2>
+                    <br>
+                    <div class="col-md-12 d-flex justify-content-center">
+                        
+                        <form action="{% url 'exportar_convidados_excel' %}" method="get">
+                            <button type="submit" class="btn btn-danger" style="width: 100%; border-radius: 20px; text-align: center;">Exportar Planilha de Excel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="modalEnviarMensagens" tabindex="-1" aria-labelledby="modalEnviarMensagensLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-fullscreen-sm-down">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalEnviarMensagensLabel">Selecionar Convidados para Envio de Mensagem</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="border shadow p-4">
+                                <!-- Campo para mensagem personalizada -->
+                                <label for="mensagemPersonalizada" class="block text-sm font-medium text-gray-700">Mensagem personalizada</label>
+                                <br>
+                                <textarea id="mensagemPersonalizada" name="mensagemPersonalizada" rows="4" class="mt-1 block w-full text-sm text-gray-900 shadow ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Digite sua mensagem aqui...">{{ mensagem }}</textarea>
+                                <br>
+                                <small class="text-gray-500">Use as palavras-chave {nome} e {link} para personalizar a mensagem.</small>
+                                <button type="button" class="btn btn-outline-danger" style="border-radius: 20px; text-align: center;"  onclick="adicionarVariavel('{nome}')">Adicionar {nome}</button>
+                                <button type="button" class="btn btn-outline-danger" style="border-radius: 20px; text-align: center;" onclick="adicionarVariavel('{link}')">Adicionar {link}</button>
 
-            <h2 class="h3 mb-4">Lista de Convidados e Acompanhantes</h2>
-            <div class="table-responsive">
-                <table class="table  table-bordered">
-                    <thead class="table-secondary text-white">
-                        <tr>
-                            <th class="text-center font-weight-bold">Nome</th>
-                            <th class="text-center font-weight-bold">Status</th>
-                            <th class="text-center font-weight-bold">WhatsApp</th>
-                            <th class="text-center font-weight-bold">Máximo de Acompanhantes</th>
-                            <th class="text-center font-weight-bold">Acompanhantes Confirmados</th>
-                            <th class="text-center font-weight-bold">Link Convite</th>
-                            <th class="text-center font-weight-bold">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for convidado in convidados %}
-                        <tr>
-                            <td style="font-size: 0.8rem;">{{ convidado.nome_convidado }}</td>
-                            <td style="font-size: 0.8rem;">
-                                <span class="badge rounded-pill {% if convidado.status == 'AC' %}bg-warning{% elif convidado.status == 'C'%}bg-info{% else %}bg-danger{% endif %}">
-                                    {{ convidado.get_status_display }}
-                                </span>
-                            </td>
-                            <td style="font-size: 0.8rem;">{{ convidado.whatsapp }}</td>
-                            <td style="font-size: 0.8rem;">{{ convidado.maximo_acompanhantes }}</td>
-                            <td style="font-size: 0.8rem;">
-                                {% if convidado.acompanhantes.all %}
-                                    <ul class="list-unstyled">
-                                        {% for acompanhante in convidado.acompanhantes.all %}
-                                            <li>- {{ acompanhante.nome }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    
-                                {% endif %}
-                            </td>
-                            <td style="font-size: 0.8rem;">{{ convidado.link_convite }}</td>
-                            <td class="text-center">
-                                <a href="{% url 'excluir_convidado' convidado.id %}" class="btn btn-danger" style="border-radius: 20px; text-align: center;" onclick="return confirm('Tem certeza que deseja excluir este convidado? Verifique se ele não possui presentes reservados.')">
-                                    Excluir
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                <br><br>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <!-- Campo para upload de arquivo -->
+                                        <label for="arquivo" class="block text-sm font-medium text-gray-700">Anexar Imagem ou PDF</label>
+                                        <input type="file" id="arquivo" name="arquivo" accept=".pdf, .jpg, .jpeg, .png" class="mt-1 block w-full text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    </div>
+                                    <!-- Pré-visualização da imagem -->
+                                    <div class="col-md-3" id="previsaoImagem" style="margin-top: 5px;">
+                                        {% if mensagem_url %}
+                                            <a href="#" id="imagemLink">
+                                                <img id="imagemPreview" src="{{ mensagem_url }}" alt="Pré-visualização da imagem" style="max-width: 100px; max-height: 100px; object-fit: cover; display: block; cursor: pointer;">
+                                            </a>
+                                        {% else %}
+                                            <img id="imagemPreview" src="#" alt="Pré-visualização da imagem" style="max-width: 100px; max-height: 100px; object-fit: cover; display: none;">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3 mt-4">
+                                        <i class="bi bi-arrow-left">Clique na imagem para ampliar!</i>
+                                    </div>
+                                </div>
+
+                                <br><br>
+                                <!-- Botões para adicionar variáveis padrões -->
+                                
+                                <div class="d-flex justify-content-center">
+                                    <button type="button" id="salvarMensagemBtn" class="btn btn-danger btn-lg" style="border-radius: 20px; text-align: center;">
+                                        Salvar Mensagem
+                                    </button>
+                                </div>
+
+                            </div>
+                            
+                            <br><br>
+                            <!-- Tabela de convidados -->
+                            <table class="table table-danger table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAll"></th>
+                                        <th>Nome</th>
+                                        <th>Whatsapp</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for convidado in nao_confirmados %}
+                                    <tr>
+                                        <td><input type="checkbox" class="convidado-checkbox" data-id="{{ convidado.id }}"></td>
+                                        <td>{{ convidado.nome_convidado }}</td>
+                                        <td>{{ convidado.whatsapp }}</td>
+                                        <td>{{ convidado.get_status_display }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light btn-lg" style="border-radius: 20px; text-align: center;" data-bs-dismiss="modal">Cancelar</button>
+                            
+                            <button type="button" id="enviarMensagensBtn" class="btn btn-success btn-lg" style="border-radius: 20px; text-align: center;" disabled>
+                            Enviar WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para exibir a imagem ou PDF expandido -->
+            <div class="modal fade" id="modalImagemExpandida" tabindex="-1" aria-labelledby="modalImagemExpandidaLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalImagemExpandidaLabel">Conteúdo Expandido</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div id="conteudoExpandido"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <div class="mt-4">
+                <h2 class="mb-2">Enviar mensagens em massa</h2>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalEnviarMensagens">
+                    <i class="fab fa-whatsapp me-2"></i> Enviar WhatsApp
+                </button>
+            </div>
+
+            <!-- Lista de convidados -->
+            <div class="container mt-4">
+                
+                <br>
+
+                <h2 class="h3 mb-4">Lista de Convidados e Acompanhantes</h2>
+                <div class="table-responsive">
+                    <table class="table  table-bordered">
+                        <thead class="table-secondary text-white">
+                            <tr>
+                                <th class="text-center font-weight-bold">Nome</th>
+                                <th class="text-center font-weight-bold">Status</th>
+                                <th class="text-center font-weight-bold">WhatsApp</th>
+                                <th class="text-center font-weight-bold">Máximo de Acompanhantes</th>
+                                <th class="text-center font-weight-bold">Acompanhantes Confirmados</th>
+                                <th class="text-center font-weight-bold">Link Convite</th>
+                                <th class="text-center font-weight-bold">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for convidado in convidados %}
+                            <tr>
+                                <td style="font-size: 0.8rem;">{{ convidado.nome_convidado }}</td>
+                                <td style="font-size: 0.8rem;">
+                                    <span class="badge rounded-pill {% if convidado.status == 'AC' %}bg-warning{% elif convidado.status == 'C'%}bg-info{% else %}bg-danger{% endif %}">
+                                        {{ convidado.get_status_display }}
+                                    </span>
+                                </td>
+                                <td style="font-size: 0.8rem;">{{ convidado.whatsapp }}</td>
+                                <td style="font-size: 0.8rem;">{{ convidado.maximo_acompanhantes }}</td>
+                                <td style="font-size: 0.8rem;">
+                                    {% if convidado.acompanhantes.all %}
+                                        <ul class="list-unstyled">
+                                            {% for acompanhante in convidado.acompanhantes.all %}
+                                                <li>- {{ acompanhante.nome }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        
+                                    {% endif %}
+                                </td>
+                                <td style="font-size: 0.8rem;">{{ convidado.link_convite }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'excluir_convidado' convidado.id %}" class="btn btn-danger" style="border-radius: 20px; text-align: center;" onclick="return confirm('Tem certeza que deseja excluir este convidado? Verifique se ele não possui presentes reservados.')">
+                                        Excluir
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+        <footer class="text-center text-lg-start bg-gray-900 py-12">
+            <!-- Copyright -->
+            <div class="text-center text-white">
+                {{ perfil.nome_primeiro_conjuge }} & {{ perfil.nome_segundo_conjuge }}
+            </div>
+            <div class="text-center text-white">
+            {{ data_casamento|date:"d/m/Y" }}
+            </div>
+            <div class="text-center text-white">
+                © 2025 Todos os direitos reservados.
+            </div>
+            <!-- Copyright -->
+        </footer>
     </div>
-    <footer class="text-center text-lg-start bg-gray-900 py-12">
-        <!-- Copyright -->
-        <div class="text-center text-white">
-            {{ perfil.nome_primeiro_conjuge }} & {{ perfil.nome_segundo_conjuge }}
-          </div>
-        <div class="text-center text-white">
-          {{ data_casamento|date:"d/m/Y" }}
-        </div>
-        <div class="text-center text-white">
-            © 2025 Todos os direitos reservados.
-        </div>
-        <!-- Copyright -->
-    </footer>
-</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
     <script>

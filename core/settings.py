@@ -29,6 +29,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
 
+SRF_TRUSTED_ORIGINS = [
+    "https://inoivos.site",
+    "https://www.inoivos.site",
+]
+
 
 
 
@@ -60,6 +65,8 @@ CKEDITOR_CONFIGS = {
         'width': '100%',     # Largura do editor
     },
 }
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 SITE_ID = 1
 
