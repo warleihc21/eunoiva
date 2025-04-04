@@ -21,6 +21,18 @@
         font-weight: bold;
     }
 
+
+    /* Estilo para o botão de buscar */
+    .btn-danger {
+        background-color: #be1c3cfd;
+        border-color: #be1c3cfd;
+    }
+
+    .btn-danger:hover {
+        background-color: #DC143C;
+        border-color: #DC143C;
+    }
+
     
     /* Estiliza a barra de progresso */
     .range-slider {
@@ -185,17 +197,7 @@
                     </div>
                 </div>
             
-                <!-- Botão para exportar para Excel -->
-                <div class="row mt-5">
-                    <h2 class="text-center">Exportar lista de Convidados</h2>
-                    <br>
-                    <div class="col-md-12 d-flex justify-content-center">
-                        
-                        <form action="{% url 'exportar_convidados_excel' %}" method="get">
-                            <button type="submit" class="btn btn-danger" style="width: 100%; border-radius: 20px; text-align: center;">Exportar Planilha de Excel</button>
-                        </form>
-                    </div>
-                </div>
+                
             </div>
             
             <!-- Modal -->
@@ -302,11 +304,23 @@
 
             
 
-            <div class="mt-4">
-                <h2 class="mb-2">Enviar mensagens em massa</h2>
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalEnviarMensagens">
+            <div class=" card bg-opacity-50 shadow mt-4 text-center">
+                <h2 class="mt-5 text-center">Enviar mensagens em massa</h2>
+                <button type="button" class="btn btn-success mb-5" style="width: 100%; border-radius: 20px; text-align: center;" data-bs-toggle="modal" data-bs-target="#modalEnviarMensagens">
                     <i class="fab fa-whatsapp me-2"></i> Enviar WhatsApp
                 </button>
+
+                <!-- Botão para exportar para Excel -->
+                <div class="row mt-5">
+                    <h2 class="text-center">Exportar lista de Convidados</h2>
+                    <br>
+                    <div class="col-md-12 d-flex justify-content-center">
+                        
+                        <form action="{% url 'exportar_convidados_excel' %}" method="get">
+                            <button type="submit" class="btn btn-danger" style="width: 100%; border-radius: 20px; text-align: center;">Exportar Planilha de Excel</button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <!-- Lista de convidados -->
@@ -314,7 +328,8 @@
                 
                 <br>
 
-                <h2 class="h3 mb-4">Lista de Convidados e Acompanhantes</h2>
+                
+                <h2 class="text-center">Lista de Convidados e Acompanhantes</h2>
                 <div class="table-responsive">
                     <table class="table  table-bordered">
                         <thead class="table-secondary text-white">
@@ -362,21 +377,30 @@
                     </table>
                 </div>
             </div>
+            
         </div>
-        <footer class="text-center text-lg-start bg-gray-900 py-12">
-            <!-- Copyright -->
-            <div class="text-center text-white">
+        
+    </div>
+    <br>
+    <footer class="text-center bg-dark py-4">
+        <!-- Copyright -->
+        <div class="container">
+            <div class="text-white mb-2">
                 {{ perfil.nome_primeiro_conjuge }} & {{ perfil.nome_segundo_conjuge }}
             </div>
-            <div class="text-center text-white">
+            <div class="text-white mb-2">
             {{ data_casamento|date:"d/m/Y" }}
             </div>
-            <div class="text-center text-white">
+            <div class="text-white mb-2">
                 © 2025 Todos os direitos reservados.
             </div>
-            <!-- Copyright -->
-        </footer>
-    </div>
+        </div>
+        <!-- Copyright -->
+    </footer>
+
+    <!-- Botão para rolar até o topo -->
+    <button id="scrollToTopBtn" title="Voltar ao topo">↑</button> 
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
     <script>
@@ -511,6 +535,27 @@
         });
 
 
+        // Obter o botão
+        var mybutton = document.getElementById("scrollToTopBtn");
+
+        // Quando o usuário rolar para baixo 20px da parte superior da página, mostre o botão
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        };
+
+        // Quando o usuário clicar no botão, rolar para o topo da página
+        mybutton.onclick = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth" // Rolagem suave
+            });
+        };
+
+
         
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -585,4 +630,6 @@
 
         
     </script>
+
+
 {% endblock %}

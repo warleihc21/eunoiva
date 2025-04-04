@@ -10,7 +10,7 @@
 
 {% block 'body' %}
     <div class="container-fluid d-flex justify-content-center align-items-center min-vh-100" style="background-color: #cee9ff;">
-        <div class="row w-100">
+        <div class="row w-100 d-flex align-items-center">
             <!-- Sidebar com imagem - Agora visível em todas as telas -->
             <div class="col-lg-6 col-md-12 d-flex justify-content-center align-items-center">
                 <div class="logo_sidebar text-center">
@@ -22,7 +22,7 @@
 
             <!-- Área de Cadastro -->
             <div class="col-lg-6 col-md-12 d-flex justify-content-center align-items-center">
-                <div class="area_cadastrar text-center p-4">
+                <div class="area_cadastrar text-center p-4 w-100">
                     {% if messages %}
                         <br>
                         {% for message in messages %}

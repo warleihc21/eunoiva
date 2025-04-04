@@ -52,7 +52,7 @@ def home(request):
 
         perfil = Perfil.objects.get(user=request.user)
         mensagens = MensagemAosNoivos.objects.filter(user=request.user).order_by('-data_envio')
-        todas_imagens = ImagemGaleria.objects.all()
+        todas_imagens = ImagemGaleria.objects.filter(perfil=perfil)
         
         mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
         mensagem_noivo = perfil.mensagens.filter(tipo='noivo').first()
@@ -577,7 +577,7 @@ def buscar_detalhes_produto(request):
         api_url = f"https://api.mercadolibre.com/items/{produto_id}"
         print(f"link completo da api: {api_url}")
         headers = {
-            "Authorization": "Bearer APP_USR-3067363791536171-033013-b3077b85d8ee6cf6be656c41e3108b63-153067470",
+            "Authorization": "Bearer APP_USR-3067363791536171-040319-9d7c887e455b5546399871bdb202457f-153067470",
             "Content-Type": "application/json"
         }
 
