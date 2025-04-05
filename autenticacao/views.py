@@ -29,7 +29,15 @@ def cadastro(request):
 
         if not password_is_valid(request, senha, confirmar_senha):
             return redirect('/auth/cadastro')
-        
+
+        if User.objects.filter(username=username).exists():
+            messages.add_message(request, constants.ERROR, 'Usuário já existente')
+            return redirect('/auth/cadastro')
+
+        if User.objects.filter(email=email).exists():
+            messages.add_message(request, constants.ERROR, 'E-mail já cadastrado')
+            return redirect('/auth/cadastro')
+
         try:
             user = User.objects.create_user(username=username,
                                             email=email,
@@ -37,27 +45,27 @@ def cadastro(request):
                                             is_active=False)
             user.save()
 
-            
             token = sha256(f"{username}{email}".encode()).hexdigest()
             ativacao = Ativacao(token=token, user=user)
             ativacao.save()
 
             path_template = os.path.join(settings.BASE_DIR, 'autenticacao/templates/emails/cadastro_confirmado.html')
-            #email_html(path_template, 'Cadastro confirmado', [email,], username=username, link_ativacao=f"127.0.0.1:8000/auth/ativar_conta/{token}")
             email_html(
                 path_template,
                 'Cadastro confirmado',
                 [email],
                 username=username,
-                link_ativacao=f"https://www.inoivos.site/auth/ativar_conta/{token}"  # Adicionado "http://"
+                link_ativacao=f"https://www.inoivos.site/auth/ativar_conta/{token}"
             )
-            
-            
+
             messages.add_message(request, constants.SUCCESS, 'Usuário cadastrado com sucesso! Acesse seu email para validar o seu acesso')
             return redirect('/auth/logar')
-        except:
+        
+        except Exception as e:
+            print("Erro no cadastro:", e)
             messages.add_message(request, constants.ERROR, 'Erro interno do sistema')
             return redirect('/auth/cadastro')
+
 
 def logar(request):
     if request.method == "GET":
