@@ -19,10 +19,8 @@
     background-image: url("/static/autenticacao/img/fundo_background.png");
 }
 
-.area_cadastrar{
-    
-    margin-top: 8%;
-    margin-left: 15%;
+.area_cadastrar {
+    margin: 0 auto;
     width: 70%;
 }
     
@@ -96,8 +94,8 @@
     }
 
     .area_cadastrar {
-        width: 100%;
-        padding: 5px;
+        width: 90%;
+        padding: 10px;
     }
 
     .titulo {
@@ -113,13 +111,12 @@
     .btn-first, .btn-google {
         width: 100%;
         font-size: 18px;
-        margin-bottom: 10px; /* Adiciona espaço entre os botões */
+        margin-bottom: 10px;
     }
 
     h3 {
-        position: relative;
         text-align: center;
-        margin-top: 20px; /* Adiciona um espaço maior entre os botões e o texto */
+        margin-top: 20px;
     }
 
     .btn-outline-dark {
