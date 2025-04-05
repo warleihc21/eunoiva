@@ -55,28 +55,25 @@ class ImagemNoivos(models.Model):
 
     
 class MensagemSobreNoivoNoiva(models.Model):
-    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='mensagens')
+    perfil = models.ForeignKey('Perfil', on_delete=models.CASCADE, related_name='mensagens')
     tipo = models.CharField(max_length=10, choices=[('noiva', 'Noiva'), ('noivo', 'Noivo')])
-    mensagem = models.TextField()
+    mensagem = models.TextField(blank=True)
+
+    MENSAGEM_PADRAO_NOIVA = (
+        "Ela é a luz que ilumina todos ao seu redor, com um sorriso capaz de derreter qualquer coração. Sua beleza, inteligência e graça são apenas algumas das suas qualidades, mas é o seu coração generoso e a paciência com o noivo que realmente a definem. Ela é, sem dúvida, a pessoa mais incrível que você vai conhecer – e todos nós torcemos para que ele saiba o quanto ela merece ser amada a cada dia."
+    )
+
+    MENSAGEM_PADRAO_NOIVO = (
+        "Ele é o mestre das piadas, sempre pronto para fazer todos rirem, mesmo nas situações mais inesperadas. Com um coração enorme e o talento de fazer a noiva sorrir até nos momentos mais sérios, ele é a verdadeira prova de que o amor existe. Mesmo sendo um pouco desastrado (quem nunca derrubou algo em um jantar de família?), ele traz leveza e diversão a cada momento. Ele pode não ser perfeito, mas é perfeito para ela – e é isso que realmente importa."
+    )
 
     def save(self, *args, **kwargs):
-        # Adicionar as mensagens padrão se o objeto for novo (não tem mensagem definida)
+        # Atribui mensagem padrão se o campo estiver vazio
         if not self.mensagem:
             if self.tipo == 'noiva':
-                self.mensagem = (
-                    "Ela é a luz que ilumina todos ao seu redor, com um sorriso capaz de derreter qualquer coração. "
-                    "Sua beleza, inteligência e graça são apenas algumas das suas qualidades, mas é o seu coração generoso "
-                    "e a paciência com o noivo que realmente a definem. Ela é, sem dúvida, a pessoa mais incrível que você vai "
-                    "conhecer – e todos nós torcemos para que ele saiba o quanto ela merece ser amada a cada dia."
-                )
+                self.mensagem = self.MENSAGEM_PADRAO_NOIVA
             elif self.tipo == 'noivo':
-                self.mensagem = (
-                    "Ele é o mestre das piadas, sempre pronto para fazer todos rirem, mesmo nas situações mais inesperadas. "
-                    "Com um coração enorme e o talento de fazer a noiva sorrir até nos momentos mais sérios, ele é a verdadeira "
-                    "prova de que o amor existe. Mesmo sendo um pouco desastrado (quem nunca derrubou algo em um jantar de família?), "
-                    "ele traz leveza e diversão a cada momento. Ele pode não ser perfeito, mas é perfeito para ela – e é isso que "
-                    "realmente importa."
-                )
+                self.mensagem = self.MENSAGEM_PADRAO_NOIVO
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -96,11 +96,11 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="nome_primeiro_conjuge" class="form-label cor-vermelho">Nome do primeiro cônjuge</label>
-                    <input type="text" id="nome_primeiro_conjuge" name="nome_primeiro_conjuge" class="form-control" value="{{ perfil.nome_primeiro_conjuge }}">
+                    <input type="text" id="nome_primeiro_conjuge" name="nome_primeiro_conjuge" class="form-control" value="{{ perfil.nome_primeiro_conjuge|default_if_none:'' }}">
                 </div>
                 <div class="mb-3">
                     <label for="nome_segundo_conjuge" class="form-label cor-vermelho">Nome do segundo cônjuge</label>
-                    <input type="text" id="nome_segundo_conjuge" name="nome_segundo_conjuge" class="form-control" value="{{ perfil.nome_segundo_conjuge }}">
+                    <input type="text" id="nome_segundo_conjuge" name="nome_segundo_conjuge" class="form-control" value="{{ perfil.nome_segundo_conjuge|default_if_none:'' }}">
                 </div>
                 <div class="row">
                     <div class="col-8 mb-3">
@@ -122,7 +122,7 @@
                 </div>                 
                 <div class="mb-3">
                     <label for="mensagem_noivos" class="form-label cor-vermelho">Mensagem</label>
-                    <textarea id="mensagem_noivos" name="mensagem_noivos" class="form-control" rows="8">{{ perfil.mensagem_noivos }}</textarea>
+                    <textarea id="mensagem_noivos" name="mensagem_noivos" class="form-control" rows="8">{{ perfil.mensagem_noivos|default_if_none:'' }}</textarea>
                 </div>
             </div>
             
@@ -131,23 +131,23 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="cep" class="form-label cor-vermelho">CEP</label>
-                    <input type="text" id="cep" name="cep" class="form-control" value="{{ perfil.cep }}" onblur="buscarCEP()">
+                    <input type="text" id="cep" name="cep" class="form-control" value="{{ perfil.cep|default_if_none:'' }}" onblur="buscarCEP()">
                 </div>
                 <div class="mb-3">
                     <label for="rua" class="form-label cor-vermelho">Rua</label>
-                    <input type="text" id="rua" name="rua" class="form-control" value="{{ perfil.rua }}">
+                    <input type="text" id="rua" name="rua" class="form-control" value="{{ perfil.rua|default_if_none:'' }}">
                 </div>
                 <div class="mb-3">
                     <label for="numero" class="form-label cor-vermelho">Número</label>
-                    <input type="text" id="numero" name="numero" class="form-control" value="{{ perfil.numero }}">
+                    <input type="text" id="numero" name="numero" class="form-control" value="{{ perfil.numero|default_if_none:'' }}">
                 </div>
                 <div class="mb-3">
                     <label for="complemento" class="form-label cor-vermelho">Complemento</label>
-                    <input type="text" id="complemento" name="complemento" class="form-control" value="{{ perfil.complemento }}">
+                    <input type="text" id="complemento" name="complemento" class="form-control" value="{{ perfil.complemento|default_if_none:'' }}">
                 </div>
                 <div class="mb-3">
                     <label for="bairro" class="form-label cor-vermelho">Bairro</label>
-                    <input type="text" id="bairro" name="bairro" class="form-control" value="{{ perfil.bairro }}">
+                    <input type="text" id="bairro" name="bairro" class="form-control" value="{{ perfil.bairro|default_if_none:'' }}">
                 </div>
                 <div class="mb-3">
                     <label for="pais" class="form-label cor-vermelho">País</label>
@@ -190,7 +190,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="municipio" class="form-label cor-vermelho">Município</label>
-                    <input type="text" id="municipio" name="municipio" class="form-control" value="{{ perfil.municipio }}">
+                    <input type="text" id="municipio" name="municipio" class="form-control" value="{{ perfil.municipio|default_if_none:'' }}">
                 </div>
             </div>
         </div>
