@@ -177,5 +177,12 @@ def configurar_perfil(request):
     return render(request, 'configurar_perfil.html', {'perfil': perfil})
 
 
+def index(request):
+    if request.user.is_authenticated:
+        return redirect('/noivos/')
+    else:
+        return redirect('/auth/logar/')
+
+
 
 

@@ -11,6 +11,7 @@
     h2 {
         color: #8B4513;
     }
+    
 
     #confirmacao-presenca {
         min-height: auto;
@@ -182,6 +183,15 @@
         border-color: white;
     }
 
+    .fade-in {
+        animation: fadeIn 2s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
 
     /* Ajustes para telas menores */
     @media (max-width: 768px) {
@@ -269,19 +279,19 @@
         <div class="position-relative vh-100" style="padding-top: 56px;">
             {% if convidado.user.perfil.imagem %}
                 <img src="{{ convidado.user.perfil.imagem.url }}" 
-                    alt="Imagem do Casamento" 
+                    alt="Foto do casal no banner principal do convite" 
                     class="imagem-fundo w-100 h-100 object-fit-cover">
             {% else %}
                 <img src="{% static 'noivos/img/aliancas.jpg' %}" 
-                    alt="Imagem do Casamento" 
+                    alt="Foto do casal no banner principal do convite" 
                     class="imagem-fundo w-100 h-100 object-fit-cover">
             {% endif %}
 
             <!-- Camada escura sobre a imagem -->
-            <div class="position-absolute top-0 start-0 w-100 h-100 bg-black" style="opacity: 0.4;"></div>
+            <div class="position-absolute top-0 start-0 w-100 h-100 bg-black" style="opacity: 0.55;"></div>
 
             <!-- Conteúdo centralizado sobre a imagem -->
-            <div class="position-absolute top-50 start-50 translate-middle text-center">
+            <div class="position-absolute top-50 start-50 translate-middle text-center fade-in">
                 <span class="text-uppercase display-4 mb-4 text-white">
                     {{ convidado.user.perfil.nome_primeiro_conjuge }} 
                     & 

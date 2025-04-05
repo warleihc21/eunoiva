@@ -24,44 +24,49 @@
 
     
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const menuToggle = document.getElementById('menu-toggle');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const menuLinks = mobileMenu.querySelectorAll('a');
+            const mobileMenu = document.getElementById('navbarNav');
             const menuIcon = document.getElementById('menu-icon');
-            const lines = menuIcon.querySelectorAll('path');
-            
-            // Função para alternar o ícone entre hambúrguer e X
-            function toggleMenuIcon() {
-                if (mobileMenu.classList.contains('show')) {
-                    // Mudar para X
-                    lines[0].setAttribute('d', 'M4 6h16');
-                    lines[1].setAttribute('d', 'M4 12h16');
-                    lines[2].setAttribute('d', 'M4 18h16');
-                    menuIcon.classList.add('rotate-45');
+            const navLinks = mobileMenu.querySelectorAll('a');
+    
+            function toggleMenu() {
+                const isOpen = mobileMenu.classList.contains('show');
+    
+                if (isOpen) {
+                    // Fecha o menu
+                    new bootstrap.Collapse(mobileMenu).hide();
+                    transformToBurger();
                 } else {
-                    // Voltar para hambúrguer
-                    lines[0].setAttribute('d', 'M4 6h16');
-                    lines[1].setAttribute('d', 'M4 12h16');
-                    lines[2].setAttribute('d', 'M4 18h16');
-                    menuIcon.classList.remove('rotate-45');
+                    // Abre o menu
+                    new bootstrap.Collapse(mobileMenu).show();
+                    transformToX();
                 }
             }
     
-            // Evento para abrir/fechar o menu ao clicar no toggle
-            menuToggle.addEventListener('click', function() {
-                mobileMenu.classList.toggle('show');
-                toggleMenuIcon();
+            function transformToX() {
+                menuToggle.classList.add('open');
+            }
+    
+            function transformToBurger() {
+                menuToggle.classList.remove('open');
+            }
+    
+            // Alterna o menu ao clicar no botão
+            menuToggle.addEventListener('click', function () {
+                toggleMenu();
             });
     
-            // Evento para fechar o menu ao clicar em um item
-            menuLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    mobileMenu.classList.remove('show');
-                    toggleMenuIcon(); // Resetar o ícone para hambúrguer quando o menu fechar
+            // Fecha o menu ao clicar num link e volta o ícone ao padrão
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const bsCollapse = bootstrap.Collapse.getInstance(mobileMenu);
+                    if (bsCollapse) {
+                        bsCollapse.hide();
+                        transformToBurger();
+                    }
                 });
             });
-    
         });
     </script>
 </body>
