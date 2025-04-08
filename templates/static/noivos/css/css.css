@@ -233,10 +233,66 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
         font-size: 0.9rem; /* Reduz o tamanho do texto abaixo dos números */
     }
 
+    .navbar-collapse {
+        background-color: rgba(255, 255, 255, 0.95); /* Fundo levemente transparente */
+        padding: 1rem; /* Adiciona padding */
+        border-radius: 8px; /* Bordas arredondadas */
+        margin-top: 0.5rem; /* Espaçamento acima do menu */
+    }
 
-}
+    .navbar-nav {
+        margin-top: 0.5rem; /* Espaçamento entre os itens do menu */
+    }
 
-@media (max-width: 768px) {
+    .navbar-nav .nav-item {
+        text-align: center; /* Centraliza os itens do menu */
+    }
+
+    .navbar-nav .nav-link {
+        padding: 0.5rem 1rem; /* Adiciona padding aos links */
+    }
+
+    .navbar-text {
+        text-align: center; /* Centraliza o texto de boas-vindas */
+        margin: 0.5rem 0; /* Adiciona margem */
+    }
+
+    .card-img-container {
+        height: 8rem; /* Reduz a altura da imagem no card */
+        margin-bottom: 0.5rem; /* Adiciona margem inferior à imagem */
+    }
+
+    .card-body {
+        padding: 0.5rem; /* Reduz o padding do corpo do card */
+    }
+
+    .d-flex.justify-content-center.gap-2.w-100 {
+        flex-direction: column; /* Empilha os botões verticalmente */
+        align-items: center; /* Centraliza os botões */
+    }
+
+    .btn {
+        font-size: 0.6rem;
+        padding: 0.5rem 1rem; /* Reduz o padding dos botões */
+        width: 100%;
+        margin-bottom: 0.2rem; /* Reduz a margem entre os botões */
+    }
+
+    .btn i {
+        font-size: 0.7rem; /* Reduz o tamanho dos ícones nos botões */
+    }
+
+    .card-title {
+        font-size: 0.8rem; /* Reduz o tamanho do título */
+        margin-bottom: 0.3rem; /* Reduz a margem inferior do título */
+    }
+
+    .card-text {
+        font-size: 0.7rem; /* Reduz o tamanho do preço */
+        margin-bottom: 0.3rem; /* Reduz a margem inferior do preço */
+    }
+
+
     #timer {
         flex-direction: column; /* Alinha os campos verticalmente */
         align-items: center; /* Centraliza os campos horizontalmente */
@@ -249,9 +305,7 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
         padding: 15px; /* Aumenta o padding para melhor visualização */
         box-sizing: border-box; /* Garante que o padding não aumente a largura total */
     }
-}
 
-@media (max-width: 768px) {
     .centralizar-imagem {
         display: flex;
         justify-content: center;
@@ -262,7 +316,31 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
         width: 90%; /* Ajusta para ocupar 90% da tela em dispositivos menores */
         max-width: 400px; /* Limita o tamanho máximo para evitar imagens muito grandes */
     }
+
+    .relative.w-full.h-screen {
+        height: 100vh; /* Mantém a altura da tela inteira */
+    }
+
+    .imagem-fundo {
+        height: 100vh; /* Garante que ocupe a tela toda em celulares */
+        width: 100%;
+    }
+
+    .card-presentes {
+        flex: 0 0 auto;
+        width: 50%; /* Garante que dois cards ocupem 50% da largura cada */
+        
+    }
+
+    .card {
+        width: 100%;
+        height: 20rem; /* Mantém a altura dos cards */
+        padding: 0.5rem; /* Reduz o padding do card */
+    }
+
+
 }
+
 
 #mobile-menu {
     transition: max-height 0.3s ease-in-out;
@@ -281,42 +359,44 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
     object-position: center; /* Centraliza a imagem */
 }
 
-@media (max-width: 768px) {
-    .relative.w-full.h-screen {
-        height: 100vh; /* Mantém a altura da tela inteira */
-    }
-
-    .imagem-fundo {
-        height: 100vh; /* Garante que ocupe a tela toda em celulares */
-        width: 100%;
-    }
+/* Transição suave ao expandir o menu */
+#navbarNav {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
 }
 
-
-
-
-
-/* Animação para o botão "X" */
-.rotate-45 {
-    transform: rotate(45deg);
+/* Quando o menu estiver aberto */
+#navbarNav.show {
+    max-height: 500px; /* ou mais, dependendo do tamanho do menu */
 }
 
-/* Quando o menu está aberto, o ícone "X" deve mostrar a transformação */
-#menu-icon path {
-    transition: all 0.3s ease;
-}
-
-#menu-toggle.open svg #line-1 {
-    transform: rotate(45deg);
-}
-
-#menu-toggle.open svg #line-2 {
+#navbarNav .nav-link {
     opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-#menu-toggle.open svg #line-3 {
-    transform: rotate(-45deg);
+#navbarNav.show .nav-link {
+    opacity: 1;
+    transform: translateY(0);
 }
+
+#navbarNav.collapsing {
+    height: auto !important;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    max-height: 0;
+}
+
+#navbarNav.collapse.show {
+    max-height: 500px; /* ou algo maior dependendo do conteúdo */
+    transition: max-height 0.5s ease;
+}
+
+
+
+
 
 
 .cor-vermelho {
@@ -348,42 +428,42 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
     box-shadow: none; /* Remove a sombra ao focar */
 }
 
-/* Estilos para o ícone do botão de toggler */
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(190, 28, 60, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+/* Novo estilo para o botão "hambúrguer" com 3 barras */
+#menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 24px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    z-index: 1001;
 }
 
-/* Estilos para o menu colapsável em dispositivos móveis */
-@media (max-width: 768px) {
-    .navbar-collapse {
-        background-color: rgba(255, 255, 255, 0.95); /* Fundo levemente transparente */
-        padding: 1rem; /* Adiciona padding */
-        border-radius: 8px; /* Bordas arredondadas */
-        margin-top: 0.5rem; /* Espaçamento acima do menu */
-    }
-
-    .navbar-nav {
-        margin-top: 0.5rem; /* Espaçamento entre os itens do menu */
-    }
-
-    .navbar-nav .nav-item {
-        text-align: center; /* Centraliza os itens do menu */
-    }
-
-    .navbar-nav .nav-link {
-        padding: 0.5rem 1rem; /* Adiciona padding aos links */
-    }
-
-    .navbar-text {
-        text-align: center; /* Centraliza o texto de boas-vindas */
-        margin: 0.5rem 0; /* Adiciona margem */
-    }
-
-    .btn {
-        width: 100%; /* Faz o botão ocupar a largura total */
-        margin-top: 0.5rem; /* Adiciona margem acima do botão */
-    }
+.bar {
+    width: 100%;
+    height: 3px;
+    background-color: #c1121f; /* Vermelho da sua paleta */
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    transform-origin: center;
 }
+
+/* Animação do "X" */
+#menu-toggle.open .bar1 {
+    transform: translateY(10px) rotate(45deg);
+}
+
+#menu-toggle.open .bar2 {
+    opacity: 0;
+}
+
+#menu-toggle.open .bar3 {
+    transform: translateY(-10px) rotate(-45deg);
+}
+
 
 
 

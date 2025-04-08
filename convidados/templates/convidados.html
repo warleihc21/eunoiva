@@ -187,6 +187,10 @@
         animation: fadeIn 2s ease-in-out forwards;
     }
 
+    .relative.w-full.h-screen {
+        min-height: 100vh; /* Permite que o conteúdo abaixo empurre a imagem */
+    }
+
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
@@ -204,21 +208,12 @@
         .foto-quadrada img {
             border-radius: 20px; /* Reduz o arredondamento para telas menores */
         }
-    }
 
-
-    @media (max-width: 768px) {
         .btn {
             width: 100%; /* Faz os botões ocuparem a largura total */
             padding: 10px 16px;
         }
-    }
 
-    .relative.w-full.h-screen {
-        min-height: 100vh; /* Permite que o conteúdo abaixo empurre a imagem */
-    }
-
-    @media (max-width: 768px) {
         .relative.w-full.h-screen {
             height: 60vh; /* Reduz a altura em telas menores */
         }
@@ -226,37 +221,41 @@
             font-size: 2rem; /* Reduz o tamanho do texto */
             text-align: center;
         }
-    }
 
-    @media (max-width: 768px) {
         .grid-cols-2 {
             grid-template-columns: 1fr; /* Faz com que cada elemento ocupe 100% da largura */
         }
-    }
 
-    img {
-        max-width: 100%;
-        height: auto;
-    }
-
-    @media (max-width: 768px) {
         .text-5xl {
             font-size: 2rem;
         }
         .sm\:text-5xl {
             font-size: 2rem;
         }
-    }
 
-    /* Em telas menores, os botões ficam um abaixo do outro */
-    @media (max-width: 768px) {
         .botao-container {
             flex-direction: column; /* Empilha os botões verticalmente */
             gap: 16px; /* Ajusta o espaçamento */
         }
+
+        
+
     }
 
+
+
+
     
+
+
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+
+  
 
     
 </style>
@@ -564,7 +563,7 @@
 
         <br>
 
-        <section id="lista-presentes" class="section-full-height">
+        <section id="lista-presentes" class="py-5">
             <div class="text-center mt-5 mb-5">
                 <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
             </div>
@@ -577,9 +576,9 @@
                 </div>
                 
                 <div class="container mt-4">
-                    <div class="row g-4">
+                    <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
                         {% for presente in presentes %}
-                        <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+                        <div class="col-12 col-md-6 card-presentes col-lg-4 d-flex justify-content-center">
                             <div class="card rounded-2xl shadow-lg overflow-hidden 
                                 {% if presente.reservado %} presente-reservado {% endif %}
                                 {% if presente.reservado_por.token == token %} reservado-pelo-convidado {% endif %}"
@@ -594,7 +593,7 @@
                                     {% endif %}
                                 </div>
                                 
-                                <div class="card-body rounded-bottom-2xl p-4 bg-white d-flex flex-column justify-content-center align-items-center text-center gap-3">
+                                <div class="card-body rounded-bottom-2xl p-1 bg-white d-flex flex-column justify-content-center align-items-center text-center gap-3">
                                     <h3 class="card-title cor-vermelho m-0">{{ presente.nome_presente }}</h3>
                                     <p class="card-text cor-vermelho">R$ {{ presente.preco|floatformat:2|default:"0.00" }}</p>
                                 

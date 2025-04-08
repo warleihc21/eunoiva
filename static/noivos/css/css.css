@@ -391,6 +391,19 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
 }
 
 
+@media (max-width: 768px) {
+    .col-md-6 {
+        flex: 0 0 auto;
+        width: 50%; /* Garante que dois cards ocupem 50% da largura cada */
+    }
+
+    .card {
+        width: 100%; /* Garante que os cards ocupem toda a largura da coluna */
+        height: 25rem; /* Ajuste a altura conforme necessário */
+    }
+}
+
+
 
 
 
