@@ -257,6 +257,30 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
         margin: 0.5rem 0; /* Adiciona margem */
     }
 
+
+    /* Transição suave ao expandir o menu */
+    #navbarNav {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+    }
+
+    /* Quando o menu estiver aberto */
+    #navbarNav.show {
+        max-height: 500px; /* ou mais, dependendo do tamanho do menu */
+    }
+
+    #navbarNav .nav-link {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    #navbarNav.show .nav-link {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
     .card-img-container {
         height: 8rem; /* Reduz a altura da imagem no card */
         margin-bottom: 0.5rem; /* Adiciona margem inferior à imagem */
@@ -342,6 +366,8 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
 }
 
 
+
+
 #mobile-menu {
     transition: max-height 0.3s ease-in-out;
     overflow: hidden;
@@ -359,28 +385,7 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
     object-position: center; /* Centraliza a imagem */
 }
 
-/* Transição suave ao expandir o menu */
-#navbarNav {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease-in-out;
-}
 
-/* Quando o menu estiver aberto */
-#navbarNav.show {
-    max-height: 500px; /* ou mais, dependendo do tamanho do menu */
-}
-
-#navbarNav .nav-link {
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-#navbarNav.show .nav-link {
-    opacity: 1;
-    transform: translateY(0);
-}
 
 #navbarNav.collapsing {
     height: auto !important;
@@ -462,6 +467,21 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, a, li, button, input, label {
 
 #menu-toggle.open .bar3 {
     transform: translateY(-10px) rotate(-45deg);
+}
+
+
+/* Exibe o botão em telas pequenas */
+@media screen and (max-width: 768px) {
+    #menu-toggle {
+        display: flex !important; /* Garante visibilidade em telas pequenas */
+    }
+}
+
+/* Esconde o botão em telas grandes */
+@media screen and (min-width: 769px) {
+    #menu-toggle {
+        display: none !important; /* Garante que ele suma em telas grandes */
+    }
 }
 
 
