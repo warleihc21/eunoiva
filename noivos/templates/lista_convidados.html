@@ -96,6 +96,10 @@
         transform: scale(1.1);
     }
 
+    html, body {
+        height: 100%;
+    }
+
     @media (max-width: 768px) {
         h1 {
             font-size: 1.8rem;
@@ -109,10 +113,12 @@
         .card {
             padding: 20px;
             margin-bottom: 20px;
+            max-height: 200vh; /* Impede que o conteúdo ultrapasse a tela */
         }
 
         .container {
             padding: 10px;
+
         }
 
         .btn {
@@ -133,6 +139,15 @@
 
         .modal-dialog {
             max-width: 95%;
+        }
+
+        .row {
+            flex-direction: column; /* Empilha os cartões verticalmente */
+        }
+
+        .col-lg-6, .col-md-6 {
+            max-width: 100%;
+            flex: 0 0 100%;
         }
     }
 

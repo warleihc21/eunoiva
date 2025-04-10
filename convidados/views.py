@@ -23,6 +23,9 @@ def convidados(request):
     mensagem_noiva = MensagemSobreNoivoNoiva.objects.filter(tipo='noiva').first()  # Ajuste conforme a lógica que você tem para mensagens
     mensagem_noivo = MensagemSobreNoivoNoiva.objects.filter(tipo='noivo').first()  # Ajuste conforme a lógica que você tem para mensagens
 
+    mensagens_enviadas = MensagemAosNoivos.objects.filter(user=convidado.user).order_by('-data_envio')
+
+
     timestamp = int(datetime.now().timestamp())
 
     # Verificar se o convidado pode adicionar acompanhantes
@@ -40,7 +43,8 @@ def convidados(request):
         'imagem_noiva': imagem_noiva,
         'imagem_noivo': imagem_noivo,
         'mensagem_noiva': mensagem_noiva,
-        'mensagem_noivo': mensagem_noivo
+        'mensagem_noivo': mensagem_noivo,
+        'mensagens_enviadas': mensagens_enviadas,
     })
 
 def responder_presenca(request):

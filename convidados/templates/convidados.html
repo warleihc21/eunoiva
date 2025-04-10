@@ -205,6 +205,10 @@
             margin: 10px auto; /* Centraliza e adiciona margem */
         }
 
+        #mensagem-aos-noivos .row {
+            flex-direction: column;
+        }
+
         .foto-quadrada img {
             border-radius: 20px; /* Reduz o arredondamento para telas menores */
         }
@@ -464,21 +468,60 @@
                     <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Deixe sua mensagem para os noivos</h2>
                 </div>
         
-                <!-- Formulário -->
-                <div class="bg-white p-4 shadow rounded">
-                    <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="mensagem" class="form-label">Mensagem:</label>
-                            <textarea name="texto_mensagem" class="form-control" rows="5" placeholder="Escreva sua mensagem aqui..."></textarea>
+                <!-- Grid: formulário + mensagens -->
+                <div class="row">
+                    <!-- Formulário -->
+                    <div class="col-md-6 mb-4">
+                        <div class="bg-white p-4 shadow rounded h-100">
+                            <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="mensagem" class="form-label">Mensagem:</label>
+                                    <textarea name="texto_mensagem" class="form-control rounded-3 shadow-sm" rows="5" placeholder="Escreva sua mensagem aqui..."></textarea>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-danger px-4">Enviar Mensagem</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-danger">Enviar Mensagem</button>
+                    </div>
+        
+                    <!-- Mensagens Enviadas -->
+                    <div class="col-md-6">
+                        <div class="bg-white p-4 shadow rounded" style="max-height: 500px; overflow-y: auto;">
+                            <h5 class="mb-4 fw-bold">Mensagens Enviadas</h5>
+                            {% if mensagens_enviadas %}
+                                {% for mensagem in mensagens_enviadas %}
+                                    <div class="d-flex mb-4 p-3 rounded bg-light shadow-sm">
+                                        <!-- Avatar / Ícone -->
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center shadow" style="width: 50px; height: 50px; font-size: 30px;">
+                                                <i class="bi bi-person-fill"></i>
+                                            </div>
+                                        </div>
+        
+                                        <!-- Conteúdo da mensagem -->
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <strong>{{ mensagem.escrita_por.nome_convidado }}</strong>
+                                                <small class="text-muted">{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
+                                            </div>
+                                            <div class="bg-white border rounded p-3">
+                                                {{ mensagem.texto_mensagem|safe }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">Nenhuma mensagem enviada ainda.</p>
+                            {% endif %}
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </section>
+        
+        
 
 
         
