@@ -215,7 +215,9 @@
 
         .btn {
             width: 100%; /* Faz os botões ocuparem a largura total */
-            padding: 10px 16px;
+
+            padding: 5px 12px;
+            font-size: 13px;
         }
 
         .relative.w-full.h-screen {
@@ -242,10 +244,94 @@
             gap: 16px; /* Ajusta o espaçamento */
         }
 
+
+        #mensagem-aos-noivos .mensagem-box {
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        #mensagem-aos-noivos .mensagem-box strong {
+            font-size: 0.9rem;
+        }
+
+        #mensagem-aos-noivos .mensagem-box small {
+            font-size: 0.7rem;
+        }
+
+        #mensagem-aos-noivos .mensagem-box .texto {
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+
+        #mensagem-aos-noivos h2 {
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        #mensagem-aos-noivos textarea {
+            font-size: 0.85rem;
+            min-height: 100px;
+        }
+
+        #mensagem-aos-noivos .form-label {
+            font-size: 0.85rem;
+        }
+
+        #mensagem-aos-noivos button.btn {
+            font-size: 0.85rem;
+            padding: 0.6rem 1rem;
+        }
+
+        #mensagem-aos-noivos .mensagens-container {
+            max-height: 250px;
+            background: #fff0f0;
+        }
+    
+
         
 
     }
 
+    #mensagem-aos-noivos .mensagens-container {
+        max-height: 600px;  /* Limite de altura (ajuste como quiser) */
+        overflow-y: auto;
+        padding-right: 10px; /* Evita que a rolagem fique sobre o conteúdo */
+        background: #fff0f0;
+    }
+
+    #mensagem-aos-noivos .mensagem-box {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 16px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        transition: all 0.3s ease-in-out;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInMessage 0.6s ease forwards;
+    }
+
+    #mensagem-aos-noivos .mensagem-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    }
+
+    @keyframes fadeInMessage {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 576px) {
+        #mensagem-aos-noivos .form-container {
+            padding: 1rem;
+            margin: 0 auto;
+            width: 100%;
+        }
+    }
 
 
 
@@ -472,11 +558,11 @@
                 <div class="row">
                     <!-- Formulário -->
                     <div class="col-md-6 mb-4">
-                        <div class="bg-white p-4 shadow rounded h-100">
+                        <div class="bg-light p-4 shadow rounded h-100">
                             <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}">
                                 {% csrf_token %}
                                 <div class="mb-3">
-                                    <label for="mensagem" class="form-label">Mensagem:</label>
+                                    <label for="mensagem" class="form-label fw-bold cor-marrom">Mensagem:</label>
                                     <textarea name="texto_mensagem" class="form-control rounded-3 shadow-sm" rows="5" placeholder="Escreva sua mensagem aqui..."></textarea>
                                 </div>
                                 <div class="text-center">
@@ -488,25 +574,25 @@
         
                     <!-- Mensagens Enviadas -->
                     <div class="col-md-6">
-                        <div class="bg-white p-4 shadow rounded" style="max-height: 500px; overflow-y: auto;">
-                            <h5 class="mb-4 fw-bold">Mensagens Enviadas</h5>
+                        <div class="bg-light p-4 shadow rounded mensagens-container">
+                            <h5 class="mb-4 fw-bold cor-marrom">Mensagens Enviadas</h5>
                             {% if mensagens_enviadas %}
                                 {% for mensagem in mensagens_enviadas %}
-                                    <div class="d-flex mb-4 p-3 rounded bg-light shadow-sm">
+                                    <div class="d-flex mensagem-box">
                                         <!-- Avatar / Ícone -->
                                         <div class="flex-shrink-0 me-3">
-                                            <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center shadow" style="width: 50px; height: 50px; font-size: 30px;">
+                                            <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center shadow" style="width: 40px; height: 40px; font-size: 24px;">
                                                 <i class="bi bi-person-fill"></i>
                                             </div>
                                         </div>
-        
+
                                         <!-- Conteúdo da mensagem -->
                                         <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <strong>{{ mensagem.escrita_por.nome_convidado }}</strong>
-                                                <small class="text-muted">{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
+                                                <small>{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
                                             </div>
-                                            <div class="bg-white border rounded p-3">
+                                            <div class="texto">
                                                 {{ mensagem.texto_mensagem|safe }}
                                             </div>
                                         </div>
@@ -517,6 +603,7 @@
                             {% endif %}
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
