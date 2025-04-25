@@ -1,4 +1,6 @@
 from io import BytesIO
+
+from urllib.parse import quote
 from django.forms import ValidationError
 from django.urls import reverse
 import secrets
@@ -105,9 +107,10 @@ class Convidados(models.Model):
     def save(self, *args, **kwargs):
         if not self.token:
             self.token = secrets.token_urlsafe(16)
+               
         super(Convidados, self).save(*args, **kwargs)
 
-    @property  # Adicione este decorador
+    @property
     def link_convite(self):
         return f'https://inoivos.site{reverse("convidados")}?token={self.token}'
 

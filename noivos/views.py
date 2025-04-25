@@ -214,41 +214,67 @@ def editar_mensagem(request):
    
 
 
+
+
 def lista_convidados(request):
     if request.method == 'GET':
         convidados = Convidados.objects.filter(user=request.user)
         nao_confirmados = convidados.filter(status='AC')
-        mensagem = MensagemPersonalizada.objects.filter(user=request.user).first()
-        mensagem_url = mensagem.imagem.url if mensagem and mensagem.imagem else None
+        
+        mensagem_obj = MensagemPersonalizada.objects.filter(user=request.user).first()
+        mensagem = mensagem_obj.mensagem if mensagem_obj else ''
+        mensagem_url = mensagem_obj.imagem.url if mensagem_obj and mensagem_obj.imagem else None
 
+        # Obter perfil do usuário
         perfil = Perfil.objects.get(user=request.user)
         nome_primeiro_conjuge = perfil.nome_primeiro_conjuge
         nome_segundo_conjuge = perfil.nome_segundo_conjuge
         data_casamento = perfil.data_casamento
 
+        # Adicionar o link do WhatsApp personalizado para cada convidado
+        for convidado in nao_confirmados:
+            telefone = convidado.whatsapp
+            if telefone and not telefone.startswith("55"):
+                telefone = f"55{telefone}"
+
+            # Personalizar mensagem
+            mensagem_formatada = mensagem.replace("{nome}", convidado.nome_convidado).replace("{link}", convidado.link_convite)
+
+            # Adicionar link da imagem, se existir
+            if mensagem_obj.imagem:
+                imagem_url = request.build_absolute_uri(mensagem_obj.imagem.url)
+                mensagem_formatada += f"\n\n📷 Confira essa imagem: {imagem_url}"
+
+            mensagem_encoded = quote(mensagem_formatada)
+            convidado.link_whatsapp = f"https://wa.me/{telefone}?text={mensagem_encoded}"
+
         return render(request, 'lista_convidados.html', {
             'convidados': convidados, 
             'nao_confirmados': nao_confirmados,
-            'mensagem': mensagem.mensagem if mensagem else '',
+            'mensagem': mensagem,
             'mensagem_url': mensagem_url,
             'perfil': perfil,
             'nome_primeiro_conjuge': nome_primeiro_conjuge,
             'nome_segundo_conjuge': nome_segundo_conjuge,
             'data_casamento': data_casamento
-            })
+        })
+    
     elif request.method == 'POST':
-        
         nome_convidado = request.POST.get('nome_convidado')
         whatsapp = request.POST.get('whatsapp')
         maximo_acompanhantes = request.POST.get('maximo_acompanhantes', '0')  # Obtém o valor ou '0' se vazio
         maximo_acompanhantes = int(maximo_acompanhantes) if maximo_acompanhantes.isdigit() else 0  # Converte ou usa 0
+        
+        # Criar um novo convidado e salvar o link do WhatsApp automaticamente
         Convidados.objects.create(
             user=request.user,
             nome_convidado=nome_convidado,
             whatsapp=whatsapp,
             maximo_acompanhantes=maximo_acompanhantes
         )
+        
         return redirect('lista_convidados')
+
 
 
 
@@ -505,6 +531,7 @@ def enviar_mensagens(request):
         return JsonResponse({'status': 'sucesso'})
 
     
+
 
 @csrf_exempt
 def salvar_mensagem(request):

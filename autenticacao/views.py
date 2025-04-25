@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .utils import password_is_valid, email_html
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.models import User
-from noivos.models import ImagemGaleria, ImagemNoivos, Perfil
+from noivos.models import ImagemGaleria, ImagemNoivos, MensagemSobreNoivoNoiva, Perfil
 from django.contrib.messages import constants
 from django.contrib import messages
 from django.contrib import auth
@@ -162,6 +162,21 @@ def configurar_perfil(request):
             perfil.imagem = request.FILES['imagem']
 
         perfil.save()
+
+        # Verifica se o perfil já tem mensagens cadastradas
+        if not perfil.mensagens.exists():
+            MensagemSobreNoivoNoiva.objects.create(
+                user=request.user,
+                perfil=perfil,
+                tipo='noiva',
+                mensagem='Ela é a luz que ilumina todos ao seu redor, com um sorriso capaz de derreter qualquer coração. Sua beleza, inteligência e graça são apenas algumas das suas qualidades, mas é o seu coração generoso e a paciência com o noivo que realmente a definem. Ela é, sem dúvida, a pessoa mais incrível que você vai conhecer – e todos nós torcemos para que ele saiba o quanto ela merece ser amada a cada dia.'
+            )
+            MensagemSobreNoivoNoiva.objects.create(
+                user=request.user,
+                perfil=perfil,
+                tipo='noivo',
+                mensagem='Ele é o mestre das piadas, sempre pronto para fazer todos rirem, mesmo nas situações mais inesperadas. Com um coração enorme e o talento de fazer a noiva sorrir até nos momentos mais sérios, ele é a verdadeira prova de que o amor existe. Mesmo sendo um pouco desastrado (quem nunca derrubou algo em um jantar de família?), ele traz leveza e diversão a cada momento. Ele pode não ser perfeito, mas é perfeito para ela – e é isso que realmente importa.'
+            )
 
         # Salvar múltiplas imagens da galeria
         imagens = request.FILES.getlist('galeria_imagens')  # Captura todas as imagens enviadas

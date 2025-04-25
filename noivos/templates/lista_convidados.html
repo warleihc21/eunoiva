@@ -277,6 +277,7 @@
                                         <th>Nome</th>
                                         <th>Whatsapp</th>
                                         <th>Status</th>
+                                        <th>Ação</th> <!-- nova coluna -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -286,6 +287,13 @@
                                         <td>{{ convidado.nome_convidado }}</td>
                                         <td>{{ convidado.whatsapp }}</td>
                                         <td>{{ convidado.get_status_display }}</td>
+                                        <td>
+                                            <a class="btn btn-success" style="border-radius: 20px;"
+                                               href="{{ convidado.link_whatsapp }}"
+                                               target="_blank">
+                                               Enviar WhatsApp
+                                            </a>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
