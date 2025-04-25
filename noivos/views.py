@@ -243,7 +243,7 @@ def lista_convidados(request):
             # Adicionar link da imagem, se existir
             if mensagem_obj.imagem:
                 imagem_url = request.build_absolute_uri(mensagem_obj.imagem.url)
-                mensagem_formatada += f"\n\n📷 Confira essa imagem: {imagem_url}"
+                mensagem_formatada += f"\n\n📷 Segue também um lindo convite que preparamos para você: {imagem_url}"
 
             mensagem_encoded = quote(mensagem_formatada)
             convidado.link_whatsapp = f"https://wa.me/{telefone}?text={mensagem_encoded}"
