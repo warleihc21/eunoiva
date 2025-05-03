@@ -11,24 +11,23 @@ def convidados(request):
     token = request.GET.get('token')
     convidado = get_object_or_404(Convidados, token=token)
     presentes = Presentes.objects.filter(user=convidado.user).order_by('-importancia')
-    # Ordenando: primeiro os não reservados, depois os reservados
     presentes = sorted(presentes, key=lambda p: p.reservado)
 
+    # Recuperando o perfil do usuário
+    perfil = Perfil.objects.get(user=convidado.user)
 
-    # Recuperando as imagens dos noivos
-    imagem_noiva = ImagemNoivos.objects.filter(tipo='noiva').first()
-    imagem_noivo = ImagemNoivos.objects.filter(tipo='noivo').first()
+    # Recuperando as imagens dos noivos filtrando pelo perfil
+    imagem_noiva = ImagemNoivos.objects.filter(perfil=perfil, tipo='noiva').first()
+    imagem_noivo = ImagemNoivos.objects.filter(perfil=perfil, tipo='noivo').first()
 
     # Recuperando as mensagens
-    mensagem_noiva = MensagemSobreNoivoNoiva.objects.filter(tipo='noiva').first()  # Ajuste conforme a lógica que você tem para mensagens
-    mensagem_noivo = MensagemSobreNoivoNoiva.objects.filter(tipo='noivo').first()  # Ajuste conforme a lógica que você tem para mensagens
+    mensagem_noiva = MensagemSobreNoivoNoiva.objects.filter(perfil=perfil, tipo='noiva').first()
+    mensagem_noivo = MensagemSobreNoivoNoiva.objects.filter(perfil=perfil, tipo='noivo').first()
 
     mensagens_enviadas = MensagemAosNoivos.objects.filter(user=convidado.user).order_by('-data_envio')
 
-
     timestamp = int(datetime.now().timestamp())
 
-    # Verificar se o convidado pode adicionar acompanhantes
     if convidado.maximo_acompanhantes > 0:
         acompanhantes_restantes = convidado.maximo_acompanhantes - convidado.acompanhantes_count()
     else:

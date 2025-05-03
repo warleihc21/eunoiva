@@ -179,17 +179,82 @@ def configurar_perfil(request):
             )
 
         # Salvar múltiplas imagens da galeria
-        imagens = request.FILES.getlist('galeria_imagens')  # Captura todas as imagens enviadas
+        imagens = request.FILES.getlist('galeria_imagens')
         for imagem in imagens:
             ImagemGaleria.objects.create(perfil=perfil, imagem=imagem)
 
-        
+        # Processar imagens e mensagens dos noivos
+        imagem_noiva = request.FILES.get('imagem_noiva')
+        imagem_noivo = request.FILES.get('imagem_noivo')
+        mensagem_noiva = request.POST.get('mensagem_noiva', '').strip()
+        mensagem_noivo = request.POST.get('mensagem_noivo', '').strip()
+
+        # Atualizar imagem da noiva
+        if imagem_noiva:
+            imagem_noiva_obj = ImagemNoivos.objects.filter(perfil=perfil, tipo='noiva').first()
+            if imagem_noiva_obj:
+                imagem_noiva_obj.imagem = imagem_noiva
+                imagem_noiva_obj.save()
+            else:
+                ImagemNoivos.objects.create(perfil=perfil, tipo='noiva', imagem=imagem_noiva)
+
+        # Atualizar imagem do noivo
+        if imagem_noivo:
+            imagem_noivo_obj = ImagemNoivos.objects.filter(perfil=perfil, tipo='noivo').first()
+            if imagem_noivo_obj:
+                imagem_noivo_obj.imagem = imagem_noivo
+                imagem_noivo_obj.save()
+            else:
+                ImagemNoivos.objects.create(perfil=perfil, tipo='noivo', imagem=imagem_noivo)
+
+        # Atualizar mensagem da noiva
+        if mensagem_noiva:
+            mensagem_noiva_obj = perfil.mensagens.filter(tipo='noiva').first()
+            if mensagem_noiva_obj:
+                mensagem_noiva_obj.mensagem = mensagem_noiva
+                mensagem_noiva_obj.save()
+            else:
+                MensagemSobreNoivoNoiva.objects.create(perfil=perfil, tipo='noiva', mensagem=mensagem_noiva)
+
+        # Atualizar mensagem do noivo
+        if mensagem_noivo:
+            mensagem_noivo_obj = perfil.mensagens.filter(tipo='noivo').first()
+            if mensagem_noivo_obj:
+                mensagem_noivo_obj.mensagem = mensagem_noivo
+                mensagem_noivo_obj.save()
+            else:
+                MensagemSobreNoivoNoiva.objects.create(perfil=perfil, tipo='noivo', mensagem=mensagem_noivo)
 
         messages.success(request, "Perfil atualizado com sucesso!")
         return redirect('/noivos/')
 
     # Passa o perfil para o template
-    return render(request, 'configurar_perfil.html', {'perfil': perfil})
+    context = {
+        'perfil': perfil,
+    }
+    
+    # Adiciona as mensagens e imagens dos noivos ao contexto, se existirem
+    if hasattr(perfil, 'mensagens'):
+        mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
+        mensagem_noivo = perfil.mensagens.filter(tipo='noivo').first()
+        
+        if mensagem_noiva:
+            context['mensagem_noiva'] = mensagem_noiva.mensagem
+        if mensagem_noivo:
+            context['mensagem_noivo'] = mensagem_noivo.mensagem
+    
+    if hasattr(perfil, 'fotosnoivos'):
+        imagem_noiva = perfil.fotosnoivos.filter(tipo='noiva').first()
+        imagem_noivo = perfil.fotosnoivos.filter(tipo='noivo').first()
+        
+        if imagem_noiva:
+            context['imagem_noiva'] = imagem_noiva
+        if imagem_noivo:
+            context['imagem_noivo'] = imagem_noivo
+    
+    return render(request, 'configurar_perfil.html', context)
+
+
 
 
 def index(request):

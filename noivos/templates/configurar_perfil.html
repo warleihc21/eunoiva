@@ -240,6 +240,62 @@
                     </div>
                 </div>
                 
+                <!-- Nova Seção: Sobre os Noivos -->
+                <div class="form-section">
+                    <h3 class="mb-4"><i class="bi bi-person-heart me-2" style="color: var(--primary-color);"></i> Sobre os Noivos</h3>
+                    
+                    <div class="row">
+                        <!-- Noiva -->
+                        <div class="col-md-6 mb-4">
+                            <h4 class="text-center mb-3">Noiva</h4>
+                            
+                            <!-- Imagem da Noiva -->
+                            <div class="mb-3">
+                                <label for="imagem_noiva" class="form-label">Foto da Noiva</label>
+                                <input type="file" id="imagem_noiva" name="imagem_noiva" class="form-control" onchange="previewImage(this, 'noivaPreview')">
+                                
+                                {% if imagem_noiva %}
+                                    <img id="noivaPreview" src="{{ imagem_noiva.imagem.url }}" class="image-preview mt-3">
+                                {% else %}
+                                    <img id="noivaPreview" src="#" class="image-preview mt-3" style="display: none;">
+                                {% endif %}
+
+                            </div>
+                            
+                            <!-- Mensagem sobre a Noiva -->
+                            <div class="mb-3">
+                                <label for="mensagem_noiva" class="form-label">Mensagem sobre a Noiva</label>
+                                <textarea id="mensagem_noiva" name="mensagem_noiva" class="form-control" rows="5">{{ mensagem_noiva|default:'' }}</textarea>
+
+                            </div>
+                        </div>
+                        
+                        <!-- Noivo -->
+                        <div class="col-md-6 mb-4">
+                            <h4 class="text-center mb-3">Noivo</h4>
+                            
+                            <!-- Imagem do Noivo -->
+                            <div class="mb-3">
+                                <label for="imagem_noivo" class="form-label">Foto do Noivo</label>
+                                <input type="file" id="imagem_noivo" name="imagem_noivo" class="form-control" onchange="previewImage(this, 'noivoPreview')">
+                                
+                                {% if imagem_noivo %}
+                                    <img id="noivoPreview" src="{{ imagem_noivo.imagem.url }}" class="image-preview mt-3">
+                                {% else %}
+                                    <img id="noivoPreview" src="#" class="image-preview mt-3" style="display: none;">
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Mensagem sobre o Noivo -->
+                            <div class="mb-3">
+                                <label for="mensagem_noivo" class="form-label">Mensagem sobre o Noivo</label>
+                                <textarea id="mensagem_noivo" name="mensagem_noivo" class="form-control" rows="5">{{ mensagem_noivo|default:'' }}</textarea>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Seção 3: Local do Casamento -->
                 <div class="form-section">
                     <h3 class="mb-4"><i class="bi bi-geo-alt-fill me-2" style="color: var(--primary-color);"></i> Local do Casamento</h3>
@@ -405,7 +461,6 @@
         }
     }
 
-
     // Função para confirmar exclusão de imagem da galeria
     function confirmarExclusaoImagem(imagemId) {
         if (confirm('Tem certeza que deseja excluir esta imagem da galeria?')) {
@@ -433,7 +488,6 @@
             form.submit();
         }
     }
-
 
     // Pré-visualização das novas imagens da galeria
     document.getElementById('galeria_imagens').addEventListener('change', function(e) {
