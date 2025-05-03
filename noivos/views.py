@@ -256,7 +256,7 @@ def lista_convidados(request):
             mensagem_formatada = mensagem.replace("{nome}", convidado.nome_convidado).replace("{link}", convidado.link_convite)
 
             # Adicionar link da imagem, se existir
-            if mensagem_obj.imagem:
+            if mensagem_obj and mensagem_obj.imagem:
                 imagem_url = request.build_absolute_uri(mensagem_obj.imagem.url)
                 mensagem_formatada += f"\n\n📷 Segue também um lindo convite que preparamos para você: {imagem_url}"
 
