@@ -29,7 +29,7 @@
                     url("{% if imagem %}{{ imagem.url }}{% else %}{% static 'noivos/img/aliancas.jpg' %}{% endif %}");
         background-size: cover;
         background-position: center;
-        min-height: 800px;
+        min-height: 1000px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -834,7 +834,7 @@
     </footer>
 
     <!-- Botão para rolar até o topo -->
-    <button id="scrollToTopBtn" title="Voltar ao topo">↑</button>  
+    <button id="scrollToTopBtn" title="Voltar ao topo"><i class="bi bi-arrow-up"></i></button>  
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArufezJ1vUqr_syuLuz7ZKDXmzlxVXu88&callback=initMap&v={{ timestamp }}" 
     async defer></script>

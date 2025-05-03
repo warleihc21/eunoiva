@@ -97,12 +97,15 @@
     }
 
     /* Table styling */
-    .table-container {
+        .table-container {
         background: white;
         border-radius: 15px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         padding: 20px;
         margin-top: 40px;
+        max-width: 95%;  /* Adicionado */
+        margin-left: auto;  /* Adicionado */
+        margin-right: auto;  /* Adicionado */
     }
 
     .table {
@@ -426,7 +429,7 @@
             </div>
 
             
-
+    </div>
             
             <!-- Tabela de Convidados -->
             <div class="table-container mt-5">
@@ -446,7 +449,8 @@
                         <tbody>
                             {% for convidado in convidados %}
                             <tr>
-                                <td>{{ convidado.nome_convidado }}</td>
+                                <td>
+                                    <i class="bi bi-person-fill cor-vermelho"></i> {{ convidado.nome_convidado }}</td>
                                 <td>
                                     <span class="badge {% if convidado.status == 'AC' %}bg-warning{% elif convidado.status == 'C'%}bg-info{% else %}bg-danger{% endif %}">
                                         {{ convidado.get_status_display }}
@@ -457,7 +461,7 @@
                                     {% if convidado.acompanhantes.all %}
                                         <ul class="list-unstyled mb-0">
                                             {% for acompanhante in convidado.acompanhantes.all %}
-                                                <li>- {{ acompanhante.nome }}</li>
+                                                <li><i class="bi bi-person-fill cor-vermelho"></i> {{ acompanhante.nome }}</li>
                                             {% endfor %}
                                         </ul>
                                     {% else %}
@@ -481,7 +485,6 @@
             
         </div>
         
-    </div>
     <br>
     <footer class="text-center bg-dark py-4">
         <!-- Copyright -->
