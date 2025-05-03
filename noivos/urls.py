@@ -14,6 +14,7 @@ urlpatterns = [
  path('substituir_imagem_noivos/', views.substituir_imagem_noivos, name='substituir_imagem_noivos'),
  path('editar_mensagem/', views.editar_mensagem, name='editar_mensagem'),
  path("buscar_produto/", views.buscar_detalhes_produto, name="buscar_produto"),
+ path('excluir-imagem-galeria/', views.excluir_imagem_galeria, name='excluir_imagem_galeria'),
 
  
 ]

@@ -30,6 +30,32 @@
         border-color: #DC143C;
     }
 
+    /* Scroll to top button */
+    #scrollToTopBtn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #be1c3cfd;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 9999; /* Valor alto para garantir que fique acima de tudo */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #scrollToTopBtn.show {
+        opacity: 1;
+    }
+
     
 
     
@@ -353,6 +379,7 @@
 
 
 {% include "partials/navbar_convidados.html" %}
+
     <div class="container-fluid p-0">
         {% if messages %}
             <div class="container mt-4">
@@ -542,7 +569,7 @@
         <br>
 
         <section id="mensagem-aos-noivos" class="py-5">
-            <div class="container">
+            <div class="">
                 <!-- Imagem centralizada -->
                 <div class="text-center my-5">
                     <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
@@ -551,7 +578,8 @@
                 <!-- Título e ícone -->
                 <div class="text-center">
                     <i class="bi bi-chat-heart fs-1 cor-vermelho"></i>
-                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Deixe sua mensagem para os noivos</h2>
+                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Deixe sua mensagem</h2>
+                    <p class="mb-4 text-lg cor-marrom">Compartilhe seus votos de felicidade</p>
                 </div>
         
                 <!-- Grid: formulário + mensagens -->
@@ -642,7 +670,7 @@
                             </a>
                         </div>
                     {% elif convidado.status == 'C' %}
-                        <p class="mt-4 mb-4 text-lg cor-marrom">Presença confirmada! Estamos ansiosos para vê-lo no nosso casamento.</p>
+                        <p class="mt-4 mb-4 text-lg text-success">Presença confirmada! Estamos ansiosos para vê-lo no nosso casamento!!!</p>
                     {% elif convidado.status == 'R' %}
                         <p class="mt-4 mb-4 text-lg cor-marrom">Presença recusada. Sentiremos sua falta, esperamos vê-lo em outra oportunidade!</p>
                     {% endif %}
@@ -699,10 +727,10 @@
             </div>
             
             <div class="grid grid-cols-1 gap-4">
-                <div class="mx-auto max-w-2xl text-center">
+                <div class="container mx-auto max-w-2xl text-center">
                     <i class="bi bi-gift fs-1 cor-vermelho cor-vermelho"></i>
                     <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Presentes</h2>
-                    <p class="mb-4 text-lg cor-marrom">Agradecemos imensamente sua presença em nosso casamento. Se desejar nos presentear, preparamos uma lista especial de itens que nos ajudarão a construir nosso novo lar.</p>
+                    <p class="mb-4 text-lg cor-marrom text-center">Agradecemos imensamente sua presença em nosso casamento. Se desejar nos presentear, preparamos uma lista especial de itens que nos ajudarão a construir nosso novo lar.</p>
                 </div>
                 
                 <div class="container mt-4">
@@ -766,8 +794,8 @@
                                 <div class="modal-content shadow-lg rounded-4"> <!-- Borda arredondada e sombra suave -->
                                     
                                     <!-- Cabeçalho do Modal -->
-                                    <div class="modal-header bg-danger text-white"> <!-- Fundo colorido para destaque -->
-                                        <h5 class="modal-title fw-bold" id="modalLabel{{ presente.id }}">{{ presente.nome_presente }}</h5>
+                                    <div class="modal-header bg-danger"> <!-- Fundo colorido para destaque -->
+                                        <h5 class="modal-title text-white fw-bold" id="modalLabel{{ presente.id }}">{{ presente.nome_presente }}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                     </div>
 
@@ -784,9 +812,9 @@
                                         {% endif %}
 
                                         {% if presente.link_cobranca %}
-                                        <p><strong>Pague pelo presente dentro da plataforma:</strong>
+                                        <p><strong>Se preverir dê um vale-presente no lugar do presente:</strong>
                                             <a href="{{ presente.link_cobranca }}" target="_blank" class="btn btn-outline-danger btn-sm">
-                                                <i class="fas fa-credit-card"></i> Pague aqui
+                                                <i class="fas fa-credit-card"></i> Vale-presente
                                             </a>
                                         </p>
                                         {% endif %}
@@ -835,7 +863,7 @@
     </div>
     <footer class="text-center bg-dark py-4">
         <!-- Copyright -->
-        <div class="text-center text-white">
+        <div class="text-center text-white fs-5">
             {{ convidado.user.perfil.nome_primeiro_conjuge }} & {{ convidado.user.perfil.nome_segundo_conjuge }}
           </div>
         <div class="text-center text-white">
@@ -949,25 +977,28 @@
         
 
 
-        // Obter o botão
-        var mybutton = document.getElementById("scrollToTopBtn");
-
-        // Quando o usuário rolar para baixo 20px da parte superior da página, mostre o botão
-        window.onscroll = function() {
-            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                mybutton.style.display = "block";
-            } else {
-                mybutton.style.display = "none";
-            }
-        };
-
-        // Quando o usuário clicar no botão, rolar para o topo da página
-        mybutton.onclick = function() {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth" // Rolagem suave
+        // Botão de scroll para o topo
+        document.addEventListener("DOMContentLoaded", function() {
+            const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+            
+            // Mostrar ou esconder o botão quando o usuário rolar a página
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) { // Mostrar após rolar 300px
+                    scrollToTopBtn.classList.add('show');
+                } else {
+                    scrollToTopBtn.classList.remove('show');
+                }
             });
-        };
+            
+            // Rolagem suave quando o botão for clicado
+            scrollToTopBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
         
     </script>
        

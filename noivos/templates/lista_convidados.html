@@ -3,165 +3,198 @@
 {% load static %}
 
 <style>
-    h2 {
-        color: #8B4513;
+    :root {
+        --primary-color: #be1c3c; /* Vermelho romântico */
+        --secondary-color: #8B4513; /* Marrom madeira */
+        --accent-color: #f8e1e7; /* Rosa claro */
+        --text-color: #333333;
+        --light-text: #ffffff;
     }
 
-    .cor-vermelho {
-        color: #dc143ca6;
+    body {
+        font-family: 'Montserrat', sans-serif;
+        color: var(--text-color);
+        background-color: #f9f9f9;
     }
 
-    .cor-marrom {
-        color: #8B4513;
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--secondary-color);
     }
 
-    h1 {
-        color: #8B4513;
-        font-size: 2.5rem;
-        font-weight: bold;
-    }
-
-    .btn-danger {
-        background-color: #be1c3cfd;
-        border-color: #be1c3cfd;
-    }
-
-    .btn-danger:hover {
-        background-color: #DC143C;
-        border-color: #DC143C;
-    }
-
-    .range-slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 6px;
-        background: #dc143ca6;
-        border-radius: 5px;
-        outline: none;
-        opacity: 0.9;
-        transition: opacity .2s;
-    }
-
-    .range-slider:hover {
-        opacity: 1;
-    }
-
-    .range-slider::-webkit-slider-thumb,
-    .range-slider::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
-        background: #dc143ca6;
-        border-radius: 50%;
+    .card-action {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 30px;
+        background: white;
         cursor: pointer;
     }
 
-    .card-img-top {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 8px;
+    .card-action:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
     }
 
-    .edit-icon {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(255, 255, 255, 0.7);
-        padding: 5px;
+    .card-action i {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .card-action h3 {
+        margin-bottom: 15px;
+    }
+
+    .card-action p {
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .btn-action {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-action:hover {
+        background: #a01632;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Modal styling */
+    .modal-content {
+        border-radius: 15px;
+        border: none;
+    }
+
+    .modal-header {
+        background: var(--primary-color);
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
+    }
+
+    .modal-title {
+        font-family: 'Playfair Display', serif;
+    }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    /* Table styling */
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        padding: 20px;
+        margin-top: 40px;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table thead th {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .badge {
+        padding: 8px 12px;
+        font-weight: 500;
+        border-radius: 50px;
+    }
+
+    .badge-warning {
+        background-color: #FFC107;
+        color: #333;
+    }
+
+    .badge-info {
+        background-color: #17A2B8;
+        color: white;
+    }
+
+    .badge-danger {
+        background-color: #DC3545;
+        color: white;
+    }
+
+    /* Botão de voltar ao topo */
+    #scrollToTopBtn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
-        font-size: 18px;
-        color: #dc143ca6;
-        text-decoration: none;
-        transition: background 0.3s ease, transform 0.2s ease;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+        z-index: 99;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .edit-icon:hover {
-        background: rgba(255, 255, 255, 1);
-        transform: scale(1.1);
+    #scrollToTopBtn.show {
+        opacity: 1;
+        visibility: visible;
     }
 
-    html, body {
-        height: 100%;
-    }
-
+    /* Responsividade */
     @media (max-width: 768px) {
-        h1 {
-            font-size: 1.8rem;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 1.4rem;
-        }
-
-        .card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 100%; /* Garante que o card estenda-se para acomodar o botão */
-        }
-
-        .card form {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card form .btn {
-            margin-top: auto;
-        }
-
-        .col-lg-6, .col-md-6, .col-12 {
+        .card-action {
+            padding: 20px;
             margin-bottom: 20px;
         }
-
-        .container {
-            padding: 10px;
+        
+        .card-action i {
+            font-size: 2.5rem;
         }
-
-        .btn {
-            font-size: 1rem;
-            padding: 10px;
-        }
-
-        .card-img-top {
-            height: 150px;
-        }
-
-        .edit-icon {
-            top: 5px;
-            right: 5px;
-            font-size: 14px;
-            padding: 3px;
-        }
-
-        .modal-dialog {
-            max-width: 95%;
-        }
-
-        .form-control {
-            font-size: 0.9rem;
+        
+        .modal-body {
+            padding: 20px;
         }
     }
 
     @media (max-width: 576px) {
-        .card-individual {
-            min-height: 400px; /* Aumente esse valor se necessário */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        .card-action {
+            padding: 15px;
         }
-
-        .card-individual form {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        
+        .card-action i {
+            font-size: 2rem;
         }
-
-        .card-individual button {
-            margin-top: auto;
+        
+        .table-responsive {
+            overflow-x: auto;
         }
     }
 </style>
@@ -171,7 +204,7 @@
     <!-- Bloco de mensagens -->
     <div class="container pt-1 mt-5">
             {% if messages %}
-                <div class="alert alert-info" role="alert">
+                <div class="" role="alert">
                     {% for message in messages %}
                         <div class="alert {{ message.tags }}">{{ message }}</div>
                     {% endfor %}
@@ -179,51 +212,118 @@
             {% endif %}
 
             <div>
-                <div class="row mt-5">
-                    <h1 class="text-center">Controle de Convidados</h1>
-                    <hr>
-                    <br>
-                    
-                    <div class="col-lg-6 col-md-6 col-12">
-                        <div class="card p-4 card-individual">
-                            <h2 class="h4">Cadastre seus convidados</h2>
-                            <form action="{% url 'lista_convidados' %}" method="POST">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label class="form-label cor-marrom">Nome do convidado</label>
-                                    <input type="text" name="nome_convidado" class="form-control">
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-6">
-                                        <label class="form-label cor-marrom">WhatsApp</label>
-                                        <input type="text" name="whatsapp" class="form-control">
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <label class="form-label cor-marrom">Máximo de acompanhantes</label>
-                                        <input type="number" name="maximo_acompanhantes" class="form-control">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-danger mt-3 w-100">Adicionar convidado</button>
-                            </form>
-                        </div>
-                    </div>
-                
-                    <div class="col-lg-6 col-md-6 col-12">
-                        <div class="card p-4">
-                            <h2 class="h4 mb-3">Cadastrar convidados em lote</h2>
-                            <br>
-                            <form action="{% url 'cadastrar_convidados_em_lote' %}" method="POST" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}" class="btn btn-outline-danger w-100 mb-4" download>Baixar Arquivo de Exemplo</a>
-                                
-                                <label for="arquivo_convidados" class="form-label cor-marrom">Escolha um arquivo</label>
-                                <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" class="form-control">
-                                <button type="submit" class="btn btn-danger mt-3 w-100">Enviar</button>
-                            </form>
-                        </div>
-                    </div>
+                <!-- Título -->
+                <div class="text-center mb-5 mt-5">
+                    <h2 class="Comfortaa-Bold display-4 cor-marrom text-center">Controle de Convidados</h2>
+                    <p class="lead">Gerencie sua lista de convidados para o grande dia</p>
                 </div>
-            
+                    
+                    <!-- Cards de Ação -->
+                    <div class="row g-4">
+                        <!-- Cadastrar Convidado -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card-action" data-bs-toggle="modal" data-bs-target="#modalCadastrarConvidado">
+                                <i class="bi bi-person-plus"></i>
+                                <h3>Cadastrar Convidado</h3>
+                                <p>Adicione um convidado individualmente à sua lista</p>
+                                <button class="btn btn-action">Acessar</button>
+                            </div>
+                        </div>
+
+                        <!-- Cadastrar em Lote -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card-action" data-bs-toggle="modal" data-bs-target="#modalCadastrarLote">
+                                <i class="bi bi-people"></i>
+                                <h3>Cadastrar em Lote</h3>
+                                <p>Importe vários convidados de uma vez usando um arquivo</p>
+                                <button class="btn btn-action">Acessar</button>
+                            </div>
+                        </div>
+
+                        <!-- Enviar Mensagens -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card-action" data-bs-toggle="modal" data-bs-target="#modalEnviarMensagens">
+                                <i class="bi bi-chat-square-text"></i>
+                                <h3>Enviar Mensagens</h3>
+                                <p>Envie convites ou lembretes para seus convidados</p>
+                                <button class="btn btn-action">Acessar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exportar Lista -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-center">
+                            <form action="{% url 'exportar_convidados_excel' %}" method="get">
+                                <button type="submit" class="btn btn-lg btn-action mt-4">
+                                    <i class="bi bi-file-earmark-excel me-2"></i> Exportar Lista para Excel
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Modal Cadastrar Convidado -->
+                    <div class="modal fade" id="modalCadastrarConvidado" tabindex="-1" aria-labelledby="modalCadastrarConvidadoLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-white" id="modalCadastrarConvidadoLabel">Cadastrar Convidado</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{% url 'lista_convidados' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <label class="form-label">Nome do convidado</label>
+                                            <input type="text" name="nome_convidado" class="form-control" required>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">WhatsApp</label>
+                                                <input type="text" name="whatsapp" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Máximo de acompanhantes</label>
+                                                <input type="number" name="maximo_acompanhantes" class="form-control" min="0">
+                                            </div>
+                                        </div>
+                                        <div class="d-grid gap-2 mt-4">
+                                            <button type="submit" class="btn btn-action">Adicionar Convidado</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Cadastrar em Lote -->
+                    <div class="modal fade" id="modalCadastrarLote" tabindex="-1" aria-labelledby="modalCadastrarLoteLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-white" id="modalCadastrarLoteLabel">Cadastrar Convidados em Lote</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{% url 'cadastrar_convidados_em_lote' %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="mb-4">
+                                            <a href="{% static 'noivos/excel/arquivo_exemplo.xlsx' %}" class="btn btn-outline-primary w-100" download>
+                                                <i class="bi bi-download me-2"></i> Baixar Modelo
+                                            </a>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="arquivo_convidados" class="form-label">Selecione o arquivo</label>
+                                            <input type="file" name="arquivo_convidados" id="arquivo_convidados" accept=".csv, .xlsx" class="form-control" required>
+                                        </div>
+                                        <div class="d-grid gap-2 mt-4">
+                                            <button type="submit" class="btn btn-action">Enviar Arquivo</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>            
                 
             </div>
             
@@ -232,7 +332,7 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalEnviarMensagensLabel">Selecionar Convidados para Envio de Mensagem</h5>
+                            <h5 class="modal-title text-white" id="modalEnviarMensagensLabel">Selecionar Convidados para Envio de Mensagem</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -327,71 +427,49 @@
 
             
 
-            <div class=" card bg-opacity-50 shadow mt-4 text-center">
-                <h2 class="mt-5 text-center">Enviar mensagens em massa</h2>
-                <button type="button" class="btn btn-success mb-5" style="width: 100%; border-radius: 20px; text-align: center;" data-bs-toggle="modal" data-bs-target="#modalEnviarMensagens">
-                    <i class="fab fa-whatsapp me-2"></i> Enviar WhatsApp
-                </button>
-
-                <!-- Botão para exportar para Excel -->
-                <div class="row mt-5">
-                    <h2 class="text-center">Exportar lista de Convidados</h2>
-                    <br>
-                    <div class="col-md-12 d-flex justify-content-center">
-                        
-                        <form action="{% url 'exportar_convidados_excel' %}" method="get">
-                            <button type="submit" class="btn btn-danger" style="width: 100%; border-radius: 20px; text-align: center;">Exportar Planilha de Excel</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Lista de convidados -->
-            <div class="container mt-4">
-                
-                <br>
-
-                
-                <h2 class="text-center">Lista de Convidados e Acompanhantes</h2>
+            
+            <!-- Tabela de Convidados -->
+            <div class="table-container mt-5">
+                <h2 class="Comfortaa-Bold display-4 cor-marrom text-center">Lista de Convidados</h2>
                 <div class="table-responsive">
-                    <table class="table  table-bordered">
-                        <thead class="table-secondary text-white">
+                    <table class="table table-hover">
+                        <thead class="table-primary">
                             <tr>
-                                <th class="text-center font-weight-bold">Nome</th>
-                                <th class="text-center font-weight-bold">Status</th>
-                                <th class="text-center font-weight-bold">WhatsApp</th>
-                                <th class="text-center font-weight-bold">Máximo Acompanhantes</th>
-                                <th class="text-center font-weight-bold">Acompanhantes Confirmados</th>
-                                <th class="text-center font-weight-bold">Link Convite</th>
-                                <th class="text-center font-weight-bold">Ações</th>
+                                <th>Nome</th>
+                                <th>Status</th>
+                                <th>WhatsApp</th>
+                                <th>Acompanhantes</th>
+                                <th>Link Convite</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for convidado in convidados %}
                             <tr>
-                                <td style="font-size: 0.8rem;">{{ convidado.nome_convidado }}</td>
-                                <td style="font-size: 0.8rem;">
-                                    <span class="badge rounded-pill {% if convidado.status == 'AC' %}bg-warning{% elif convidado.status == 'C'%}bg-info{% else %}bg-danger{% endif %}">
+                                <td>{{ convidado.nome_convidado }}</td>
+                                <td>
+                                    <span class="badge {% if convidado.status == 'AC' %}bg-warning{% elif convidado.status == 'C'%}bg-info{% else %}bg-danger{% endif %}">
                                         {{ convidado.get_status_display }}
                                     </span>
                                 </td>
-                                <td style="font-size: 0.8rem;">{{ convidado.whatsapp }}</td>
-                                <td style="font-size: 0.8rem;">{{ convidado.maximo_acompanhantes }}</td>
-                                <td style="font-size: 0.8rem;">
+                                <td>{{ convidado.whatsapp }}</td>
+                                <td>
                                     {% if convidado.acompanhantes.all %}
-                                        <ul class="list-unstyled">
+                                        <ul class="list-unstyled mb-0">
                                             {% for acompanhante in convidado.acompanhantes.all %}
                                                 <li>- {{ acompanhante.nome }}</li>
                                             {% endfor %}
                                         </ul>
                                     {% else %}
-                                        
+                                        -
                                     {% endif %}
                                 </td>
-                                <td style="font-size: 0.8rem;">{{ convidado.link_convite }}</td>
-                                <td class="text-center">
-                                    <a href="{% url 'excluir_convidado' convidado.id %}" class="btn btn-danger" style="border-radius: 20px; text-align: center;" onclick="return confirm('Tem certeza que deseja excluir este convidado? Verifique se ele não possui presentes reservados.')">
-                                        Excluir
+                                <td>
+                                    <small>{{ convidado.link_convite }}</small>
+                                </td>
+                                <td>
+                                    <a href="{% url 'excluir_convidado' convidado.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir este convidado?')">
+                                        <i class="bi bi-trash"></i> Excluir
                                     </a>
                                 </td>
                             </tr>
@@ -408,13 +486,13 @@
     <footer class="text-center bg-dark py-4">
         <!-- Copyright -->
         <div class="container">
-            <div class="text-white mb-2">
+            <div class="text-white fs-5">
                 {{ perfil.nome_primeiro_conjuge }} & {{ perfil.nome_segundo_conjuge }}
             </div>
-            <div class="text-white mb-2">
+            <div class="text-white">
             {{ data_casamento|date:"d/m/Y" }}
             </div>
-            <div class="text-white mb-2">
+            <div class="text-white">
                 © 2025 Todos os direitos reservados.
             </div>
         </div>

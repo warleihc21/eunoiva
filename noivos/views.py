@@ -29,6 +29,7 @@ import os
 from io import BytesIO
 from django.core.files.base import ContentFile
 from urllib.parse import unquote
+from django.views.decorators.http import require_POST
 
 
 
@@ -148,6 +149,20 @@ def substituir_imagem(request):
         return JsonResponse({"sucesso": True})
 
     return JsonResponse({"sucesso": False})
+
+
+@login_required(login_url='/auth/logar/')
+@require_POST
+def excluir_imagem_galeria(request):
+    try:
+        imagem_id = request.POST.get('imagem_id')
+        imagem = ImagemGaleria.objects.get(id=imagem_id, perfil=request.user.perfil)
+        imagem.delete()
+    except Exception as e:
+        # Aqui você pode adicionar mensagens de erro com django.contrib.messages se quiser
+        pass
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))  # Redireciona para a página anterior
 
 @login_required(login_url='/auth/logar/')
 def substituir_imagem_noivos(request):

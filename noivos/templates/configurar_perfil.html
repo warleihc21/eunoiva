@@ -2,206 +2,345 @@
 {% block 'body' %}
 
 <style>
-    h2 {
-        color: #8B4513;
+    :root {
+        --primary-color: #be1c3c; /* Vermelho romântico */
+        --secondary-color: #8B4513; /* Marrom madeira */
+        --accent-color: #f8e1e7; /* Rosa claro */
+        --text-color: #333333;
+        --light-text: #ffffff;
     }
 
-    .cor-vermelho {
-        color: #be1c3cfd;
+    body {
+        font-family: 'Montserrat', sans-serif;
+        color: var(--text-color);
+        background-color: #f9f9f9;
     }
 
-    .cor-marrom {
-        color: #8B4513;
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--secondary-color);
     }
 
-    h1 {
-        color: #8B4513;
-        font-size: 2.5rem;
-        font-weight: bold;
+    .form-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(190, 28, 60, 0.25);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #a01632;
+        border-color: #a01632;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background-color: white;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+        background-color: #f8f9fa;
+        color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    /* Preview de imagem */
+    .image-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin: 15px auto;
+        display: block;
     }
 
     
-    /* Estiliza a barra de progresso */
-    .range-slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 6px;
-        background: #be1c3cfd; /* Cor do botão */
-        border-radius: 5px;
-        outline: none;
-        opacity: 0.9;
-        transition: opacity .2s;
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .form-section {
+            padding: 20px;
+        }
+        
+        .btn-primary, .btn-secondary {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
     }
 
-    /* Quando o usuário passa o mouse */
-    .range-slider:hover {
+    /* Galeria de miniaturas */
+    .gallery-thumbnails {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .thumbnail-container {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .delete-thumbnail {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(255,0,0,0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .thumbnail-container:hover .delete-thumbnail {
         opacity: 1;
     }
-
-    /* Personaliza o botão deslizante no Chrome */
-    .range-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        background: #be1c3cfd; /* Cor do botão */
-        border-radius: 50%;
-        cursor: pointer;
-    }
-
-    /* Personaliza o botão deslizante no Firefox */
-    .range-slider::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
-        background: #be1c3cfd; /* Cor do botão */
-        border-radius: 50%;
-        cursor: pointer;
-    }
-
-    .card-img-top {
-        width: 100%;         /* Faz a imagem ocupar toda a largura do card */
-        height: 200px;       /* Altura fixa (ajuste conforme necessário) */
-        object-fit: cover;   /* Faz a imagem cobrir o espaço sem distorcer */
-        border-radius: 8px;  /* Opcional: bordas arredondadas */
-    }
-
-    .edit-icon {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente */
-        padding: 5px;
-        border-radius: 50%;
-        font-size: 18px;
-        color: #be1c3cfd; /* Cor vermelha para combinar com o tema */
-        text-decoration: none;
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .edit-icon:hover {
-        background: rgba(255, 255, 255, 1);
-        transform: scale(1.1);
-    }
-
-    
 </style>
 
-<div class="container mt-5">
-    <a href="{% url 'home' %}" class="btn btn-secondary">Voltar</a>
-    <h1 class="text-center mb-4">Configurar Perfil</h1>
-    <form action="{% url 'configurar_perfil' %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="row">
-            <!-- Coluna 1 -->
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="nome_primeiro_conjuge" class="form-label cor-vermelho">Digite o primeiro nome do cônjuge 1</label>
-                    <input type="text" id="nome_primeiro_conjuge" name="nome_primeiro_conjuge" class="form-control" value="{{ perfil.nome_primeiro_conjuge|default_if_none:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="nome_segundo_conjuge" class="form-label cor-vermelho">Digite o primeiro nome do cônjuge 2</label>
-                    <input type="text" id="nome_segundo_conjuge" name="nome_segundo_conjuge" class="form-control" value="{{ perfil.nome_segundo_conjuge|default_if_none:'' }}">
-                </div>
-                <div class="row">
-                    <div class="col-8 mb-3">
-                        <label for="data_casamento" class="form-label cor-vermelho">Data do casamento</label>
-                        <input type="date" id="data_casamento" name="data_casamento" class="form-control" value="{{ perfil.data_casamento|date:'Y-m-d' }}">
-                    </div>
-                    <div class="col-4 mb-3">
-                        <label for="data_casamento" class="form-label cor-vermelho">horário do casamento</label>
-                        <input type="time" id="horario_casamento" name="horario_casamento" class="form-control" value="{{ perfil.horario_casamento|time:'H:i' }}">
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="imagem" class="form-label cor-vermelho">Imagem de perfil</label>
-                    <input type="file" id="imagem" name="imagem" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label for="galeria_imagens" class="form-label cor-vermelho">Imagens da galeria</label>
-                    <input type="file" id="galeria_imagens" name="galeria_imagens" class="form-control" multiple>
-                </div>                 
-                <div class="mb-3">
-                    <label for="mensagem_noivos" class="form-label cor-vermelho">Mensagem</label>
-                    <textarea id="mensagem_noivos" name="mensagem_noivos" class="form-control" rows="8">{{ perfil.mensagem_noivos|default_if_none:'' }}</textarea>
-                </div>
-            </div>
-            
+{% include "partials/navbar.html" %}
 
-            <!-- Coluna 2 -->
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="cep" class="form-label cor-vermelho">CEP</label>
-                    <input type="text" id="cep" name="cep" class="form-control" value="{{ perfil.cep|default_if_none:'' }}" onblur="buscarCEP()">
-                </div>
-                <div class="mb-3">
-                    <label for="rua" class="form-label cor-vermelho">Rua</label>
-                    <input type="text" id="rua" name="rua" class="form-control" value="{{ perfil.rua|default_if_none:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="numero" class="form-label cor-vermelho">Número</label>
-                    <input type="text" id="numero" name="numero" class="form-control" value="{{ perfil.numero|default_if_none:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="complemento" class="form-label cor-vermelho">Complemento</label>
-                    <input type="text" id="complemento" name="complemento" class="form-control" value="{{ perfil.complemento|default_if_none:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="bairro" class="form-label cor-vermelho">Bairro</label>
-                    <input type="text" id="bairro" name="bairro" class="form-control" value="{{ perfil.bairro|default_if_none:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="pais" class="form-label cor-vermelho">País</label>
-                    <select id="pais" name="pais" class="form-select">
-                        <option value="Brasil" {% if perfil.pais == "Brasil" %}selected{% endif %}>Brasil</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="estado" class="form-label cor-vermelho">Estado</label>
-                    <select id="estado" name="estado" class="form-select">
-                        <option value="" {% if not perfil.estado %}selected{% endif %}>Selecione</option>
-                        <option value="AC" {% if perfil.estado == "AC" %}selected{% endif %}>Acre</option>
-                        <option value="AL" {% if perfil.estado == "AL" %}selected{% endif %}>Alagoas</option>
-                        <option value="AP"{% if perfil.estado == "AP" %}selected{% endif %}>Amapá</option>
-                        <option value="AM" {% if perfil.estado == "AM" %}selected{% endif %}>Amazonas</option>
-                        <option value="BA" {% if perfil.estado == "BA" %}selected{% endif %}>Bahia</option>
-                        <option value="CE" {% if perfil.estado == "CE" %}selected{% endif %}>Ceará</option>
-                        <option value="DF" {% if perfil.estado == "DF" %}selected{% endif %}>Distrito Federal</option>
-                        <option value="ES" {% if perfil.estado == "ES" %}selected{% endif %}>Espírito Santo</option>
-                        <option value="GO" {% if perfil.estado == "GO" %}selected{% endif %}>Goiás</option>
-                        <option value="MA" {% if perfil.estado == "MA" %}selected{% endif %}>Maranhão</option>
-                        <option value="MT" {% if perfil.estado == "MT" %}selected{% endif %}>Mato Grosso</option>
-                        <option value="MS" {% if perfil.estado == "MS" %}selected{% endif %}>Mato Grosso do Sul</option>
-                        <option value="MG" {% if perfil.estado == "MG" %}selected{% endif %}>Minas Gerais</option>
-                        <option value="PA" {% if perfil.estado == "PA" %}selected{% endif %}>Pará</option>
-                        <option value="PB" {% if perfil.estado == "PB" %}selected{% endif %}>Paraíba</option>
-                        <option value="PR" {% if perfil.estado == "PR" %}selected{% endif %}>Paraná</option>
-                        <option value="PE" {% if perfil.estado == "PE" %}selected{% endif %}>Pernambuco</option>
-                        <option value="PI" {% if perfil.estado == "PI" %}selected{% endif %}>Piauí</option>
-                        <option value="RJ" {% if perfil.estado == "RJ" %}selected{% endif %}>Rio de Janeiro</option>
-                        <option value="RN" {% if perfil.estado == "RN" %}selected{% endif %}>Rio Grande do Norte</option>
-                        <option value="RS" {% if perfil.estado == "RS" %}selected{% endif %}>Rio Grande do Sul</option>
-                        <option value="RO" {% if perfil.estado == "RO" %}selected{% endif %}>Rondônia</option>
-                        <option value="RR" {% if perfil.estado == "RR" %}selected{% endif %}>Roraima</option>
-                        <option value="SC" {% if perfil.estado == "SC" %}selected{% endif %}>Santa Catarina</option>
-                        <option value="SP" {% if perfil.estado == "SP" %}selected{% endif %}>São Paulo</option>
-                        <option value="SE" {% if perfil.estado == "SE" %}selected{% endif %}>Sergipe</option>
-                        <option value="TO" {% if perfil.estado == "TO" %}selected{% endif %}>Tocantins</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="municipio" class="form-label cor-vermelho">Município</label>
-                    <input type="text" id="municipio" name="municipio" class="form-control" value="{{ perfil.municipio|default_if_none:'' }}">
-                </div>
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="text-center mb-5">
+                <h2 class="Comfortaa-Bold display-4 cor-marrom text-center">Configurar Perfil</h2>
+                <p class="lead">Personalize as informações do seu site de casamento</p>
             </div>
+
+            <form action="{% url 'configurar_perfil' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Seção 1: Informações do Casal -->
+                <div class="form-section">
+                    <h3 class="mb-4"><i class="bi bi-heart-fill me-2" style="color: var(--primary-color);"></i> Informações do Casal</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="nome_primeiro_conjuge" class="form-label">Primeiro nome do cônjuge 1</label>
+                            <input type="text" id="nome_primeiro_conjuge" name="nome_primeiro_conjuge" class="form-control" 
+                                   value="{{ perfil.nome_primeiro_conjuge|default_if_none:'' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="nome_segundo_conjuge" class="form-label">Primeiro nome do cônjuge 2</label>
+                            <input type="text" id="nome_segundo_conjuge" name="nome_segundo_conjuge" class="form-control" 
+                                   value="{{ perfil.nome_segundo_conjuge|default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="data_casamento" class="form-label">Data do casamento</label>
+                            <input type="date" id="data_casamento" name="data_casamento" class="form-control" 
+                                   value="{{ perfil.data_casamento|date:'Y-m-d' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="horario_casamento" class="form-label">Horário do casamento</label>
+                            <input type="time" id="horario_casamento" name="horario_casamento" class="form-control" 
+                                   value="{{ perfil.horario_casamento|time:'H:i' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="mensagem_noivos" class="form-label">Mensagem aos convidados</label>
+                        <textarea id="mensagem_noivos" name="mensagem_noivos" class="form-control" rows="5">{{ perfil.mensagem_noivos|default_if_none:'' }}</textarea>
+                    </div>
+                </div>
+                
+                <!-- Seção 2: Imagens -->
+                <div class="form-section">
+                    <h3 class="mb-4"><i class="bi bi-image-fill me-2" style="color: var(--primary-color);"></i> Imagens</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="imagem" class="form-label">Foto de perfil</label>
+                            <input type="file" id="imagem" name="imagem" class="form-control" onchange="previewImage(this, 'perfilPreview')">
+                            
+                            {% if perfil.imagem %}
+                                <img id="perfilPreview" src="{{ perfil.imagem.url }}" class="image-preview mt-3">
+                            {% else %}
+                                <img id="perfilPreview" src="#" class="image-preview mt-3" style="display: none;">
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="galeria_imagens" class="form-label">Fotos para galeria</label>
+                            <input type="file" id="galeria_imagens" name="galeria_imagens" class="form-control" multiple>
+                            <small class="text-muted">Selecione várias fotos para sua galeria</small>
+                            
+                            <!-- Miniaturas da galeria existente -->
+                            {% if perfil.galeria.all %}
+                                <div class="gallery-thumbnails mt-3">
+                                    {% for imagem in perfil.galeria.all %}
+                                        <div class="thumbnail-container">
+                                            <img src="{{ imagem.imagem.url }}" class="thumbnail" alt="Imagem da galeria">
+                                            <button type="button" class="delete-thumbnail" onclick="confirmarExclusaoImagem('{{ imagem.id }}')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Seção 3: Local do Casamento -->
+                <div class="form-section">
+                    <h3 class="mb-4"><i class="bi bi-geo-alt-fill me-2" style="color: var(--primary-color);"></i> Local do Casamento</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-3 mb-4">
+                            <label for="cep" class="form-label">CEP</label>
+                            <input type="text" id="cep" name="cep" class="form-control" 
+                                   value="{{ perfil.cep|default_if_none:'' }}" onblur="buscarCEP()" required>
+                        </div>
+                        
+                        <div class="col-md-7 mb-4">
+                            <label for="rua" class="form-label">Rua</label>
+                            <input type="text" id="rua" name="rua" class="form-control" 
+                                   value="{{ perfil.rua|default_if_none:'' }}" required>
+                        </div>
+                        
+                        <div class="col-md-2 mb-4">
+                            <label for="numero" class="form-label">Número</label>
+                            <input type="text" id="numero" name="numero" class="form-control" 
+                                   value="{{ perfil.numero|default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <label for="complemento" class="form-label">Complemento</label>
+                            <input type="text" id="complemento" name="complemento" class="form-control" 
+                                   value="{{ perfil.complemento|default_if_none:'' }}">
+                        </div>
+                        
+                        <div class="col-md-4 mb-4">
+                            <label for="bairro" class="form-label">Bairro</label>
+                            <input type="text" id="bairro" name="bairro" class="form-control" 
+                                   value="{{ perfil.bairro|default_if_none:'' }}" required>
+                        </div>
+                        
+                        <div class="col-md-4 mb-4">
+                            <label for="municipio" class="form-label">Município</label>
+                            <input type="text" id="municipio" name="municipio" class="form-control" 
+                                   value="{{ perfil.municipio|default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select id="estado" name="estado" class="form-select" required>
+                                <option value="" {% if not perfil.estado %}selected{% endif %}>Selecione</option>
+                                <option value="AC" {% if perfil.estado == "AC" %}selected{% endif %}>Acre</option>
+                                <option value="AL" {% if perfil.estado == "AL" %}selected{% endif %}>Alagoas</option>
+                                <option value="AP"{% if perfil.estado == "AP" %}selected{% endif %}>Amapá</option>
+                                <option value="AM" {% if perfil.estado == "AM" %}selected{% endif %}>Amazonas</option>
+                                <option value="BA" {% if perfil.estado == "BA" %}selected{% endif %}>Bahia</option>
+                                <option value="CE" {% if perfil.estado == "CE" %}selected{% endif %}>Ceará</option>
+                                <option value="DF" {% if perfil.estado == "DF" %}selected{% endif %}>Distrito Federal</option>
+                                <option value="ES" {% if perfil.estado == "ES" %}selected{% endif %}>Espírito Santo</option>
+                                <option value="GO" {% if perfil.estado == "GO" %}selected{% endif %}>Goiás</option>
+                                <option value="MA" {% if perfil.estado == "MA" %}selected{% endif %}>Maranhão</option>
+                                <option value="MT" {% if perfil.estado == "MT" %}selected{% endif %}>Mato Grosso</option>
+                                <option value="MS" {% if perfil.estado == "MS" %}selected{% endif %}>Mato Grosso do Sul</option>
+                                <option value="MG" {% if perfil.estado == "MG" %}selected{% endif %}>Minas Gerais</option>
+                                <option value="PA" {% if perfil.estado == "PA" %}selected{% endif %}>Pará</option>
+                                <option value="PB" {% if perfil.estado == "PB" %}selected{% endif %}>Paraíba</option>
+                                <option value="PR" {% if perfil.estado == "PR" %}selected{% endif %}>Paraná</option>
+                                <option value="PE" {% if perfil.estado == "PE" %}selected{% endif %}>Pernambuco</option>
+                                <option value="PI" {% if perfil.estado == "PI" %}selected{% endif %}>Piauí</option>
+                                <option value="RJ" {% if perfil.estado == "RJ" %}selected{% endif %}>Rio de Janeiro</option>
+                                <option value="RN" {% if perfil.estado == "RN" %}selected{% endif %}>Rio Grande do Norte</option>
+                                <option value="RS" {% if perfil.estado == "RS" %}selected{% endif %}>Rio Grande do Sul</option>
+                                <option value="RO" {% if perfil.estado == "RO" %}selected{% endif %}>Rondônia</option>
+                                <option value="RR" {% if perfil.estado == "RR" %}selected{% endif %}>Roraima</option>
+                                <option value="SC" {% if perfil.estado == "SC" %}selected{% endif %}>Santa Catarina</option>
+                                <option value="SP" {% if perfil.estado == "SP" %}selected{% endif %}>São Paulo</option>
+                                <option value="SE" {% if perfil.estado == "SE" %}selected{% endif %}>Sergipe</option>
+                                <option value="TO" {% if perfil.estado == "TO" %}selected{% endif %}>Tocantins</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="pais" class="form-label">País</label>
+                            <select id="pais" name="pais" class="form-select" required>
+                                <option value="Brasil" {% if perfil.pais == "Brasil" %}selected{% endif %}>Brasil</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-save-fill me-2"></i> Salvar Configurações
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="text-center mt-4 mb-4">
-            <button type="submit" class="btn btn-danger" style="width: 100%; border-radius: 20px; text-align: center;">Salvar</button>
-        </div>
-    </form>
+    </div>
 </div>
-<footer class="text-center text-lg-start bg-gray-900 py-12">
+
+<footer class="text-center bg-dark py-4">
     <!-- Copyright -->
-    <div class="text-center text-white">
+    <div class="text-center text-white fs-5">
         {{ perfil.nome_primeiro_conjuge }} & {{ perfil.nome_segundo_conjuge }}
       </div>
     <div class="text-center text-white">
@@ -212,9 +351,11 @@
     </div>
     <!-- Copyright -->
 </footer>
+
 <script>
+    // Função para buscar CEP
     async function buscarCEP() {
-        const cep = document.getElementById('cep').value.replace(/\D/g, ''); // Remove caracteres não numéricos
+        const cep = document.getElementById('cep').value.replace(/\D/g, '');
         if (cep.length !== 8) {
             alert('Digite um CEP válido com 8 dígitos.');
             return;
@@ -227,15 +368,13 @@
             const data = await response.json();
             if (data.erro) throw new Error('CEP não encontrado.');
 
-            // Preenchendo os campos retornados pela API
+            // Preenchendo os campos
             document.getElementById('rua').value = data.logradouro || '';
             document.getElementById('bairro').value = data.bairro || '';
             document.getElementById('municipio').value = data.localidade || '';
-
-            // Definindo o país como Brasil (fixo)
             document.getElementById('pais').value = 'Brasil';
 
-            // Ajustando o estado como "selecionado" no <select>
+            // Selecionando o estado
             const estadoSelect = document.getElementById('estado');
             const estadoUf = data.uf || '';
             for (const option of estadoSelect.options) {
@@ -249,5 +388,88 @@
         }
     }
 
+    // Função para pré-visualizar imagem
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const file = input.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            
+            reader.readAsDataURL(file);
+        }
+    }
+
+
+    // Função para confirmar exclusão de imagem da galeria
+    function confirmarExclusaoImagem(imagemId) {
+        if (confirm('Tem certeza que deseja excluir esta imagem da galeria?')) {
+            // Criar um formulário dinâmico para enviar a requisição
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{% url 'excluir_imagem_galeria' %}";
+            
+            // Adicionar o token CSRF
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = "{{ csrf_token }}";
+            form.appendChild(csrfInput);
+            
+            // Adicionar o ID da imagem
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'imagem_id';
+            idInput.value = imagemId;
+            form.appendChild(idInput);
+            
+            // Adicionar o formulário ao corpo do documento e enviar
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+
+    // Pré-visualização das novas imagens da galeria
+    document.getElementById('galeria_imagens').addEventListener('change', function(e) {
+        const files = e.target.files;
+        const previewContainer = document.createElement('div');
+        previewContainer.className = 'gallery-thumbnails mt-3';
+        
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (!file.type.match('image.*')) continue;
+            
+            const reader = new FileReader();
+            reader.onload = (function(theFile) {
+                return function(e) {
+                    const thumbnailContainer = document.createElement('div');
+                    thumbnailContainer.className = 'thumbnail-container';
+                    
+                    const thumbnail = document.createElement('img');
+                    thumbnail.className = 'thumbnail';
+                    thumbnail.src = e.target.result;
+                    
+                    thumbnailContainer.appendChild(thumbnail);
+                    previewContainer.appendChild(thumbnailContainer);
+                };
+            })(file);
+            
+            reader.readAsDataURL(file);
+        }
+        
+        // Remove prévias antigas de novas imagens
+        const oldPreviews = document.querySelectorAll('.new-images-preview');
+        oldPreviews.forEach(preview => preview.remove());
+        
+        previewContainer.classList.add('new-images-preview');
+        e.target.parentNode.appendChild(previewContainer);
+    });
 </script>
+
 {% endblock %}

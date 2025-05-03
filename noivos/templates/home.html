@@ -3,14 +3,142 @@
 {% load static %}
 
 <style>
-    h2 {
-        color: #8B4513;
+    :root {
+        --primary-color: #be1c3c; /* Vermelho romântico */
+        --secondary-color: #8B4513; /* Marrom madeira */
+        --accent-color: #f8e1e7; /* Rosa claro */
+        --text-color: #333333;
+        --light-text: #ffffff;
     }
 
-    .cor-vermelho {
-        color: #be1c3cfd;
+    body {
+        font-family: 'Montserrat', sans-serif;
+        color: var(--text-color);
+        background-color: #f9f9f9;
     }
 
+    h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--secondary-color);
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                    url("{% if imagem %}{{ imagem.url }}{% else %}{% static 'noivos/img/aliancas.jpg' %}{% endif %}");
+        background-size: cover;
+        background-position: center;
+        min-height: 800px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+        padding: 120px 0;
+        margin-bottom: 50px;
+        position: relative;
+        top: 0;
+        margin-top: 0;
+        z-index: 1;
+    }
+
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .couple-names {
+        font-size: 3rem;
+        font-weight: 400;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .wedding-date {
+        font-size: 1.5rem;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Countdown Timer */
+    .countdown-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .countdown-box {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border-radius: 10px;
+        padding: 15px;
+        min-width: 80px;
+        text-align: center;
+        width: 100px;
+        
+    }
+
+    .countdown-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        line-height: 1;
+    }
+
+    .countdown-label {
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: white;
+        margin-top: 5px;
+    }
+
+    /* Form Section */
+    .form-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-bottom: 40px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #a01632;
+        border-color: #a01632;
+        transform: translateY(-2px);
+    }
+
+    /* Cards */
+    .presente-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s;
+        height: 100%;
+    }
+
+    .presente-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
 
     .card-img-container {
         height: 200px;
@@ -18,81 +146,53 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        
-        border-radius: 8px 8px 0 0; /* Bordas arredondadas apenas no topo */
+        background: #f8f9fa;
     }
 
     .card-img-container img {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
-        border-radius: 8px 8px 0 0; /* Bordas arredondadas apenas no topo */
-    }
-
-    
-    /* Estiliza a barra de progresso */
-    .range-slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 6px;
-        background: #be1c3cfd; /* Cor do botão */
-        border-radius: 5px;
-        outline: none;
-        opacity: 0.9;
-        transition: opacity .2s;
-    }
-
-    /* Quando o usuário passa o mouse */
-    .range-slider:hover {
-        opacity: 1;
-    }
-
-    /* Personaliza o botão deslizante no Chrome */
-    .range-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        background: #be1c3cfd; /* Cor do botão */
-        border-radius: 50%;
-        cursor: pointer;
-    }
-
-    /* Personaliza o botão deslizante no Firefox */
-    .range-slider::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
-        background: #be1c3cfd; /* Cor do botão */
-        border-radius: 50%;
-        cursor: pointer;
-    }
-
-    .card-img-top {
-        width: 100%;         /* Faz a imagem ocupar toda a largura do card */
-        height: 200px;       /* Altura fixa (ajuste conforme necessário) */
-        object-fit: cover;   /* Faz a imagem cobrir o espaço sem distorcer */
-        border-radius: 8px;  /* Opcional: bordas arredondadas */
     }
 
     .edit-icon {
         position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente */
-        padding: 5px;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        width: 35px;
+        height: 35px;
         border-radius: 50%;
-        font-size: 18px;
-        color: #be1c3cfd; /* Cor vermelha para combinar com o tema */
-        text-decoration: none;
-        transition: background 0.3s ease, transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        transition: all 0.3s;
     }
 
     .edit-icon:hover {
-        background: rgba(255, 255, 255, 1);
         transform: scale(1.1);
+        background: white;
     }
 
-    
+    /* Gallery */
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        height: 250px;
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.05);
+    }
 
     .foto-quadrada {
             width: 100%;
@@ -111,540 +211,568 @@
             object-fit: cover;
         }
 
-        .overlay-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 5px;
-            border-radius: 50%;
+    .overlay-icon {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.5);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: all 0.3s;
+    }
+
+    .overlay-icon:hover {
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    /* About Section */
+    .about-card {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .about-image {
+        width: 350px;
+        height: 350px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin: 0 auto 20px;
+    }
+
+    /* Messages Section */
+    .messages-container {
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 15px;
+    }
+
+    .message-box {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    /* Map Section */
+    #map {
+        height: 400px;
+        width: 100%;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Footer */
+    footer {
+        background: var(--secondary-color);
+        color: white;
+        padding: 40px 0 20px;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .footer-couple-name {
+        font-size: 1.5rem;
+        font-weight: 400;
+        margin-bottom: 10px;
+    }
+
+    .footer-date {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    .footer-copyright {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    /* Scroll to top button */
+    #scrollToTopBtn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 9999; /* Valor alto para garantir que fique acima de tudo */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #scrollToTopBtn.show {
+        opacity: 1;
+    }
+
+    /* Responsividade */
+    @media (max-width: 992px) {
+        .couple-names {
+            font-size: 2.5rem;
         }
-
-        .overlay-icon i {
-            font-size: 20px;
-        }
-
-        .container {
-            max-width: 1100px; /* Reduza conforme necessário */
-        }
-
-
-        @media (max-width: 768px) {
-            
-
-
-            #mensagem-aos-noivos .mensagem-box {
-                padding: 0.75rem;
-                margin-bottom: 0.75rem;
-                font-size: 0.85rem;
-            }
-
-            #mensagem-aos-noivos .mensagem-box strong {
-                font-size: 0.9rem;
-            }
-
-            #mensagem-aos-noivos .mensagem-box small {
-                font-size: 0.7rem;
-            }
-
-            #mensagem-aos-noivos .mensagem-box .texto {
-                font-size: 0.85rem;
-                line-height: 1.3;
-            }
-
-            #mensagem-aos-noivos h2 {
-                font-size: 1.2rem;
-                text-align: center;
-            }
-
-            #mensagem-aos-noivos textarea {
-                font-size: 0.85rem;
-                min-height: 100px;
-            }
-
-            #mensagem-aos-noivos .form-label {
-                font-size: 0.85rem;
-            }
-
-            #mensagem-aos-noivos button.btn {
-                font-size: 0.85rem;
-                padding: 0.6rem 1rem;
-            }
-
-            #mensagem-aos-noivos .mensagens-container {
-                max-height: 250px;
-                background: #fff0f0;
-            }
         
-
-            
-
+        .wedding-date {
+            font-size: 1.2rem;
         }
+    }
 
-        #mensagem-aos-noivos .mensagens-container {
-            max-height: 600px;  /* Limite de altura (ajuste como quiser) */
-            overflow-y: auto;
-            padding-right: 10px; /* Evita que a rolagem fique sobre o conteúdo */
-            background: #fff0f0;
+    @media (max-width: 768px) {
+        .couple-names {
+            font-size: 2rem;
         }
-
-        #mensagem-aos-noivos .mensagem-box {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 16px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            transition: all 0.3s ease-in-out;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInMessage 0.6s ease forwards;
+        
+        .countdown-box {
+            min-width: 70px;
+            padding: 10px;
         }
-
-        #mensagem-aos-noivos .mensagem-box:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        
+        .countdown-value {
+            font-size: 1.5rem;
         }
-
-        @keyframes fadeInMessage {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        
+        .about-image {
+            width: 200px;
+            height: 200px;
         }
+    }
 
-        @media (max-width: 576px) {
-            #mensagem-aos-noivos .form-container {
-                padding: 1rem;
-                margin: 0 auto;
-                width: 100%;
-            }
+    @media (max-width: 576px) {
+        .couple-names {
+            font-size: 1.8rem;
         }
-
-
-    
+        
+        .countdown-container {
+            flex-wrap: wrap;
+        }
+        
+        .countdown-box {
+            min-width: 60px;
+            padding: 8px;
+        }
+        
+        .countdown-value {
+            font-size: 1.2rem;
+        }
+    }
 </style>
-    
-    
 
-    {% include "partials/navbar.html" %}
+{% include "partials/navbar.html" %}
 
-    <div class="container mt-5" style="padding-top: 56px;">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-        <div class="row align-items-center">
-            <!-- Seção da Imagem -->
-            <div class="col-12 col-md-4 mb-4 mb-md-0">
-                {% if imagem %}
-                    <img src="{{ imagem.url }}" alt="Imagem do perfil" class="img-fluid rounded shadow">
-                {% else %}
-                    <p class="text-center">Imagem não definida</p>
-                {% endif %}
-            </div>
-    
-            <!-- Seção da Mensagem de Boas-Vindas -->
-            <div class="col-12 col-md-8 fs-4 mb-4 text-center">
-                <h5 class="cor-vermelho">Bem-vindos, {{ nome_primeiro_conjuge }} e {{ nome_segundo_conjuge }}</h5>
-                <h4 class="cor-vermelho">Nossa data</h4>
-                <h3 class="mb-4 cor-vermelho">{{ data_casamento|date:"d/m/Y" }} às {{ horario_casamento|time:"H:i" }}</h3>
-    
-                <!-- Contador regressivo -->
-                <div id="timer" class="d-flex justify-content-center gap-3">
-                    <div class="campo-tempo">
-                        <span id="dias" class="valor-tempo">00</span>
-                        <span class="rotulo-tempo">Dias</span>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="text-uppercase display-4 mb-4 text-white">{{ nome_primeiro_conjuge }} & {{ nome_segundo_conjuge }}</h1>
+                <p class="wedding-date text-white">{{ data_casamento|date:"d/m/Y" }} • {{ horario_casamento|time:"H:i" }}</p>
+                
+                <div class="countdown-container">
+                    <div class="countdown-box">
+                        <div class="countdown-value" id="dias">00</div>
+                        <div class="countdown-label">Dias</div>
                     </div>
-                    <div class="campo-tempo">
-                        <span id="horas" class="valor-tempo">00</span>
-                        <span class="rotulo-tempo">Horas</span>
+                    <div class="countdown-box">
+                        <div class="countdown-value" id="horas">00</div>
+                        <div class="countdown-label">Horas</div>
                     </div>
-                    <div class="campo-tempo">
-                        <span id="minutos" class="valor-tempo">00</span>
-                        <span class="rotulo-tempo">Minutos</span>
+                    <div class="countdown-box">
+                        <div class="countdown-value" id="minutos">00</div>
+                        <div class="countdown-label">Minutos</div>
                     </div>
-                    <div class="campo-tempo">
-                        <span id="segundos" class="valor-tempo">00</span>
-                        <span class="rotulo-tempo">Segundos</span>
+                    <div class="countdown-box">
+                        <div class="countdown-value" id="segundos">00</div>
+                        <div class="countdown-label">Segundos</div>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        
-        <div class="row bg-light mt-5">
-            <!-- Formulário -->
-            <div class="col-md-6 p-4 rounded">
-                <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Crie sua lista de presentes</h2>
-                <form action="{% url 'home' %}" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="nome_presente" class="form-label cor-marrom">Nome do presente</label>
-                        <input type="text" name="nome_presente" class="form-control" id="nome_presente">
-                    </div>
-            
-                    <div class="mb-3">
-                        <label for="link_presente" class="form-label cor-marrom">Link do presente</label>
-                        <div class="input-group">
-                            <input type="url" name="link_sugestao_compra" class="form-control" id="link_presente" placeholder="Insira o link do produto">
-                            <button type="button" id="buscar_detalhes" class="btn btn-danger rounded-pill">Buscar</button>
-                        </div>
-                    </div>
-            
-                    <!-- Área para exibir a miniatura da imagem -->
-                    <div class="mb-3 text-center">
-                        <img id="preview_imagem" src="" alt="Imagem do produto" class="img-thumbnail mt-2 d-none" style="width: 128px; height: 128px;">
-                    </div>
-            
-                    <div class="mb-3">
-                        <label for="link_cobranca" class="form-label cor-marrom">Link de cobrança</label>
-                        <input type="url" name="link_cobranca" class="form-control" id="link_cobranca" placeholder="Insira o link para cobrança">
-                    </div>
-            
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="foto_presente" class="form-label cor-marrom">Foto de exemplo</label>
-                            <input type="file" name="foto" class="form-control" id="foto_presente">
-                            <img id="preview_imagem_upload" class="img-thumbnail mt-2 d-none" style="width: 128px; height: 128px;">
-                            <input type="hidden" name="imagem_url" id="imagem_url">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="preco_presente" class="form-label cor-marrom">Preço estimado</label>
-                            <input type="text" name="preco" class="form-control" id="preco_presente">
-                        </div>
-                    </div>
-            
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="importancia" class="form-label cor-marrom">Importância</label>
-                            <input type="range" min="1" max="5" name="importancia" class="form-range" id="importancia">
-                        </div>
-                        <div class="col-md-6 d-flex align-items-end">
-                            <button type="submit" class="btn btn-danger w-100 rounded-pill">Enviar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        
-            <!-- Gráfico -->
-            <div class="col-md-6 mt-5 text-center">
-                <canvas class="text-center" id="myChart"></canvas>
-            </div>
-        </div>
-        
-        <br>
-
-        <h2 class="Comfortaa-Bold text-center display-4 cor-marrom">Lista de presentes</h2>
-
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-4">
-            {% for presente in presentes %}
-            <div class="col">
-                <div class="card h-100 position-relative">
-                    <!-- Container da imagem com altura fixa e proporção quadrada -->
-                    <div class="card-img-container" style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                        {% if presente.foto %}
-                        <img src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}" class="card-img-top" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                        <!-- Ícone de edição -->
-                        <a href="#" class="edit-icon" onclick="abrirModal(
-                            '{{ presente.id }}', 
-                            '{{ presente.nome_presente }}', 
-                            '{{ presente.link_sugestao_compra }}', 
-                            '{{ presente.link_cobranca }}', 
-                            '{{ presente.preco }}'
-                        )">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        {% else %}
-                        <div class="d-flex align-items-center justify-content-center h-100 bg-light">
-                            <p class="text-muted">Sem imagem</p>
-                        </div>
-                        {% endif %}
-                    </div>
-        
-                    <!-- Corpo do card -->
-                    <div class="card-body d-flex flex-column">
-                        <h3 class="card-title cor-vermelho">{{ presente.nome_presente }}</h3>
-                        <p class="card-text cor-vermelho">Valor: R$ {{ presente.preco|floatformat:2 }}</p>
-                        {% if presente.reservado %}
-                        <p class="card-text cor-marrom">Reservado por: {{ presente.reservado_por }}</p>
-                        {% endif %}
-                        {% if presente.link_sugestao_compra %}
-                        <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="cor-vermelho text-decoration-underline">
-                            Veja a sugestão de compra
-                        </a>
-                        {% endif %}
-                        <div class="mt-2">
-                            {% if presente.importancia <= 2 %}
-                            <span class="importance-label low">
-                                Pouco importante
-                                <i class="fas fa-times-circle ms-1"></i>
-                            </span>
-                            {% elif presente.importancia < 4 %}
-                            <span class="importance-label medium">
-                                Importante
-                                <i class="fas fa-times-circle ms-1"></i>
-                            </span>
-                            {% else %}
-                            <span class="importance-label high">
-                                Muito importante
-                                <i class="fas fa-times-circle ms-1"></i>
-                            </span>
-                            {% endif %}
-                        </div>
-                        <!-- Formulário de exclusão -->
-                        <form action="{% url 'excluir_presente' presente.id %}" method="POST" onsubmit="return confirmarExclusao();" class="mt-auto">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm w-100 rounded-pill">
-                                Excluir
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <!-- Modal de Edição -->
-        <div id="editPresenteModal" class="modal fade" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title cor-vermelho">Editar Presente</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editPresenteForm" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" id="presenteId" name="presente_id">
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Nome do presente</label>
-                                <input type="text" id="editNome" name="nome_presente" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Link de sugestão de compra</label>
-                                <input type="url" id="editLinkSugestao" name="link_sugestao_compra" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Link de cobrança</label>
-                                <input type="url" id="editLinkCobranca" name="link_cobranca" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Preço estimado</label>
-                                <input type="text" id="editPreco" name="preco" class="form-control">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" form="editPresenteForm" class="btn btn-primary">Salvar alterações</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        
-        
-        
-        
-
-        <div class="mt-5 bg-white p-4 rounded shadow-sm">
-            <h2 class="Comfortaa-Bold text-center display-4 cor-marrom mb-4">Presentes Reservados</h2>
-            
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="text-start">Nome do Presente</th>
-                            <th class="text-start">Reservado por</th>
-                            <th class="text-end">Preço</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for presente in presentes_reservados %}
-                        <tr class="hover:bg-gray-50">  <!-- Mantido hover personalizado -->
-                            <td>{{ presente.nome_presente }}</td>
-                            <td>{{ presente.reservado_por }}</td>
-                            <td class="text-end">R$ {{ presente.preco|floatformat:2 }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot class="table-light">
-                        <tr>
-                            <td colspan="2" class="text-end fw-bold">Total</td>
-                            <td class="text-end fw-bold">R$ {{ total_reservado|floatformat:2 }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-        
-
-
-        <div class="container mt-5">
-            <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Galeria de fotos</h2>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-                {% for imagem in perfil.galeria.all|slice:":6" %}  <!-- Limita para 6 imagens -->
-                    <div class="col">
-                        <div class="foto-quadrada">
-                            <img src="{{ imagem.imagem.url }}" class="img-fluid rounded" alt="Imagem da galeria">
-                            <div class="overlay-icon">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#substituirImagemModal" data-id="{{ imagem.id }}" class="trocar-imagem">
-                                    <i class="bi bi-pencil text-white"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                {% empty %}
-                    <p class="text-center">Nenhuma imagem na galeria.</p>
-                {% endfor %}
-            </div>
-        </div>
-
-
-        <div class="mb-5 mt-5">
-            <h2 class="Comfortaa-Bold text-center display-4 cor-marrom">Sobre nós</h2>
-            <div class="row mt-4 justify-content-center"> <!-- Centraliza as colunas -->
-                <!-- Coluna para a noiva -->
-                <div class="col-md-5 mb-4 mx-2">
-                    <div class="foto-quadrada position-relative">
-                        <img src="{{ imagem_noiva.url }}" class="img-fluid rounded" alt="Imagem da noiva">
-                        <div class="overlay-icon">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#editarImagemModal" data-id="{{ imagem_noiva.id }}" class="trocar-imagem">
-                                <i class="bi bi-pencil text-white"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <h2 class="text-center display-6 mt-4 mb-2">A Noiva</h2>
-                    <p class="fst-italic cor-marrom text-center lead">{{ mensagem_noiva }}</p>
-                </div>
-        
-                <!-- Coluna para o noivo -->
-                <div class="col-md-5 mb-4 mx-2">
-                    <div class="foto-quadrada position-relative">
-                        <img src="{{ imagem_noivo.url }}" class="img-fluid rounded" alt="Imagem do noivo">
-                        <div class="overlay-icon">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#editarImagemModal" data-id="{{ imagem_noivo.id }}" class="trocar-imagem">
-                                <i class="bi bi-pencil text-white"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <h2 class="text-center display-6 mt-4 mb-2">O Noivo</h2>
-                    <p class="fst-italic cor-marrom text-center lead">{{ mensagem_noivo }}</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Botão para abrir o modal de edição de mensagens -->
-        <div class="text-center mb-5">
-            <a href="#" data-bs-toggle="modal" data-bs-target="#editarMensagemModal" class="btn btn-primary">
-                <i class="bi bi-pencil"></i> Editar Mensagens
-            </a>
-        </div>
-        
-        <!-- Modal para editar mensagens -->
-        <div class="modal fade" id="editarMensagemModal" tabindex="-1" aria-labelledby="editarMensagemModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editarMensagemModalLabel">Editar Mensagens</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="{% url 'editar_mensagem' %}">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="mensagem_noiva" class="form-label">Mensagem sobre a Noiva</label>
-                                <textarea class="form-control" id="mensagem_noiva" name="mensagem_noiva" rows="3">{{ mensagem_noiva }}</textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="mensagem_noivo" class="form-label">Mensagem sobre o Noivo</label>
-                                <textarea class="form-control" id="mensagem_noivo" name="mensagem_noivo" rows="3">{{ mensagem_noivo }}</textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Salvar Mensagens</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Modal para editar imagem -->
-        <div class="modal fade" id="editarImagemModal" tabindex="-1" aria-labelledby="editarImagemModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editarImagemModalLabel">Substituir fotos dos noivos</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="{% url 'substituir_imagem_noivos' %}" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="imagem_noiva" class="form-label">Foto da noiva</label>
-                                <input type="file" class="form-control" id="imagem_noiva" name="imagem_noiva">
-                            </div>
-                            <div class="mb-3">
-                                <label for="imagem_noivo" class="form-label">Foto do noivo</label>
-                                <input type="file" class="form-control" id="imagem_noivo" name="imagem_noivo">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Salvar Imagens</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Modal de Substituição de Imagem -->
-        <div class="modal fade" id="substituirImagemModal" tabindex="-1" aria-labelledby="substituirImagemModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="substituirImagemModalLabel">Substituir Imagem</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Escolha uma nova imagem para substituir.</p>
-                        <input type="hidden" name="imagem_id" id="imagem_id">
-                        <div class="row">
-                            {% for imagem in todas_imagens %}
-                                <div class="col-4 mb-3">
-                                    <img src="{{ imagem.imagem.url }}" class="img-thumbnail select-image" 
-                                         data-id="{{ imagem.id }}" data-url="{{ imagem.imagem.url }}" style="cursor:pointer;">
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <section class="py-5">
-            <div class="container text-center">
-                <h2 class="Comfortaa-Bold display-4 cor-marrom mb-4">Mensagem</h2>
-                <p class="fst-italic cor-marrom text-center lead">{{ perfil.mensagem_noivos }}</p>
             </div>
         </section>
-
-
-
-        <section id="mensagem-aos-noivos" class="py-5">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="Comfortaa-Bold display-4 cor-marrom">Mensagens Recebidas</h2>
-                </div>
         
-                <div class="row justify-content-center">
-                    <div class="col-12 col-md-10 col-lg-8">
-                        <div class="p-4 bg-light rounded-4 shadow-sm mensagens-container">
-                            {% for mensagem in mensagens %}
-                                <div class="mensagem-box d-flex align-items-start flex-column flex-sm-row">
-                                    <!-- Avatar -->
+        <div class="container">
+            <section>
+                <!-- Presentes Section -->
+                <div class="form-section">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Crie sua lista de presentes</h2>
+                            <form action="{% url 'home' %}" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="nome_presente" class="form-label cor-marrom">Nome do presente</label>
+                                    <input type="text" name="nome_presente" class="form-control" id="nome_presente">
+                                </div>
+                        
+                                <div class="mb-3">
+                                    <label for="link_presente" class="form-label cor-marrom">Link do presente</label>
+                                    <div class="input-group">
+                                        <input type="url" name="link_sugestao_compra" class="form-control" id="link_presente" placeholder="Insira o link do produto">
+                                        <button type="button" id="buscar_detalhes" class="btn btn-danger rounded-pill">Buscar</button>
+                                    </div>
+                                </div>
+                        
+                                <!-- Área para exibir a miniatura da imagem -->
+                                <div class="mb-3 text-center">
+                                    <img id="preview_imagem" src="" alt="Imagem do produto" class="img-thumbnail mt-2 d-none" style="width: 128px; height: 128px;">
+                                </div>
+                        
+                                <div class="mb-3">
+                                    <label for="link_cobranca" class="form-label cor-marrom">Link de cobrança</label>
+                                    <input type="url" name="link_cobranca" class="form-control" id="link_cobranca" placeholder="Insira o link para cobrança">
+                                </div>
+                        
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="foto_presente" class="form-label cor-marrom">Foto de exemplo</label>
+                                        <input type="file" name="foto" class="form-control" id="foto_presente">
+                                        <img id="preview_imagem_upload" class="img-thumbnail mt-2 d-none" style="width: 128px; height: 128px;">
+                                        <input type="hidden" name="imagem_url" id="imagem_url">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="preco_presente" class="form-label cor-marrom">Preço estimado</label>
+                                        <input type="text" name="preco" class="form-control" id="preco_presente">
+                                    </div>
+                                </div>
+                        
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="importancia" class="form-label cor-marrom">Importância</label>
+                                        <input type="range" min="1" max="5" name="importancia" class="form-range" id="importancia">
+                                    </div>
+                                    <div class="col-md-6 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-danger w-100 rounded-pill">Enviar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="col-lg-6 mt-4 mt-lg-0">
+                            <div class="h-100 d-flex align-items-center justify-content-center">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <br>
+
+                <h2 class="Comfortaa-Bold text-center display-4 cor-marrom">Lista de presentes</h2>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-4">
+                    {% for presente in presentes %}
+                    <div class="col">
+                        <div class="card h-100 position-relative">
+                            <!-- Container da imagem com altura fixa e proporção quadrada -->
+                            <div class="card-img-container" style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                {% if presente.foto %}
+                                <img src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}" class="card-img-top" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                <!-- Ícone de edição -->
+                                <a href="#" class="edit-icon" onclick="abrirModal(
+                                    '{{ presente.id }}', 
+                                    '{{ presente.nome_presente }}', 
+                                    '{{ presente.link_sugestao_compra }}', 
+                                    '{{ presente.link_cobranca }}', 
+                                    '{{ presente.preco }}'
+                                )">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% else %}
+                                <div class="d-flex align-items-center justify-content-center h-100 bg-light">
+                                    <p class="text-muted">Sem imagem</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                
+                            <!-- Corpo do card -->
+                            <div class="card-body d-flex flex-column">
+                                <h3 class="card-title cor-vermelho">{{ presente.nome_presente }}</h3>
+                                <p class="card-text cor-vermelho">Valor: R$ {{ presente.preco|floatformat:2 }}</p>
+                                {% if presente.reservado %}
+                                <p class="card-text cor-marrom">Reservado por: {{ presente.reservado_por }}</p>
+                                {% endif %}
+                                {% if presente.link_sugestao_compra %}
+                                <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="cor-vermelho text-decoration-underline">
+                                    Veja a sugestão de compra
+                                </a>
+                                {% endif %}
+                                <div class="mt-2">
+                                    {% if presente.importancia <= 2 %}
+                                    <span class="importance-label low">
+                                        Pouco importante
+                                        <i class="fas fa-times-circle ms-1"></i>
+                                    </span>
+                                    {% elif presente.importancia < 4 %}
+                                    <span class="importance-label medium">
+                                        Importante
+                                        <i class="fas fa-times-circle ms-1"></i>
+                                    </span>
+                                    {% else %}
+                                    <span class="importance-label high">
+                                        Muito importante
+                                        <i class="fas fa-times-circle ms-1"></i>
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                <!-- Formulário de exclusão -->
+                                <form action="{% url 'excluir_presente' presente.id %}" method="POST" onsubmit="return confirmarExclusao();" class="mt-auto">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm w-100 rounded-pill">
+                                        Excluir
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Modal de Edição -->
+                <div id="editPresenteModal" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title cor-vermelho">Editar Presente</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editPresenteForm" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="presenteId" name="presente_id">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Nome do presente</label>
+                                        <input type="text" id="editNome" name="nome_presente" class="form-control">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Link de sugestão de compra</label>
+                                        <input type="url" id="editLinkSugestao" name="link_sugestao_compra" class="form-control">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Link de cobrança</label>
+                                        <input type="url" id="editLinkCobranca" name="link_cobranca" class="form-control">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Preço estimado</label>
+                                        <input type="text" id="editPreco" name="preco" class="form-control">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" form="editPresenteForm" class="btn btn-primary">Salvar alterações</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <br>
+            <br>
+
+            <section>
+                <!-- Presentes Reservados -->
+                <div class="form-section">
+                    <h2 class="Comfortaa-Bold text-center display-4 cor-marrom mb-4">Presentes Reservados</h2>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Presente</th>
+                                    <th>Reservado por</th>
+                                    <th class="text-end">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for presente in presentes_reservados %}
+                                <tr>
+                                    <td>{{ presente.nome_presente }}</td>
+                                    <td>{{ presente.reservado_por }}</td>
+                                    <td class="text-end">R$ {{ presente.preco|floatformat:2 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="2" class="text-end fw-bold">Total</td>
+                                    <td class="text-end fw-bold">R$ {{ total_reservado|floatformat:2 }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <br>
+            <br>
+
+            <section>
+                <!-- Galeria de Fotos -->
+                <div class="form-section">
+                    <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Galeria de fotos</h2>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                        {% for imagem in perfil.galeria.all|slice:":6" %}  <!-- Limita para 6 imagens -->
+                            <div class="col">
+                                <div class="foto-quadrada">
+                                    <img src="{{ imagem.imagem.url }}" class="img-fluid rounded" alt="Imagem da galeria">
+                                    <div class="overlay-icon">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#substituirImagemModal" data-id="{{ imagem.id }}" class="trocar-imagem">
+                                            <i class="bi bi-pencil text-white"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-center">Nenhuma imagem na galeria.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+               
+            </section>
+
+            <br>
+            <br>
+
+            <section>
+                <!-- Sobre Nós -->
+                <div class="form-section">
+                    <h2 class="Comfortaa-Bold text-center display-4 cor-marrom">Sobre nós</h2>
+                    <div class="row">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <div class="about-card">
+                                <div class="position-relative">
+                                    <img src="{{ imagem_noiva.url }}" class="about-image" alt="Noiva">
+                                    <a href="#" class="overlay-icon" data-bs-toggle="modal" data-bs-target="#editarImagemModal" data-id="{{ imagem_noiva.id }}">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                                <h3>A Noiva</h3>
+                                <p class="fst-italic">{{ mensagem_noiva }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="about-card">
+                                <div class="position-relative">
+                                    <img src="{{ imagem_noivo.url }}" class="about-image" alt="Noivo">
+                                    <a href="#" class="overlay-icon" data-bs-toggle="modal" data-bs-target="#editarImagemModal" data-id="{{ imagem_noivo.id }}">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                                <h3>O Noivo</h3>
+                                <p class="fst-italic">{{ mensagem_noivo }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarMensagemModal">
+                            <i class="bi bi-pencil me-2"></i> Editar Mensagens
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mensagem dos Noivos -->
+                <div class="form-section">
+                    <h2 class="Comfortaa-Bold display-4 cor-marrom mb-4 text-center">Mensagem</h2>
+                    <p class="text-center lead">{{ perfil.mensagem_noivos }}</p>
+                </div>
+
+                <!-- Modal para editar mensagens -->
+                <div class="modal fade" id="editarMensagemModal" tabindex="-1" aria-labelledby="editarMensagemModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editarMensagemModalLabel">Editar Mensagens</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{% url 'editar_mensagem' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="mensagem_noiva" class="form-label">Mensagem sobre a Noiva</label>
+                                        <textarea class="form-control" id="mensagem_noiva" name="mensagem_noiva" rows="3">{{ mensagem_noiva }}</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="mensagem_noivo" class="form-label">Mensagem sobre o Noivo</label>
+                                        <textarea class="form-control" id="mensagem_noivo" name="mensagem_noivo" rows="3">{{ mensagem_noivo }}</textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Salvar Mensagens</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal para editar imagem -->
+                <div class="modal fade" id="editarImagemModal" tabindex="-1" aria-labelledby="editarImagemModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editarImagemModalLabel">Substituir fotos dos noivos</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{% url 'substituir_imagem_noivos' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="imagem_noiva" class="form-label">Foto da noiva</label>
+                                        <input type="file" class="form-control" id="imagem_noiva" name="imagem_noiva">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="imagem_noivo" class="form-label">Foto do noivo</label>
+                                        <input type="file" class="form-control" id="imagem_noivo" name="imagem_noivo">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Salvar Imagens</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Modal de Substituição de Imagem -->
+                <div class="modal fade" id="substituirImagemModal" tabindex="-1" aria-labelledby="substituirImagemModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="substituirImagemModalLabel">Substituir Imagem</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Escolha uma nova imagem para substituir.</p>
+                                <input type="hidden" name="imagem_id" id="imagem_id">
+                                <div class="row">
+                                    {% for imagem in todas_imagens %}
+                                        <div class="col-4 mb-3">
+                                            <img src="{{ imagem.imagem.url }}" class="img-thumbnail select-image" 
+                                                data-id="{{ imagem.id }}" data-url="{{ imagem.imagem.url }}" style="cursor:pointer;">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagens Recebidas -->
+                <div class="form-section">
+                    <h2 class="Comfortaa-Bold display-4 cor-marrom text-center">Mensagens Recebidas</h2>
+                    <div class="messages-container">
+                        {% for mensagem in mensagens %}
+                            <div class="message-box">
+                                <div class="d-flex align-items-start">
                                     <div class="flex-shrink-0 me-sm-3 mb-3 mb-sm-0 text-center">
                                         {% if mensagem.escrita_por.foto_perfil %}
                                             <img src="{{ mensagem.escrita_por.foto_perfil.url }}" alt="Foto do Convidado" class="rounded-circle shadow-sm" style="width: 55px; height: 55px; object-fit: cover;">
@@ -654,53 +782,48 @@
                                             </div>
                                         {% endif %}
                                     </div>
-        
-                                    <!-- Conteúdo da mensagem -->
                                     <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between align-items-center mb-2 flex-column flex-sm-row text-center text-sm-start">
-                                            <strong class="mb-1">{{ mensagem.escrita_por.nome_convidado }}</strong>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <strong>{{ mensagem.escrita_por.nome_convidado }}</strong>
                                             <small class="text-muted">{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
                                         </div>
-                                        <div class="texto mt-1">{{ mensagem.texto_mensagem|safe }}</div>
+                                        <p class="mb-0">{{ mensagem.texto_mensagem|safe }}</p>
                                     </div>
                                 </div>
-                            {% empty %}
-                                <p class="text-muted text-center">Nenhuma mensagem recebida ainda.</p>
-                            {% endfor %}
-                        </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-center text-muted">Nenhuma mensagem recebida ainda.</p>
+                        {% endfor %}
                     </div>
                 </div>
-            </div>
-        </section>
-        
-        
-        
-        
-        
-         
+            </section>
 
+            <br>
+            <br>
+
+            <section>
+                <!-- Localização -->
+                <div class="form-section">
+                    <h2 class="Comfortaa-Bold display-4 cor-marrom mb-4 text-center"><i class="bi bi-geo-alt me-2"></i>Local</h2>
+                    <p class="text-center mb-4">
+                        {{ perfil.rua }}, {{ perfil.numero }} - {{ perfil.bairro }}<br>
+                        {{ perfil.municipio }}/{{ perfil.estado }} - CEP: {{ perfil.cep }}
+                    </p>
+                    <div id="map"></div>
+                </div>
+            </section>
+        </div>      
         <br>
-        
     </div>
     
-    <div class="container-fluid mt-5" style="position: relative; left: 0; right: 0;">
-        <div class="" style="border-radius: 0; width: 100%;">
-            <div class="text-center">
-                <h2 class="Comfortaa-Bold display-4 cor-marrom mb-4"><i class="bi bi-geo-alt me-2"></i>Local</h2>
-                <p class="cor-vermelho">Rua: {{ perfil.rua }}, {{ perfil.numero }}, Bairro: {{ perfil.bairro }}, {{ perfil.municipio }}, {{ perfil.estado }}, {{ perfil.pais }} - Cep: {{ perfil.cep }}</p>
-                <hr>
-                <div id="map" class="container-fluid mt-4" style="width: 100%; height: 400px;"></div>
-            </div>
-        </div>
-    </div> 
-    <br>
+    
     <footer class="text-center bg-dark py-4">
         <!-- Copyright -->
         <div class="container">
-            <div class="text-white mb-2">
+            <div class="text-white fs-5">
                 {{ perfil.nome_primeiro_conjuge }} & {{ perfil.nome_segundo_conjuge }}
             </div>
-            <div class="text-white mb-2">
+            <div class="text-white">
                 {{ data_casamento|date:"d/m/Y" }}
             </div>
             <div class="text-white">
@@ -711,7 +834,7 @@
     </footer>
 
     <!-- Botão para rolar até o topo -->
-    <button id="scrollToTopBtn" title="Voltar ao topo">↑</button>    
+    <button id="scrollToTopBtn" title="Voltar ao topo">↑</button>  
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArufezJ1vUqr_syuLuz7ZKDXmzlxVXu88&callback=initMap&v={{ timestamp }}" 
     async defer></script>
@@ -839,6 +962,7 @@
         document.addEventListener("DOMContentLoaded", iniciarContador);
 
 
+        // Função para preparar a substituição
         document.addEventListener("DOMContentLoaded", function () {
             let imagemSelecionada = null;
 
@@ -888,25 +1012,29 @@
             });
         });
 
-        // Obter o botão
-        var mybutton = document.getElementById("scrollToTopBtn");
 
-        // Quando o usuário rolar para baixo 20px da parte superior da página, mostre o botão
-        window.onscroll = function() {
-            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                mybutton.style.display = "block";
-            } else {
-                mybutton.style.display = "none";
-            }
-        };
-
-        // Quando o usuário clicar no botão, rolar para o topo da página
-        mybutton.onclick = function() {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth" // Rolagem suave
+        // Botão de scroll para o topo
+        document.addEventListener("DOMContentLoaded", function() {
+            const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+            
+            // Mostrar ou esconder o botão quando o usuário rolar a página
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) { // Mostrar após rolar 300px
+                    scrollToTopBtn.classList.add('show');
+                } else {
+                    scrollToTopBtn.classList.remove('show');
+                }
             });
-        };
+            
+            // Rolagem suave quando o botão for clicado
+            scrollToTopBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
 
 
         document.addEventListener("DOMContentLoaded", function () {
