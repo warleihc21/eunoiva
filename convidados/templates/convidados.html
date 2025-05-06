@@ -370,6 +370,31 @@
         height: auto;
     }
 
+    /* Estilos para os botões de navegação */
+    .btn-navegacao {
+        min-width: 150px;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-navegacao:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Responsividade */
+    @media (max-width: 576px) {
+        .btn-navegacao {
+            width: 100%;
+        }
+    }
+
 
   
 
@@ -843,21 +868,49 @@
         <br>
         
 
-        <section id="local-casamento mt-12">
-            <div class="centralizar-imagem mt-24 mb-12">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="tamanho-imagem">
+        <!-- Seção Local do Casamento -->
+        <section id="local-casamento" class="py-5">
+            <div class="text-center mb-5">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
             </div>
-            <div class="mt-8 p-6 rounded-md shadow-md">
+            <div class="container">
                 <div class="text-center">
                     <i class="bi bi-geo-alt fs-1 cor-vermelho"></i>
-                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Local</h2>
-                    <p class="cor-marrom">Rua: {{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }}, Bairro: {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }}, {{ convidado.user.perfil.estado }}, {{ convidado.user.perfil.pais }} - Cep: {{ convidado.user.perfil.cep }}</p>
-                    <hr>
+                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Local do Evento</h2>
+                    <p class="lead cor-marrom">Onde nossos sonhos se tornarão realidade</p>
                 </div>
+                
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-8 text-center">
+                        <p class="fs-5 mb-4">
+                            <i class="bi bi-geo-alt-fill cor-vermelho"></i> Rua:  
+                            {{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }} - Bairro: 
+                            {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }} - 
+                            {{ convidado.user.perfil.estado }} - Cep: {{ convidado.user.perfil.cep }}
+                        </p>
+                        
+                        <!-- Botões de Navegação -->
+                        <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap">
+                            {% with endereco_completo=convidado.user.perfil.rua|add:","|add:convidado.user.perfil.numero|add:","|add:convidado.user.perfil.bairro|add:","|add:convidado.user.perfil.municipio|add:","|add:convidado.user.perfil.estado %}
+                            <a href="https://www.google.com/maps/dir/?api=1&destination={{ endereco_completo|urlencode }}" 
+                            target="_blank" 
+                            class="btn btn-danger d-flex align-items-center gap-2 btn-navegacao">
+                            <i class="fa-solid fa-location-dot"></i> Google Maps
+                            </a>
+                            <a href="https://www.waze.com/ul?q={{ endereco_completo|urlencode }}&navigate=yes" 
+                            target="_blank" 
+                            class="btn btn-danger d-flex align-items-center gap-2 btn-navegacao">
+                            <i class="fa-brands fa-waze"></i> Waze
+                            </a>
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+                
+                
             </div>
-            <div id="map" style="width: 100%; height: 400px;"></div>
-            <br>
-            <br>
+            <!-- Mapa -->
+            <div id="map" class="rounded-3 shadow-lg" style="width: 100%; height: 400px;"></div>
         </section>
         
     </div>
