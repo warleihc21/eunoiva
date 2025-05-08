@@ -1,20 +1,22 @@
 import requests
 
+refresh_token = 'TG-681ab084604092000120b939-153067470'  # Seu refresh token aqui
+
 url = "https://api.mercadolibre.com/oauth/token"
 
-data = {
-    "grant_type": "authorization_code",
-    "client_id": "6974408972842302",
-    "client_secret": "pswqBQJcclOD6vBa0QLGGelbOzLWQcTi",
-    "code": "TG-67fa756db22b4000019997be-153067470",
-    "redirect_uri": "https://www.inoivos.site/noivos"
+payload = {
+    'grant_type': 'refresh_token',
+    'client_id': '4839064475156085',  # Seu client_id
+    'client_secret': 'qINYYlydQTai7G0f8waDGVStj7CMK9PI',  # Seu client_secret
+    'refresh_token': refresh_token
 }
 
-response = requests.post(url, data=data)
+headers = {
+    'accept': 'application/json',
+    'content-type': 'application/x-www-form-urlencoded'
+}
 
-if response.status_code == 200:
-    token_info = response.json()
-    print("Access Token:", token_info["access_token"])
-    print("Refresh Token:", token_info["refresh_token"])
-else:
-    print("Erro:", response.status_code, response.json())
+response = requests.post(url, headers=headers, data=payload)
+
+print(response.status_code)
+print(response.text)

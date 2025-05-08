@@ -359,6 +359,45 @@
         }
     }
 
+    /* Animação de flutuação para o ícone */
+    .animacao-icone {
+        animation: flutuar 4s ease-in-out infinite;
+        display: inline-block; /* Necessário para a animação */
+        transform-origin: center;
+    }
+    
+    @keyframes flutuar {
+        0%, 100% {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: translateY(-10px) scale(1.05);
+            opacity: 0.9;
+        }
+    }
+
+
+    /* Ajustes para o ícone */
+    .cor-vermelho {
+        color: #be1c3cfd;
+        transition: all 0.3s ease;
+    }
+    
+    /* Efeito hover adicional */
+    .animacao-icone:hover {
+        animation: flutuar 2s ease-in-out infinite, pulsar 1.5s ease infinite;
+    }
+    
+    @keyframes pulsar {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
 
 
     
@@ -396,6 +435,44 @@
     }
 
 
+    @keyframes afastar {
+        0% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(1.1); /* Aumentei de 1.1 para 1.2 (20% de zoom out) */
+        }
+    }
+    
+    /* Estilo para os nomes dos noivos */
+    .nomes-noivos {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .nome-noivo {
+        white-space: nowrap;
+    }
+    
+    .separador {
+        white-space: nowrap;
+        margin: 0 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .nomes-noivos {
+            flex-direction: column;
+        }
+        
+        .separador {
+            margin: 0.5rem 0;
+        }
+    }
+
+
   
 
     
@@ -417,7 +494,7 @@
         {% endif %}
 
         <!-- Seção de imagem com os nomes dos cônjuges no centro e efeito de escurecimento -->
-        <div class="position-relative vh-100" style="padding-top: 56px;">
+        <div class="position-relative vh-100" style="padding-top: 56px; overflow: hidden;">
             {% if convidado.user.perfil.imagem %}
                 <img src="{{ convidado.user.perfil.imagem.url }}" 
                     alt="Foto do casal no banner principal do convite" 
@@ -427,17 +504,17 @@
                     alt="Foto do casal no banner principal do convite" 
                     class="imagem-fundo w-100 h-100 object-fit-cover">
             {% endif %}
-
+        
             <!-- Camada escura sobre a imagem -->
             <div class="position-absolute top-0 start-0 w-100 h-100 bg-black" style="opacity: 0.40;"></div>
-
+        
             <!-- Conteúdo centralizado sobre a imagem -->
             <div class="position-absolute top-50 start-50 translate-middle text-center fade-in">
-                <span class="text-uppercase display-4 mb-4 text-white">
-                    {{ convidado.user.perfil.nome_primeiro_conjuge }} 
-                    & 
-                    {{ convidado.user.perfil.nome_segundo_conjuge }}
-                </span>
+                <div class="nomes-noivos text-uppercase display-4 mb-4 text-white">
+                    <span class="nome-noivo text-white">{{ convidado.user.perfil.nome_primeiro_conjuge }}</span>
+                    <span class="separador text-white">&</span>
+                    <span class="nome-noivo text-white">{{ convidado.user.perfil.nome_segundo_conjuge }}</span>
+                </div>
                 <div class="d-flex justify-content-center gap-3 mb-4 mt-2">
                     <a href="#confirmacao-presenca" class="btn btn-primary">Confirmar presença</a>
                     <a href="#lista-presentes" class="btn btn-secondary">Lista de presentes</a>
@@ -456,9 +533,9 @@
                     <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
                 </div>
         
-                <!-- Ícone e título -->
+                <!-- Ícone e título - agora com animação -->
                 <div class="mb-4">
-                    <i class="bi bi-calendar4-week fs-1 cor-vermelho"></i>
+                    <i class="bi bi-calendar4-week fs-1 cor-vermelho animacao-icone"></i>
                     <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Nossa data</h2>
                 </div>
         
@@ -498,7 +575,7 @@
                 </div>
                 <div class="container">
                     <div class="text-center">
-                        <i class="bi bi-camera fs-1 cor-vermelho"></i>
+                        <i class="bi bi-camera fs-1 cor-vermelho animacao-icone"></i>
                         <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Galeria de fotos</h2>
                         <p class="lead cor-marrom">Nossos momentos.</p>
                     </div>
@@ -526,7 +603,7 @@
             </div>
             <div class="container">
                 <div class="text-center">
-                    <i class="bi bi-emoji-smile fs-1 cor-vermelho"></i>
+                    <i class="bi bi-emoji-smile fs-1 cor-vermelho animacao-icone"></i>
                     <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Sobre Nós</h2>
                     <p class="lead cor-marrom">Conheça nossa história.</p>
                 </div>
@@ -583,7 +660,7 @@
                 <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
             </div>
             <div class="container text-center">
-                <i class="bi bi-envelope fs-1 cor-vermelho"></i>
+                <i class="bi bi-envelope fs-1 cor-vermelho animacao-icone"></i>
                 <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Mensagem</h2>
                 <p class="fst-italic cor-marrom lead">
                     {{ convidado.user.perfil.mensagem_noivos }}
@@ -602,7 +679,7 @@
         
                 <!-- Título e ícone -->
                 <div class="text-center">
-                    <i class="bi bi-chat-heart fs-1 cor-vermelho"></i>
+                    <i class="bi bi-chat-heart fs-1 cor-vermelho animacao-icone"></i>
                     <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Deixe sua mensagem</h2>
                     <p class="mb-4 text-lg cor-marrom">Compartilhe seus votos de felicidade</p>
                 </div>
@@ -673,7 +750,7 @@
                 <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
             </div>
             <div class="text-center">
-                <i class="bi bi-clipboard-heart fs-1 cor-vermelho"></i>
+                <i class="bi bi-clipboard-heart fs-1 cor-vermelho animacao-icone"></i>
                 <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Confirmação de presença</h2>
                 <p class="mb-4 text-lg cor-marrom">Por favor, confirme sua presença e de seus acompanhantes para que possamos preparar tudo com muito carinho.</p>
             </div>
@@ -753,7 +830,7 @@
             
             <div class="grid grid-cols-1 gap-4">
                 <div class="container mx-auto max-w-2xl text-center">
-                    <i class="bi bi-gift fs-1 cor-vermelho cor-vermelho"></i>
+                    <i class="bi bi-gift fs-1 cor-vermelho cor-vermelho animacao-icone"></i>
                     <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Presentes</h2>
                     <p class="mb-4 text-lg cor-marrom text-center">Agradecemos imensamente sua presença em nosso casamento. Se desejar nos presentear, preparamos uma lista especial de itens que nos ajudarão a construir nosso novo lar.</p>
                 </div>
@@ -875,7 +952,7 @@
             </div>
             <div class="container">
                 <div class="text-center">
-                    <i class="bi bi-geo-alt fs-1 cor-vermelho"></i>
+                    <i class="bi bi-geo-alt fs-1 cor-vermelho animacao-icone"></i>
                     <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Local do Evento</h2>
                     <p class="lead cor-marrom">Onde nossos sonhos se tornarão realidade</p>
                 </div>
