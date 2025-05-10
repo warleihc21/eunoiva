@@ -69,14 +69,14 @@ class MensagemSobreNoivoNoiva(models.Model):
         "Ele é o mestre das piadas, sempre pronto para fazer todos rirem, mesmo nas situações mais inesperadas. Com um coração enorme e o talento de fazer a noiva sorrir até nos momentos mais sérios, ele é a verdadeira prova de que o amor existe. Mesmo sendo um pouco desastrado (quem nunca derrubou algo em um jantar de família?), ele traz leveza e diversão a cada momento. Ele pode não ser perfeito, mas é perfeito para ela – e é isso que realmente importa."
     )
 
-    def save(self, *args, **kwargs):
-        # Atribui mensagem padrão se o campo estiver vazio
-        if not self.mensagem:
-            if self.tipo == 'noiva':
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Define valores padrão ao inicializar uma nova instância
+        if not self.pk:  # Se for um novo registro
+            if self.tipo == 'noiva' and not self.mensagem:
                 self.mensagem = self.MENSAGEM_PADRAO_NOIVA
-            elif self.tipo == 'noivo':
+            elif self.tipo == 'noivo' and not self.mensagem:
                 self.mensagem = self.MENSAGEM_PADRAO_NOIVO
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Mensagem de {self.tipo} de {self.perfil.user.username}"

@@ -163,18 +163,23 @@ def configurar_perfil(request):
 
         perfil.save()
 
-        # Verifica se o perfil já tem mensagens cadastradas
-        if not perfil.mensagens.exists():
-            MensagemSobreNoivoNoiva.objects.create(
-                perfil=perfil,
-                tipo='noiva',
-                mensagem='Ela é a luz que ilumina todos ao seu redor, com um sorriso capaz de derreter qualquer coração. Sua beleza, inteligência e graça são apenas algumas das suas qualidades, mas é o seu coração generoso e a paciência com o noivo que realmente a definem. Ela é, sem dúvida, a pessoa mais incrível que você vai conhecer – e todos nós torcemos para que ele saiba o quanto ela merece ser amada a cada dia.'
-            )
-            MensagemSobreNoivoNoiva.objects.create(
-                perfil=perfil,
-                tipo='noivo',
-                mensagem='Ele é o mestre das piadas, sempre pronto para fazer todos rirem, mesmo nas situações mais inesperadas. Com um coração enorme e o talento de fazer a noiva sorrir até nos momentos mais sérios, ele é a verdadeira prova de que o amor existe. Mesmo sendo um pouco desastrado (quem nunca derrubou algo em um jantar de família?), ele traz leveza e diversão a cada momento. Ele pode não ser perfeito, mas é perfeito para ela – e é isso que realmente importa.'
-            )
+        # Cria ou atualiza mensagens padrão para os noivos
+        mensagem_noiva = request.POST.get('mensagem_noiva', '').strip()
+        mensagem_noivo = request.POST.get('mensagem_noivo', '').strip()
+
+        # Para a noiva
+        MensagemSobreNoivoNoiva.objects.update_or_create(
+            perfil=perfil,
+            tipo='noiva',
+            defaults={'mensagem': mensagem_noiva or MensagemSobreNoivoNoiva.MENSAGEM_PADRAO_NOIVA}
+        )
+
+        # Para o noivo
+        MensagemSobreNoivoNoiva.objects.update_or_create(
+            perfil=perfil,
+            tipo='noivo',
+            defaults={'mensagem': mensagem_noivo or MensagemSobreNoivoNoiva.MENSAGEM_PADRAO_NOIVO}
+        )
 
         # Salvar múltiplas imagens da galeria
         imagens = request.FILES.getlist('galeria_imagens')
@@ -229,17 +234,15 @@ def configurar_perfil(request):
     # Passa o perfil para o template
     context = {
         'perfil': perfil,
+        'mensagem_noiva': perfil.mensagens.filter(tipo='noiva').first().mensagem 
+                          if perfil.mensagens.filter(tipo='noiva').exists() 
+                          else MensagemSobreNoivoNoiva.MENSAGEM_PADRAO_NOIVA,
+        'mensagem_noivo': perfil.mensagens.filter(tipo='noivo').first().mensagem 
+                          if perfil.mensagens.filter(tipo='noivo').exists() 
+                          else MensagemSobreNoivoNoiva.MENSAGEM_PADRAO_NOIVO,
     }
     
-    # Adiciona as mensagens e imagens dos noivos ao contexto, se existirem
-    if hasattr(perfil, 'mensagens'):
-        mensagem_noiva = perfil.mensagens.filter(tipo='noiva').first()
-        mensagem_noivo = perfil.mensagens.filter(tipo='noivo').first()
-        
-        if mensagem_noiva:
-            context['mensagem_noiva'] = mensagem_noiva.mensagem
-        if mensagem_noivo:
-            context['mensagem_noivo'] = mensagem_noivo.mensagem
+    
     
     if hasattr(perfil, 'fotosnoivos'):
         imagem_noiva = perfil.fotosnoivos.filter(tipo='noiva').first()
