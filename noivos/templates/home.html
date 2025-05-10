@@ -29,18 +29,15 @@
                     url("{% if imagem %}{{ imagem.url }}{% else %}{% static 'noivos/img/aliancas.jpg' %}{% endif %}");
         background-size: cover;
         background-position: center;
-        min-height: 800px;
+        min-height: 100vh; /* Alterado para viewport height */
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
         color: white;
-        padding: 120px 0;
+        padding: 60px 20px; /* Reduzi o padding */
         margin-bottom: 50px;
         position: relative;
-        top: 0;
-        margin-top: 0;
-        z-index: 1;
     }
 
 
@@ -351,22 +348,29 @@
         }
     }
 
+    /* Ajuste SOMENTE para celulares (max-width: 576px) */
     @media (max-width: 576px) {
-        .couple-names {
-            font-size: 1.8rem;
-        }
-        
         .countdown-container {
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 colunas */
+            gap: 10px;
+            max-width: 220px; /* Largura total para 2 colunas */
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .countdown-box {
-            min-width: 60px;
-            padding: 8px;
+            width: 100%; /* Ocupa toda a largura da célula do grid */
+            min-width: auto;
+            padding: 10px;
         }
         
         .countdown-value {
-            font-size: 1.2rem;
+            font-size: 1.5rem !important;
+        }
+        
+        .countdown-label {
+            font-size: 0.7rem !important;
         }
     }
 </style>

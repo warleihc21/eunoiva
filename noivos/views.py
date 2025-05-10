@@ -252,8 +252,18 @@ def lista_convidados(request):
             if telefone and not telefone.startswith("55"):
                 telefone = f"55{telefone}"
 
+            endereco_completo = f"Rua {perfil.rua}, {perfil.numero} - {perfil.bairro}, {perfil.municipio}/{perfil.estado} - {perfil.cep}"
+            data_formatada = perfil.data_casamento.strftime("%d/%m/%Y")
+            horario_formatado = perfil.horario_casamento.strftime("%H:%M") if perfil.horario_casamento else ""
+
             # Personalizar mensagem
-            mensagem_formatada = mensagem.replace("{nome}", convidado.nome_convidado).replace("{link}", convidado.link_convite)
+            mensagem_formatada = mensagem.replace("{nome}", convidado.nome_convidado)\
+                           .replace("{link}", convidado.link_convite)\
+                           .replace("{local}", endereco_completo)\
+                           .replace("{data}", data_formatada)\
+                           .replace("{horario}", horario_formatado)\
+                           .replace("{noivo}", perfil.nome_primeiro_conjuge)\
+                           .replace("{noiva}", perfil.nome_segundo_conjuge)
 
             # Adicionar link da imagem, se existir
             if mensagem_obj and mensagem_obj.imagem:
