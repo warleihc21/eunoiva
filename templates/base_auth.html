@@ -1,28 +1,34 @@
 {% load static %}
 <!doctype html>
 <html lang="pt-BR">
-<head>
-    {% block 'head' %}{% endblock %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="{% static 'noivos/img/logo.png' %}" rel="icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <title>{% block 'titulo' %}{% endblock %}
-    </title>
-    <style>
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
-</head>
+    <head>
+        {% block 'head' %}{% endblock %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link href="{% static 'noivos/img/logo.png' %}" rel="icon">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <!-- Adicione estas linhas -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+        <title>{% block 'titulo' %}{% endblock %}</title>
+        <style>
+            .content-wrapper {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            .main-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+            body {
+                font-family: 'Playfair Display', serif;
+            }
+        </style>
+    </head>
 <body class="bg-dark">
     <div class="content-wrapper">
         {% if user.is_authenticated %}

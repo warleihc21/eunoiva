@@ -1,127 +1,170 @@
-.green-background {
-    background-color: rgb(28, 203, 104);
+/* Estilos Gerais */
+body {
+    font-family: 'Playfair Display', serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #fff9f9 100%);
 }
 
-.sidebar{
-    background-color: #ffffff;
-    
+/* Container Principal */
+.container-fluid {
+    background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+                url('/static/autenticacao/img/wedding-pattern.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
 }
 
-.logo_sidebar{
-    text-align: center;
-}
-
-.img_logo_sidebar{
-    width: 100%;
-}
-
-.sidebar{
-    background-image: url("/static/autenticacao/img/fundo_background.png");
-}
-
+/* Card de Formulário */
 .area_cadastrar {
-    margin: 0 auto;
-    width: 70%;
-}
-    
-.titulo{
-    font-weight: bold;
-}
-
-    
-.sub-titulo{
-    color: gray;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px !important;
+    width: 80% !important;
+    max-width: 500px;
+    border: 1px solid #f0e6e6;
+    transition: transform 0.3s ease;
 }
 
-   
-.input-form{
-    margin-top: 15px;
-    width: 100%;
-    padding: 5px;
-    outline: 0;
+.area_cadastrar:hover {
+    transform: translateY(-5px);
 }
 
-.input-form:focus{
-    border: 2px solid #ffffff !important;
-    outline: 0 !important;
-    box-shadow: none !important;
+/* Títulos */
+.titulo {
+    font-weight: 700;
+    color: #d4a373;
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
 }
 
-    
-.bold{
-    font-weight: bold;  
-}
-    
-.btn-first{
-    border: none;
-    padding: 5px 15px 5px 15px;
-    font-size: 25px;
-    background-color: #000000;
-    color: white;
-    font-weight: bold;
+.sub-titulo {
+    color: #a5a5a5;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
 }
 
+/* Divisor */
+hr {
+    border-top: 1px solid #f0e6e6;
+    margin: 1.5rem 0;
+}
 
-.btn-google {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #6ea6ff; /* Azul padrão do Google */
-    color: white;
-    border: none;
+/* Campos de Formulário */
+.input-form {
+    border: 1px solid #e0d3d3;
+    border-radius: 8px;
+    padding: 12px 15px !important;
+    font-size: 1rem;
+    transition: all 0.3s;
+    margin-top: 8px !important;
+}
+
+.input-form:focus {
+    border-color: #d4a373 !important;
+    box-shadow: 0 0 0 0.2rem rgba(212, 163, 115, 0.25) !important;
+}
+
+.bold {
+    font-weight: 500;
+    color: #6c757d;
+}
+
+/* Botões */
+.btn-primary {
+    background-color: #d4a373 !important;
+    border-color: #d4a373 !important;
+    padding: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #c29362 !important;
+    border-color: #c29362 !important;
+    transform: translateY(-2px);
+}
+
+.btn-outline-dark {
+    border-color: #d4a373;
+    color: #d4a373;
+    border-radius: 8px;
     padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    text-decoration: none;
-    width: 100%; /* Ajuste conforme necessário */
+    transition: all 0.3s;
 }
 
-.btn-google img {
-    height: 20px; /* Ajuste o tamanho da imagem aqui */
-    width: auto;
-    margin-right: 10px; /* Espaçamento entre a imagem e o texto */
+.btn-outline-dark:hover {
+    background-color: #d4a373;
+    color: white;
+}
+
+/* Botão Google */
+.btn-google {
+    background-color: white !important;
+    color: #757575 !important;
+    border: 1px solid #e0d3d3 !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    font-weight: 500;
+    transition: all 0.3s;
 }
 
 .btn-google:hover {
-    background-color: #6ea6ff;
+    background-color: #f8f9fa !important;
+    transform: translateY(-2px);
+}
+
+.btn-google img {
+    height: 20px;
+    width: auto;
+    margin-right: 10px;
+}
+
+/* Imagem do Casal */
+.img_logo_sidebar {
+    max-width: 400px;
+    width: 100%;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Alertas */
+.alert {
+    border-radius: 8px;
+}
+
+/* Rodapé */
+footer {
+    background-color: #343a40;
+    padding: 20px 0;
     color: white;
 }
 
+/* Responsividade */
 @media (max-width: 768px) {
-    .sidebar {
-        display: none; /* Esconde a sidebar em telas menores */
+    .container-fluid {
+        padding: 20px;
     }
-
+    
     .area_cadastrar {
-        width: 90%;
-        padding: 10px;
+        width: 100% !important;
+        padding: 20px !important;
     }
-
+    
+    .img_logo_sidebar {
+        max-width: 250px;
+        margin-bottom: 30px;
+    }
+    
     .titulo {
-        font-size: 24px;
-        text-align: center;
-    }
-
-    .sub-titulo {
-        font-size: 18px;
-        text-align: center;
-    }
-
-    .btn-first, .btn-google {
-        width: 100%;
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
-
-    h3 {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .btn-outline-dark {
-        display: block;
-        width: 100%;
-        margin-top: 10px;
+        font-size: 1.8rem;
     }
 }
