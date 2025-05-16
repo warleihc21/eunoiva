@@ -473,7 +473,65 @@
     }
 
 
-  
+    /* Estilos para os botões de ação */
+    .btn-action {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(190, 28, 60, 0.1);
+        color: #be1c3cfd;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .btn-action:hover {
+        background-color: rgba(190, 28, 60, 0.2);
+        transform: translateY(-1px);
+        color: #be1c3cfd;
+    }
+    
+    .btn-action-danger {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    .btn-action-danger:hover {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+    
+    /* Ícones dentro dos botões */
+    .btn-action i {
+        font-size: 0.85rem;
+    }
+    
+    /* Tooltip personalizado */
+    .tooltip-inner {
+        background-color: #be1c3cfd;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .bs-tooltip-auto[data-popper-placement^=top] .tooltip-arrow::before,
+    .bs-tooltip-top .tooltip-arrow::before {
+        border-top-color: #be1c3cfd;
+    }
+    
+    /* Efeito de hover na mensagem */
+    .mensagem-box:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    /* Transição suave */
+    .mensagem-box, .btn-action {
+        transition: all 0.3s ease;
+    }
 
     
 </style>
@@ -708,7 +766,7 @@
                             <h5 class="mb-4 fw-bold cor-marrom">Mensagens Enviadas</h5>
                             {% if mensagens_enviadas %}
                                 {% for mensagem in mensagens_enviadas %}
-                                    <div class="d-flex mensagem-box position-relative">
+                                    <div class="d-flex mensagem-box position-relative mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
                                         <!-- Avatar / Ícone -->
                                         <div class="flex-shrink-0 me-3">
                                             <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center shadow" style="width: 40px; height: 40px; font-size: 24px;">
@@ -717,39 +775,39 @@
                                         </div>
 
                                         <!-- Conteúdo da mensagem -->
-                                        <div class="flex-grow-1 position-relative">
-                                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                                <strong>{{ mensagem.escrita_por.nome_convidado }}</strong>
-                                                <small class="text-muted">{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
-                                                <!-- Botões de edição/exclusão - Só mostra se for mensagem do convidado atual -->
-                                                {% if mensagem.escrita_por.token == token %}
-                                                <div class="row top-0 end-0 mt-2 me-2 btn-group-vertical btn-group-sm">
-                                                    <button class="btn btn-link text-muted p-1 editar-mensagem-btn" 
-                                                            data-mensagem-id="{{ mensagem.id }}"
-                                                            data-mensagem-texto="{{ mensagem.texto_mensagem }}"
-                                                            data-bs-toggle="tooltip" data-bs-placement="left" title="Editar">
-                                                        <i class="bi bi-pencil-square fs-5"></i>
-                                                    </button>
-                                                    <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
-                                                        <button type="submit" class="btn btn-link text-muted p-1" 
-                                                                onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')"
-                                                                data-bs-toggle="tooltip" data-bs-placement="left" title="Excluir">
-                                                            <i class="bi bi-trash fs-5"></i>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <strong class="text-truncate pe-2">{{ mensagem.escrita_por.nome_convidado }}</strong>
+                                                <div class="d-flex align-items-center">
+                                                    <small class="text-muted me-2">{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
+                                                    
+                                                    <!-- Botões de edição/exclusão - Só mostra se for mensagem do convidado atual -->
+                                                    {% if mensagem.escrita_por.token == token %}
+                                                    <div class="btn-group btn-group-sm ms-2" role="group">
+                                                        <button class="btn btn-action editar-mensagem-btn" 
+                                                                data-mensagem-id="{{ mensagem.id }}"
+                                                                data-mensagem-texto="{{ mensagem.texto_mensagem }}"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                                            <i class="bi bi-pencil-fill"></i>
                                                         </button>
-                                                    </form>
+                                                        <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
+                                                            <button type="submit" class="btn btn-action btn-action-danger ms-1" 
+                                                                    onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir">
+                                                                <i class="bi bi-trash-fill"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    {% endif %}
                                                 </div>
-                                                {% endif %}
                                             </div>
-                                            <div class="texto mb-2">
+                                            <div class="texto">
                                                 {{ mensagem.texto_mensagem|safe }}
                                             </div>
-                                            
-                                            
                                         </div>
                                     </div>
-                                    {% if not forloop.last %}<hr class="my-3 opacity-25">{% endif %}
                                 {% endfor %}
                             {% else %}
                                 <p class="text-muted">Nenhuma mensagem enviada ainda.</p>
