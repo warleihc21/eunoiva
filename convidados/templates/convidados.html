@@ -987,7 +987,18 @@
                 
             </div>
             <!-- Mapa -->
-            <div id="map" class="container-fluid rounded-3 shadow-lg" style="width: 100%; height: 400px;"></div>
+            <div id="map" style="height: 400px;">
+                <noscript>
+                    <div style="padding: 20px; text-align: center;">
+                        <h3>Local do Casamento</h3>
+                        <p>{{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }} - {{ convidado.user.perfil.bairro }}</p>
+                        <p>{{ convidado.user.perfil.municipio }}/{{ convidado.user.perfil.estado }}</p>
+                        <a href="https://www.openstreetmap.org/search?query={{ convidado.user.perfil.rua }} {{ convidado.user.perfil.numero }} {{ convidado.user.perfil.municipio }}" target="_blank">
+                            Ver no mapa
+                        </a>
+                    </div>
+                </noscript>
+            </div>
         </section>
         
     </div>
@@ -1009,8 +1020,13 @@
     <button id="scrollToTopBtn" title="Voltar ao topo"><i class="bi bi-arrow-up"></i></button>
 
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArufezJ1vUqr_syuLuz7ZKDXmzlxVXu88&callback=initMap&v={{ timestamp }}" 
-    async defer></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJ1z7QJZsZiRmNL343rB2PayN-uBl4ZoA&callback=initMap&v={{ timestamp }}" async defer></script> -->
+
+    <!-- Adicione estas bibliotecas no final do body, antes dos seus scripts -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+
     <script>
         // Certifique-se de que a data seja passada corretamente do Django para o JavaScript
         const dataCasamento = "{{ convidado.user.perfil.data_casamento|date:'Y-m-d' }}";
@@ -1063,29 +1079,115 @@
 
 
         
-        function initMap() {
-            // Obtendo o endereço do casamento
-            const endereco = "{{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }}, {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }}, {{ convidado.user.perfil.estado }}";
-            // Usando o Geocoder do Google Maps para obter as coordenadas a partir do endereço
-            const geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ 'address': endereco }, function(results, status) {
-                if (status === 'OK') {
-                    // Criando o mapa centrado no local
-                    const map = new google.maps.Map(document.getElementById('map'), {
-                        zoom: 15,
-                        center: results[0].geometry.location
-                    });
+        // Substitua esta chave pela sua chave do GraphHopper
+        const GRAPHHOPPER_API_KEY = '5281e92b-c1d9-42e2-bcb8-8f0eebb35e34';
 
-                    // Marcando o local no mapa
-                    const marker = new google.maps.Marker({
-                        map: map,
-                        position: results[0].geometry.location
-                    });
-                } else {
-                    alert('Geocode não foi bem-sucedido: ' + status);
-                }
+        document.addEventListener("DOMContentLoaded", function() {
+            // Configurar ícone personalizado
+            const weddingIcon = L.icon({
+                iconUrl: '{% static "noivos/img/wedding-marker.png" %}',
+                iconSize: [38, 38],
+                iconAnchor: [19, 38],
+                popupAnchor: [0, -38]
             });
-        }
+            
+            // Função principal
+            function initMap() {
+                // Formatar endereço
+                const endereco = `{{ convidado.user.perfil.rua }} {{ convidado.user.perfil.numero }}, {{ convidado.user.perfil.bairro }}, {{ convidado.user.perfil.municipio }}, {{ convidado.user.perfil.estado }}, Brasil`;
+                
+                // Criar mapa básico com fallback para Sabará, MG
+                const map = L.map('map').setView([-19.8856, -43.8269], 12);
+                
+                // Adicionar camada do OpenStreetMap
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+                
+                // Adicionar loading state
+                const loadingDiv = document.createElement('div');
+                loadingDiv.style.position = 'absolute';
+                loadingDiv.style.top = '50%';
+                loadingDiv.style.left = '50%';
+                loadingDiv.style.transform = 'translate(-50%, -50%)';
+                loadingDiv.style.zIndex = '1000';
+                loadingDiv.style.backgroundColor = 'rgba(255,255,255,0.8)';
+                loadingDiv.style.padding = '10px 20px';
+                loadingDiv.style.borderRadius = '5px';
+                loadingDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando mapa...';
+                document.getElementById('map').appendChild(loadingDiv);
+                
+                // Usar GraphHopper para geocoding
+                fetch(`https://graphhopper.com/api/1/geocode?q=${encodeURIComponent(endereco)}&key=${GRAPHHOPPER_API_KEY}&limit=1`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById('map').removeChild(loadingDiv);
+                        
+                        if (data.hits && data.hits.length > 0) {
+                            const location = data.hits[0];
+                            const lat = location.point.lat;
+                            const lon = location.point.lng;
+                            
+                            // Centralizar o mapa nas coordenadas encontradas
+                            map.setView([lat, lon], 15);
+                            
+                            // Adicionar marcador
+                            L.marker([lat, lon], {icon: weddingIcon}).addTo(map)
+                                .bindPopup(`
+                                    <div style="text-align:center;">
+                                        <h4 style="margin-bottom:5px;">Local do Casamento</h4>
+                                        <p style="margin-bottom:5px;">${location.name || endereco}</p>
+                                        <p>{{ convidado.user.perfil.rua }}, {{ convidado.user.perfil.numero }} - {{ convidado.user.perfil.bairro }}</p>
+                                        <a href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=17/${lat}/${lon}" 
+                                        target="_blank" 
+                                        style="color: #d4a373; text-decoration:underline;">
+                                            Ver no OpenStreetMap
+                                        </a>
+                                    </div>
+                                `)
+                                .openPopup();
+                        } else {
+                            // Mostrar mensagem de erro
+                            const errorDiv = document.createElement('div');
+                            errorDiv.style.padding = '20px';
+                            errorDiv.style.textAlign = 'center';
+                            errorDiv.innerHTML = `
+                                <h4>Não foi possível encontrar o endereço exato</h4>
+                                <p>Endereço pesquisado: ${endereco}</p>
+                                <p>Mostrando localização aproximada de {{ convidado.user.perfil.municipio }}</p>
+                            `;
+                            document.getElementById('map').appendChild(errorDiv);
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('map').removeChild(loadingDiv);
+                        console.error('Erro ao geocodificar:', error);
+                        
+                        const errorDiv = document.createElement('div');
+                        errorDiv.style.padding = '20px';
+                        errorDiv.style.textAlign = 'center';
+                        errorDiv.innerHTML = `
+                            <h4>Erro ao carregar o mapa</h4>
+                            <p>Por favor, verifique o endereço ou tente novamente mais tarde.</p>
+                            <p>Endereço: ${endereco}</p>
+                            <a href="https://www.openstreetmap.org/search?query=${encodeURIComponent(endereco)}" 
+                            target="_blank" 
+                            style="color: #d4a373; text-decoration:underline; font-weight:bold;">
+                                Tentar no site do OpenStreetMap
+                            </a>
+                        `;
+                        document.getElementById('map').appendChild(errorDiv);
+                    });
+            }
+            
+            // Inicializar o mapa
+            initMap();
+        });
 
 
         function alterarStatus(status) {

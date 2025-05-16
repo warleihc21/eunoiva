@@ -7,7 +7,7 @@ body {
 /* Container Principal */
 .container-fluid {
     background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
-                url('/static/autenticacao/img/wedding-pattern.png') !important;
+                url('/static/autenticacao/img/fundocasamento.jpg') !important;
     background-size: cover !important;
     background-position: center !important;
 }
@@ -148,23 +148,110 @@ footer {
     color: white;
 }
 
-/* Responsividade */
+/* Responsividade - Telas menores (mobile) */
 @media (max-width: 768px) {
     .container-fluid {
-        padding: 20px;
+        padding: 15px;
+        min-height: 100vh;
+        height: auto;
+    }
+    
+    .row {
+        flex-direction: column;
+        margin: 0;
     }
     
     .area_cadastrar {
         width: 100% !important;
-        padding: 20px !important;
+        padding: 20px 15px !important;
+        margin-top: 0 !important;
+        box-shadow: none;
+        border: none;
+        background-color: transparent;
     }
     
     .img_logo_sidebar {
-        max-width: 250px;
-        margin-bottom: 30px;
+        max-width: 180px;
+        margin-bottom: 20px;
+        margin-top: 10px;
     }
     
     .titulo {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .sub-titulo {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+    }
+    
+    .input-form {
+        padding: 10px 12px !important;
+        font-size: 0.9rem;
+    }
+    
+    .btn-primary, .btn-google {
+        padding: 10px !important;
+        font-size: 0.9rem;
+    }
+    
+    hr {
+        margin: 1rem 0;
+    }
+    
+    h3 {
+        font-size: 1rem;
+        margin-top: 15px !important;
+    }
+    
+    .btn-outline-dark {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    /* Ajuste para garantir que tudo caiba na tela */
+    .min-vh-100 {
+        min-height: 100vh !important;
+        height: auto !important;
+    }
+    
+    /* Layout em coluna única */
+    .col-lg-6, .col-md-12 {
+        padding: 0;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+    
+    /* Espaçamento entre imagem e formulário */
+    .logo_sidebar {
+        margin-bottom: 10px;
+    }
+}
+
+/* Ajustes para telas muito pequenas (ex: iPhone SE) */
+@media (max-width: 375px) {
+    .img_logo_sidebar {
+        max-width: 150px;
+    }
+    
+    .titulo {
+        font-size: 1.4rem;
+    }
+    
+    .sub-titulo {
+        font-size: 0.85rem;
+    }
+    
+    .input-form {
+        padding: 8px 10px !important;
+    }
+    
+    .btn-primary, .btn-google {
+        padding: 8px !important;
+    }
+    
+    h3 {
+        font-size: 0.9rem;
     }
 }

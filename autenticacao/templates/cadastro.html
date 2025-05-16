@@ -9,24 +9,21 @@
 {% block 'titulo' %}Cadastre-se{% endblock %}
 
 {% block 'body' %}
-    <div class="container-fluid d-flex justify-content-center align-items-center min-vh-100" style="background-color: #cee9ff;">
-        <div class="row w-100">
-            <!-- Sidebar com imagem (agora visível em todas as telas) -->
-            <div class="col-lg-6 col-md-12 d-flex justify-content-center align-items-center">
+    <div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 py-3">
+        <div class="row w-100 mx-0">
+            <!-- Imagem do Casal -->
+            <div class="col-lg-6 col-md-12 d-flex justify-content-center align-items-center px-0">
                 <div class="logo_sidebar text-center">
-                    <h2 class="logo">
-                        <img class="img_logo_sidebar img-fluid" src="{% static 'autenticacao/img/casal.png' %}" alt="Casal">
-                    </h2>
+                    <img class="img_logo_sidebar img-fluid" src="{% static 'autenticacao/img/casal.png' %}" alt="Casal">
                 </div>
             </div>
 
             <!-- Área de Cadastro -->
-            <div class="col-lg-6 col-md-12 d-flex justify-content-center align-items-center">
-                <div class="area_cadastrar text-center p-4 w-100">
+            <div class="col-lg-6 col-md-12 d-flex justify-content-center align-items-center px-0">
+                <div class="area_cadastrar text-center p-3 w-100">
                     {% if messages %}
-                        <br>
                         {% for message in messages %}
-                            <div class="alert {{message.tags}}">
+                            <div class="alert {{message.tags}} mb-2">
                                 {{message}}
                             </div>
                         {% endfor %}
@@ -34,32 +31,32 @@
 
                     <h2 class="titulo">Seja bem-vindo</h2>
                     <p class="sub-titulo">Crie sua conta</p>
-                    <hr>
+                    <hr class="my-3">
 
                     <form action="{% url 'cadastro' %}" method="POST" class="w-100">
                         {% csrf_token %}
-                        <div class="mb-3 text-start">
+                        <div class="mb-2 text-start">
                             <label class="bold">Nome de usuário</label>
                             <input class="form-control input-form" name="usuario" type="text" placeholder="Digite seu nome..." required>
                         </div>
-                        <div class="mb-3 text-start">
+                        <div class="mb-2 text-start">
                             <label class="bold">E-mail</label>
                             <input class="form-control input-form" name="email" type="email" placeholder="Digite seu E-mail..." required>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3 text-start">
+                        <div class="row mx-0">
+                            <div class="col-md-6 px-1 mb-2 text-start">
                                 <label class="bold">Senha</label>
                                 <input class="form-control input-form" name="senha" type="password" placeholder="Digite sua senha..." required>
                             </div>
-                            <div class="col-md-6 mb-3 text-start">
+                            <div class="col-md-6 px-1 mb-2 text-start">
                                 <label class="bold">Confirmar senha</label>
                                 <input class="form-control input-form" name="confirmar_senha" type="password" placeholder="Confirme sua senha..." required>
                             </div>
                         </div>
-                        <button class="btn btn-primary w-100">Registrar</button>
+                        <button class="btn btn-primary w-100 mt-2">Registrar</button>
                     </form>
 
-                    <br><hr>
+                    <hr class="my-3">
 
                     <a title="Google" href="/accounts/google/login/?process=login" class="w-100">
                         <button class="btn btn-google w-100">
@@ -67,8 +64,8 @@
                         </button>
                     </a>
 
-                    <h3 class="mt-3">
-                        Já possui uma conta? <a href="{% url 'logar' %}" class="btn btn-outline-dark btn-lg">Logar</a>
+                    <h3 class="mt-2 mb-0">
+                        Já possui uma conta? <a href="{% url 'logar' %}" class="btn btn-outline-dark btn-sm">Logar</a>
                     </h3>
                 </div>
             </div>
