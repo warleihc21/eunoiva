@@ -533,6 +533,60 @@
         transition: all 0.3s ease;
     }
 
+    /* Ajustes para mobile */
+    @media (max-width: 768px) {
+        .btn-action {
+            width: 26px;
+            height: 26px;
+        }
+        
+        .btn-action i {
+            font-size: 0.75rem;
+        }
+        
+        .mensagens-container {
+            padding: 1rem;
+        }
+        
+        .mensagem-box {
+            padding: 0.75rem;
+        }
+        
+        /* Ajuste no layout para telas pequenas */
+        .flex-wrap > .w-100.w-md-auto {
+            width: 100% !important;
+            margin-bottom: 0.5rem;
+        }
+        
+        .justify-content-between > .me-2 {
+            margin-right: 0.5rem !important;
+        }
+        
+        .btn-group-sm {
+            margin-left: 0.25rem !important;
+        }
+    }
+
+    /* Ajustes para telas muito pequenas */
+    @media (max-width: 576px) {
+        .btn-action {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .btn-action i {
+            font-size: 0.7rem;
+        }
+        
+        .texto {
+            font-size: 0.9rem;
+        }
+        
+        .mensagem-box {
+            padding: 0.5rem;
+        }
+    }
+
     
 </style>
 
@@ -776,9 +830,9 @@
 
                                         <!-- Conteúdo da mensagem -->
                                         <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <strong class="text-truncate pe-2">{{ mensagem.escrita_por.nome_convidado }}</strong>
-                                                <div class="d-flex align-items-center">
+                                            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                                                <strong class="text-truncate pe-2 w-100 w-md-auto">{{ mensagem.escrita_por.nome_convidado }}</strong>
+                                                <div class="d-flex align-items-center justify-content-between w-100 w-md-auto">
                                                     <small class="text-muted me-2">{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
                                                     
                                                     <!-- Botões de edição/exclusão - Só mostra se for mensagem do convidado atual -->
@@ -787,7 +841,7 @@
                                                         <button class="btn btn-action editar-mensagem-btn" 
                                                                 data-mensagem-id="{{ mensagem.id }}"
                                                                 data-mensagem-texto="{{ mensagem.texto_mensagem }}"
-                                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Editar mensagem">
                                                             <i class="bi bi-pencil-fill"></i>
                                                         </button>
                                                         <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
@@ -795,7 +849,7 @@
                                                             <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
                                                             <button type="submit" class="btn btn-action btn-action-danger ms-1" 
                                                                     onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')"
-                                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir">
+                                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir mensagem">
                                                                 <i class="bi bi-trash-fill"></i>
                                                             </button>
                                                         </form>
