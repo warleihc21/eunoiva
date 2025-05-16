@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.urls import reverse
 from noivos.models import Convidados, ImagemNoivos, MensagemAosNoivos, MensagemSobreNoivoNoiva, Perfil, Presentes, Acompanhante
 from datetime import datetime
+from django.views.decorators.http import require_POST
 
 
 def convidados(request):
@@ -117,7 +118,14 @@ def mensagem_aos_noivos(request):
 
     if request.method == 'POST':
         texto_mensagem = request.POST.get('texto_mensagem')
-        if texto_mensagem:
+        mensagem_id = request.POST.get('mensagem_id')  # Para edição
+        
+        if mensagem_id:  # Se estiver editando
+            mensagem = get_object_or_404(MensagemAosNoivos, id=mensagem_id, escrita_por=convidado)
+            mensagem.texto_mensagem = texto_mensagem
+            mensagem.save()
+            messages.success(request, 'Mensagem atualizada com sucesso!')
+        elif texto_mensagem:  # Se estiver criando nova
             MensagemAosNoivos.objects.create(
                 user=convidado.user,
                 texto_mensagem=texto_mensagem,
@@ -127,6 +135,18 @@ def mensagem_aos_noivos(request):
         else:
             messages.error(request, 'A mensagem não pode estar vazia.')
 
+    return redirect(f"{reverse('convidados')}?token={token}")
+
+@require_POST
+def excluir_mensagem(request):
+    token = request.GET.get('token')
+    convidado = get_object_or_404(Convidados, token=token)
+    mensagem_id = request.POST.get('mensagem_id')
+    
+    mensagem = get_object_or_404(MensagemAosNoivos, id=mensagem_id, escrita_por=convidado)
+    mensagem.delete()
+    
+    messages.success(request, 'Mensagem excluída com sucesso!')
     return redirect(f"{reverse('convidados')}?token={token}")
 
 
