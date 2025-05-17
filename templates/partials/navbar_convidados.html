@@ -1,12 +1,11 @@
 {% load static %}
-{% load convidados_filters %}  {# Carregue o filtro personalizado #}
-
+{% load convidados_filters %}
 
 <nav class="navbar navbar-expand-md navbar-light bg-white bg-opacity-75 shadow fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold cor-vermelho" href="#">
             {{ convidado.user.perfil.nome_primeiro_conjuge|get_initials }}
-            &
+            <span class="heart-ampersand" style="color: #be1c3c; font-size: 0.8rem;"><i class="bi bi-heart-fill icon nav-icon"></i></span>
             {{ convidado.user.perfil.nome_segundo_conjuge|get_initials }}
         </a>
 
@@ -19,31 +18,107 @@
 
         <!-- Menu colapsável -->
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav d-flex gap-3"> <!-- Removido ms-auto e adicionado me-auto -->
+            <ul class="navbar-nav d-flex gap-3">
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="#galeria-imagens"><i class="bi bi-camera icon"></i> Galeria</a>
+                    <a class="nav-link cor-vermelho" href="#galeria-imagens">
+                        <i class="bi bi-camera icon nav-icon"></i> Galeria
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="#sobre-nos"><i class="bi bi-calendar4-week icon"></i> Nossa História</a>
+                    <a class="nav-link cor-vermelho" href="#sobre-nos">
+                        <i class="bi bi-heart icon nav-icon"></i> Nossa História
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="#nossa-data"><i class="bi bi-calendar4-week icon"></i> Nossa data</a>
+                    <a class="nav-link cor-vermelho" href="#nossa-data">
+                        <i class="bi bi-calendar4-week icon nav-icon"></i> Nossa data
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="#mensagem-noivos"><i class="bi bi-envelope icon"></i> Mensagem</a>
+                    <a class="nav-link cor-vermelho" href="#mensagem-noivos">
+                        <i class="bi bi-envelope icon nav-icon"></i> Mensagem
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="#confirmacao-presenca"><i class="bi bi-clipboard-heart icon"></i> Confirmação de presença</a>
+                    <a class="nav-link cor-vermelho" href="#confirmacao-presenca">
+                        <i class="bi bi-clipboard-heart icon nav-icon"></i> Confirmação
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="#lista-presentes"><i class="bi bi-gift icon"></i> Lista de presentes</a>
+                    <a class="nav-link cor-vermelho" href="#lista-presentes">
+                        <i class="bi bi-gift icon nav-icon"></i> Presentes
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="#local-casamento"><i class="bi bi bi-geo-alt icon"></i> Local</a>
+                    <a class="nav-link cor-vermelho" href="#local-casamento">
+                        <i class="bi bi-geo-alt icon nav-icon"></i> Local
+                    </a>
                 </li>
             </ul>
         </div>                        
     </div>
 </nav>
 
+<style>
+    /* Animação para o símbolo & */
+    .heart-ampersand {
+        display: inline-block;
+        animation: pulse 2s infinite;
+        transform-origin: center;
+    }
 
+    /* Animação para os ícones da navbar */
+    .nav-icon {
+        display: inline-block;
+        transition: all 0.3s ease;
+        transform-origin: center;
+    }
+
+    .nav-link:hover .nav-icon {
+        animation: bounce 0.5s ease;
+        color: #8B4513 !important;
+    }
+
+    /* Animação de pulsação suave */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    /* Animação de bounce (saltinho) */
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    /* Efeito de flutuação suave */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-3px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* Adicionando animações específicas para cada ícone */
+    .bi-camera.nav-icon {
+        animation: float 3s ease-in-out infinite;
+    }
+    .bi-heart.nav-icon {
+        animation: pulse 2.5s ease-in-out infinite;
+    }
+    .bi-calendar4-week.nav-icon {
+        animation: float 3.2s ease-in-out infinite;
+    }
+    .bi-envelope.nav-icon {
+        animation: float 3.4s ease-in-out infinite;
+    }
+    .bi-clipboard-heart.nav-icon {
+        animation: pulse 2.5s ease-in-out infinite;
+    }
+    .bi-gift.nav-icon {
+        animation: float 3.3s ease-in-out infinite;
+    }
+    .bi-geo-alt.nav-icon {
+        animation: float 3.1s ease-in-out infinite;
+    }
+</style>

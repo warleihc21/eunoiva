@@ -7,7 +7,7 @@
         <a class="navbar-brand fw-bold cor-vermelho" href="#">
             {% if nome_primeiro_conjuge and nome_segundo_conjuge %}
                 {{ nome_primeiro_conjuge.split.0.0|upper }}{% if nome_primeiro_conjuge.split|length > 1 %}{{ nome_primeiro_conjuge.split.1.0|upper }}{% endif %}
-                &
+                <span class="heart-ampersand" style="color: #be1c3c; font-size: 0.8rem;"><i class="bi bi-heart-fill icon nav-icon"></i></span>
                 {{ nome_segundo_conjuge.split.0.0|upper }}{% if nome_segundo_conjuge.split|length > 1 %}{{ nome_segundo_conjuge.split.1.0|upper }}{% endif %}
             {% else %}
                 Iniciais
@@ -26,20 +26,83 @@
             <!-- Itens alinhados à esquerda -->
             <ul class="navbar-nav me-auto">  <!-- Removido ms-auto e adicionado me-auto -->
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="{% url 'home' %}">Home</a>
+                    <a class="nav-link cor-vermelho" href="{% url 'home' %}">
+                        <i class="bi bi-house-door nav-icon me-1"></i> Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="{% url 'lista_convidados' %}">Controle de Convidados</a>
+                    <a class="nav-link cor-vermelho" href="{% url 'lista_convidados' %}">
+                        <i class="bi bi-people nav-icon me-1"></i> Convidados</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link cor-vermelho" href="{% url 'configurar_perfil' %}">Editar Perfil</a>
+                    <a class="nav-link cor-vermelho" href="{% url 'configurar_perfil' %}">
+                        <i class="bi bi-gear nav-icon me-1"></i> Perfil</a>
                 </li>
             </ul>
 
             <!-- Itens alinhados à direita -->
-            <span class="navbar-text me-3 cor-vermelho">Bem-vindo(a), {{ user.username }}!</span>
-            <a href="{% url 'sair' %}" class="nav-link cor-vermelho">Sair</a>
+            <span class="navbar-text me-3 cor-vermelho">Bem-vindo(a), <i class="bi bi-person-circle nav-icon me-1"></i>{{ user.username }}!</span>
+            <a href="{% url 'sair' %}" class="nav-link cor-vermelho">Sair<i class="bi bi-box-arrow-right nav-icon ms-1"></i></a>
         </div>
     </div>
 </nav>
+
+<style>
+    /* Animação para o símbolo & */
+    .heart-ampersand {
+        display: inline-block;
+        animation: pulse 2s infinite;
+        transform-origin: center;
+    }
+
+    /* Animação para os ícones da navbar */
+    .nav-icon {
+        display: inline-block;
+        transition: all 0.3s ease;
+        transform-origin: center;
+    }
+
+    .nav-link:hover .nav-icon {
+        animation: bounce 0.5s ease;
+        color: #8B4513 !important;
+    }
+
+    /* Animação de pulsação suave */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    /* Animação de bounce (saltinho) */
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    /* Efeito de flutuação suave */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-3px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* Adicionando animações específicas para cada ícone */
+    .bi-house-door.nav-icon {
+        animation: float 3s ease-in-out infinite;
+    }
+    .bi-people.nav-icon {
+        animation: float 3.2s ease-in-out infinite;
+    }
+    .bi-gear.nav-icon {
+        animation: float 3.4s ease-in-out infinite;
+    }
+    .bi-person-circle.nav-icon {
+        animation: pulse 2.5s ease-in-out infinite;
+    }
+    .bi-box-arrow-right.nav-icon {
+        animation: float 3.3s ease-in-out infinite;
+    }
+
+</style>
+
 {% endif %}
