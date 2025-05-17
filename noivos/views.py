@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, JsonResponse
 import requests
 from core import settings
-from .models import Convidados, ImagemGaleria, ImagemNoivos, MensagemAosNoivos, MensagemSobreNoivoNoiva, Presentes, MensagemPersonalizada
+from .models import Convidados, ImagemGaleria, ImagemNoivos, MensagemAosNoivos, MensagemSobreNoivoNoiva, Presentes, MensagemPersonalizada, ProdutoBase
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.core.exceptions import ValidationError
 from django.contrib import messages
@@ -63,6 +63,11 @@ def home(request):
 
         timestamp = int(datetime.now().timestamp())
 
+        # Verificar se o usuário já tem presentes
+        tem_presentes = presentes.exists()
+        # Verificar quantos produtos base existem
+        tem_lista_padrao = ProdutoBase.objects.filter(ativo=True).exists()
+
         return render(request, 'home.html', {
             'presentes': presentes,
             'data': [nao_reservado, reservado],
@@ -88,6 +93,8 @@ def home(request):
             'mensagem_noivo': mensagem_noivo.mensagem if mensagem_noivo else '',
             'imagem_noiva': imagem_noiva.imagem if imagem_noiva else '',
             'imagem_noivo': imagem_noivo.imagem if imagem_noivo else '',
+            'tem_presentes': tem_presentes,
+            'tem_lista_padrao': tem_lista_padrao,
         })
 
     elif request.method == "POST":
@@ -675,3 +682,108 @@ def buscar_detalhes_produto(request):
         return JsonResponse({"error": f"Erro ao buscar o produto: {str(e)}"}, status=500)
 
 
+@login_required(login_url='/auth/logar/')
+def admin_produto(request):
+    if not request.user.is_staff:
+        messages.error(request, 'Você não tem permissão para acessar esta página.')
+        return redirect('home')  # Redireciona para a página inicial ou outra página apropriada
+
+    if request.method == 'POST':
+        # Processar formulário de criação de produto base
+        nome = request.POST.get('nome_produto')
+        preco = request.POST.get('preco')
+        link_sugestao = request.POST.get('link_sugestao_compra')
+        link_cobranca = request.POST.get('link_cobranca')
+        descricao = request.POST.get('descricao', '')
+        categoria = request.POST.get('categoria', '')
+        importancia = request.POST.get('importancia', 3)
+        foto = request.FILES.get('foto')
+
+        if ',' in preco:
+            preco = preco.replace(',', '.')
+
+        produto = ProdutoBase.objects.create(
+            nome=nome,
+            preco=preco,
+            link_sugestao_compra=link_sugestao,
+            link_cobranca=link_cobranca,
+            descricao=descricao,
+            categoria=categoria,
+            importancia=importancia,
+            foto=foto
+        )
+
+        messages.success(request, 'Produto adicionado com sucesso!')
+        return redirect('admin_produto')
+
+    produtos = ProdutoBase.objects.filter(ativo=True).order_by('-data_criacao')
+    return render(request, 'admin_produto.html', {'produtos': produtos})
+
+
+@login_required(login_url='/auth/logar/')
+def selecionar_presentes_prontos(request):
+    produtos_base = ProdutoBase.objects.filter(ativo=True)
+    return render(request, 'selecionar_presentes.html', {'produtos_base': produtos_base})
+
+@login_required(login_url='/auth/logar/')
+def importar_lista_padrao(request):
+    if request.method == 'POST':
+        produtos_selecionados = request.POST.getlist('produtos_selecionados')
+        
+        for produto_id in produtos_selecionados:
+            produto = ProdutoBase.objects.get(id=produto_id)
+            Presentes.objects.get_or_create(
+                user=request.user,
+                produto_base=produto,
+                defaults={
+                    'nome_presente': produto.nome,
+                    'foto': produto.foto,
+                    'preco': produto.preco,
+                    'importancia': produto.importancia,
+                    'link_sugestao_compra': produto.link_sugestao_compra,
+                    'link_cobranca': produto.link_cobranca
+                }
+            )
+        
+        messages.success(request, 'Presentes selecionados foram adicionados com sucesso!')
+        return redirect('home')
+    
+    return redirect('selecionar_presentes_prontos')
+
+@login_required(login_url='/auth/logar/')
+def editar_produto_base(request, produto_id):
+    if not request.user.is_staff:
+        messages.error(request, 'Você não tem permissão para acessar esta página.')
+        return redirect('home')
+
+    produto = get_object_or_404(ProdutoBase, id=produto_id)
+
+    if request.method == 'POST':
+        produto.nome = request.POST.get('nome_produto')
+        produto.preco = request.POST.get('preco').replace(',', '.')
+        produto.link_sugestao_compra = request.POST.get('link_sugestao_compra')
+        produto.link_cobranca = request.POST.get('link_cobranca')
+        produto.descricao = request.POST.get('descricao', '')
+        produto.categoria = request.POST.get('categoria', '')
+        produto.importancia = request.POST.get('importancia', 3)
+
+        if 'foto' in request.FILES:
+            produto.foto = request.FILES['foto']
+
+        produto.save()
+        messages.success(request, 'Produto atualizado com sucesso!')
+        return redirect('admin_produto')
+
+    return render(request, 'editar_produto_base.html', {'produto': produto})
+
+@login_required(login_url='/auth/logar/')
+def desativar_produto_base(request, produto_id):
+    if not request.user.is_staff:
+        messages.error(request, 'Você não tem permissão para acessar esta página.')
+        return redirect('home')
+
+    produto = get_object_or_404(ProdutoBase, id=produto_id)
+    produto.ativo = False
+    produto.save()
+    messages.success(request, 'Produto desativado com sucesso!')
+    return redirect('admin_produto')

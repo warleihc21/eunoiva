@@ -411,8 +411,25 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Crie sua lista de presentes</h2>
+                            {% if not tem_presentes and tem_lista_padrao %}
+                                <div class="text-center mb-4">
+                                    <form action="{% url 'importar_lista_padrao' %}" method="POST">
+                                        {% csrf_token %}
+                                        {% if not tem_presentes and tem_lista_padrao %}
+                                            <div class="text-center mb-4">
+                                                <a href="{% url 'selecionar_presentes_prontos' %}" class="btn btn-lg btn-success">
+                                                    <i class="bi bi-download me-2"></i> Usar Lista de Presentes Pronta
+                                                </a>
+                                                <p class="mt-2 text-muted">Importe nossa lista sugerida de presentes para começar</p>
+                                            </div>
+                                        {% endif %}
+                                        
+                                    </form>
+                                </div>
+                                {% endif %}
                             <form action="{% url 'home' %}" method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
+                                
                                 <div class="mb-3">
                                     <label for="nome_presente" class="form-label cor-marrom">Nome do presente</label>
                                     <input type="text" name="nome_presente" class="form-control" id="nome_presente">

@@ -132,8 +132,37 @@ def __str__(self):
     return self.nome_convidado
 
 
+class ProdutoBase(models.Model):
+    nome = models.CharField(max_length=1000)
+    foto = models.ImageField(upload_to='produtos_base/', blank=True, null=True)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
+    descricao = models.TextField(blank=True, null=True)
+    link_sugestao_compra = models.URLField(max_length=1000, blank=True, null=True)
+    link_cobranca = models.URLField(max_length=500, blank=True, null=True)
+    categoria = models.CharField(max_length=100, blank=True, null=True)
+    importancia = models.IntegerField(default=3)
+    ativo = models.BooleanField(default=True)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nome
+
+    def save(self, *args, **kwargs):
+        if self.foto:
+            img = Image.open(self.foto)
+            img = img.convert("RGB")
+            desired_size = 300
+            img = ImageOps.pad(img, (desired_size, desired_size), method=Image.Resampling.LANCZOS, color=(255, 255, 255))
+            buffer = BytesIO()
+            img.save(buffer, format='JPEG')
+            buffer.seek(0)
+            self.foto = ContentFile(buffer.read(), name=self.foto.name)
+        super().save(*args, **kwargs)
+
+
 class Presentes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='presentes')
+    produto_base = models.ForeignKey('ProdutoBase', null=True, blank=True, on_delete=models.SET_NULL)
     nome_presente = models.CharField(max_length=1000)
     foto = models.ImageField(upload_to='presentes/', blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
@@ -142,6 +171,7 @@ class Presentes(models.Model):
     reservado_por = models.ForeignKey('Convidados', null=True, blank=True, on_delete=models.SET_NULL)
     link_sugestao_compra = models.URLField(max_length=1000, blank=True, null=True)
     link_cobranca = models.URLField(max_length=500, blank=True, null=True)
+    data_criacao = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
         # Validar links longos
