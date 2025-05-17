@@ -96,8 +96,46 @@
         padding: 30px;
     }
 
-    /* Table styling */
+
+    /* Tabela responsiva para mobile */
+    @media (max-width: 768px) {
         .table-container {
+            padding: 10px;
+            margin-top: 20px;
+        }
+        
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .table {
+            font-size: 14px;
+            min-width: 600px; /* Força a largura mínima para manter a legibilidade */
+        }
+        
+        .table thead th {
+            padding: 8px 10px;
+        }
+        
+        .table tbody td {
+            padding: 8px 10px;
+        }
+        
+        .badge {
+            padding: 5px 8px;
+            font-size: 12px;
+        }
+        
+        .btn-sm {
+            padding: 3px 6px;
+            font-size: 12px;
+        }
+    }
+
+    /* Table styling */
+    .table-container {
         background: white;
         border-radius: 15px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.05);
@@ -108,19 +146,79 @@
         margin-right: auto;  /* Adicionado */
     }
 
+    /* Melhorias gerais na tabela */
     .table {
-        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
     }
 
     .table thead th {
+        position: sticky;
+        top: 0;
         background: var(--primary-color);
         color: white;
-        border: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
     }
 
-    .table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
+    .table tbody tr {
+        transition: all 0.2s ease;
     }
+
+    .table tbody tr:hover {
+        background-color: rgba(190, 28, 60, 0.05) !important;
+        transform: translateX(2px);
+    }
+    
+    .table tbody td {
+        border-top: 1px solid #f0f0f0;
+        vertical-align: middle;
+    }
+
+    /* Botões de ação */
+    .btn-table-action {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+
+    /* Estilo para os links de convite */
+    .link-convite {
+        display: inline-block;
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.85rem;
+        color: var(--secondary-color);
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .link-convite:hover {
+        color: var(--primary-color);
+        text-decoration: underline;
+    }
+
+    /* Lista de acompanhantes */
+    .acompanhantes-list {
+        margin: 0;
+        list-style: none;
+        padding-left: 0;
+    }
+    
+    .acompanhantes-list li {
+        font-size: 0.85rem;
+        color: #555;
+    }
+
 
     .badge {
         padding: 8px 12px;
@@ -129,18 +227,18 @@
     }
 
     .badge-warning {
-        background-color: #FFC107;
-        color: #333;
+        background-color: #FFF3CD;
+        color: #856404;
     }
 
     .badge-info {
-        background-color: #17A2B8;
-        color: white;
+        background-color: #D1ECF1;
+        color: #0C5460;
     }
-
+    
     .badge-danger {
-        background-color: #DC3545;
-        color: white;
+        background-color: #F8D7DA;
+        color: #721C24;
     }
 
     /* Botão de voltar ao topo */
@@ -171,6 +269,12 @@
         visibility: visible;
     }
 
+    /* Adicionando sombra à tabela */
+    .table-responsive {
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
     /* Responsividade */
     @media (max-width: 768px) {
         .card-action {
@@ -199,6 +303,45 @@
         .table-responsive {
             overflow-x: auto;
         }
+    }
+
+    /* Estilo para o botão de copiar link */
+    .btn-copy-link {
+        background: transparent;
+        border: none;
+        color: var(--secondary-color);
+        padding: 0;
+        margin-left: 5px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-copy-link:hover {
+        color: var(--primary-color);
+        transform: scale(1.1);
+    }
+    
+    .btn-copy-link .bi {
+        font-size: 1rem;
+    }
+    
+    /* Tooltip para o botão de copiar */
+    .tooltip-inner {
+        background-color: var(--primary-color);
+        font-size: 0.8rem;
+    }
+    
+    .bs-tooltip-auto[data-popper-placement^=top] .tooltip-arrow::before, 
+    .bs-tooltip-top .tooltip-arrow::before {
+        border-top-color: var(--primary-color);
+    }
+
+    .text-marrom {
+        color: var(--secondary-color);
+        font-family: 'Playfair Display', serif;
+        font-weight: 600;
+        border-bottom: 2px solid var(--accent-color);
+        padding-bottom: 5px;
     }
 </style>
 
@@ -401,7 +544,10 @@
                                             <td>{{ convidado.whatsapp }}</td>
                                             <td>{{ convidado.get_status_display }}</td>
                                             <td>
-                                                <a class="btn btn-success" style="border-radius: 20px;" href="{{ convidado.link_whatsapp }}" target="_blank">Enviar WhatsApp</a>
+                                                <a class="btn btn-success" style="border-radius: 20px;" href="{{ convidado.link_whatsapp }}" target="_blank">
+                                                    <i class="bi bi-whatsapp"></i>
+                                                     Enviar WhatsApp
+                                                </a>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -438,50 +584,141 @@
             
             <!-- Tabela de Convidados -->
             <div class="table-container mt-5">
-                <h2 class="Comfortaa-Bold display-4 cor-marrom text-center">Lista de Convidados</h2>
+                <h2 class="Comfortaa-Bold display-4 cor-marrom text-center mb-4">Lista de Convidados</h2>
+                
+                <!-- Seção de Aguardando Confirmação -->
+                <h3 class="mt-4 mb-3 text-marrom">Aguardando Confirmação</h3>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead class="table-primary">
                             <tr>
                                 <th>Nome</th>
-                                <th>Status</th>
+                                <th class="text-center">Status</th>
                                 <th>WhatsApp</th>
                                 <th>Acompanhantes</th>
                                 <th>Link Convite</th>
-                                <th>Ações</th>
+                                <th class="text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for convidado in convidados %}
+                                {% if convidado.status == 'AC' %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center shadow" style="width: 25px; height: 25px; font-size: 15px;">
+                                                <i class="bi bi-person-fill"></i> 
+                                            </div>
+                                            <span class="ms-2">{{ convidado.nome_convidado }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-warning">
+                                            {{ convidado.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td><i class="bi bi-whatsapp text-success"></i> {{ convidado.whatsapp|default:"-" }}</td>
+                                    <td>
+                                        {% if convidado.maximo_acompanhantes > 0 %}
+                                            <div class="d-flex align-items-center">
+                                                {% for i in ""|center:convidado.maximo_acompanhantes %}
+                                                    <i class="bi bi-person-fill cor-vermelho me-1"></i>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">Nenhum</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if convidado.link_convite %}
+                                            <div class="d-flex align-items-center">
+                                                <a href="{{ convidado.link_convite }}" class="link-convite" target="_blank" title="{{ convidado.link_convite }}">
+                                                    <i class="bi bi-link cor-vermelho"></i> {{ convidado.link_convite|truncatechars:20 }}
+                                                </a>
+                                                <button class="btn-copy-link" onclick="copiarLink('{{ convidado.link_convite }}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Copiar link">
+                                                    <i class="bi bi-clipboard"></i>
+                                                </button>
+                                            </div>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'excluir_convidado' convidado.id %}" class="btn btn-sm btn-outline-danger btn-table-action" onclick="return confirm('Tem certeza que deseja excluir este convidado?')">
+                                            <i class="bi bi-trash"></i> Excluir
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Seção de Confirmados -->
+                <h3 class="mt-5 mb-3 text-marrom">Confirmados</h3>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-primary">
                             <tr>
-                                <td>
-                                    <i class="bi bi-person-fill cor-vermelho"></i> {{ convidado.nome_convidado }}</td>
-                                <td>
-                                    <span class="badge {% if convidado.status == 'AC' %}bg-warning{% elif convidado.status == 'C'%}bg-info{% else %}bg-danger{% endif %}">
-                                        {{ convidado.get_status_display }}
-                                    </span>
-                                </td>
-                                <td>{{ convidado.whatsapp }}</td>
-                                <td>
-                                    {% if convidado.acompanhantes.all %}
-                                        <ul class="list-unstyled mb-0">
-                                            {% for acompanhante in convidado.acompanhantes.all %}
-                                                <li><i class="bi bi-person-fill cor-vermelho"></i> {{ acompanhante.nome }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <small>{{ convidado.link_convite }}</small>
-                                </td>
-                                <td>
-                                    <a href="{% url 'excluir_convidado' convidado.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir este convidado?')">
-                                        <i class="bi bi-trash"></i> Excluir
-                                    </a>
-                                </td>
+                                <th>Nome</th>
+                                <th class="text-center">Status</th>
+                                <th>WhatsApp</th>
+                                <th>Acompanhantes</th>
+                                <th>Link Convite</th>
+                                <th class="text-center">Ações</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            {% for convidado in convidados %}
+                                {% if convidado.status == 'C' %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center shadow" style="width: 25px; height: 25px; font-size: 15px;">
+                                                <i class="bi bi-person-fill"></i> 
+                                            </div>
+                                            <span class="ms-2"> {{ convidado.nome_convidado }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-info">
+                                            {{ convidado.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td><i class="bi bi-whatsapp text-success"></i> {{ convidado.whatsapp|default:"-" }}</td>
+                                    <td>
+                                        {% if convidado.acompanhantes.all %}
+                                            <ul class="acompanhantes-list">
+                                                {% for acompanhante in convidado.acompanhantes.all %}
+                                                    <li><i class="bi bi-person-fill cor-vermelho me-2"></i> {{ acompanhante.nome }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if convidado.link_convite %}
+                                            <div class="d-flex align-items-center">
+                                                <a href="{{ convidado.link_convite }}" class="link-convite" target="_blank" title="{{ convidado.link_convite }}">
+                                                    <i class="bi bi-link cor-vermelho"></i> {{ convidado.link_convite|truncatechars:20 }}
+                                                </a>
+                                                <button class="btn-copy-link" onclick="copiarLink('{{ convidado.link_convite }}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Copiar link">
+                                                    <i class="bi bi-clipboard"></i>
+                                                </button>
+                                            </div>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'excluir_convidado' convidado.id %}" class="btn btn-sm btn-outline-danger btn-table-action" onclick="return confirm('Tem certeza que deseja excluir este convidado?')">
+                                            <i class="bi bi-trash"></i> Excluir
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
@@ -737,6 +974,35 @@
         // Adicionando evento de clique no botão "Enviar WhatsApp"
         document.getElementById('enviarMensagensBtn').addEventListener('click', enviarMensagens);
 
+
+        // Função para copiar o link para a área de transferência
+        function copiarLink(link) {
+            navigator.clipboard.writeText(link).then(function() {
+                // Mostrar tooltip de sucesso
+                const tooltip = new bootstrap.Tooltip(document.querySelector('[data-bs-toggle="tooltip"]'), {
+                    title: "Link copiado!",
+                    trigger: 'manual'
+                });
+                tooltip.show();
+                
+                // Restaurar o tooltip original após 2 segundos
+                setTimeout(function() {
+                    tooltip.dispose();
+                    new bootstrap.Tooltip(document.querySelector('[data-bs-toggle="tooltip"]'));
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Erro ao copiar link: ', err);
+                alert('Não foi possível copiar o link');
+            });
+        }
+        
+        // Inicializar tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
         
     </script>
 
