@@ -86,6 +86,20 @@
     <div class="container py-5">
         <h1 class="text-center mb-4"><i class="fas fa-box-open me-2"></i> Administração de Produtos</h1>
 
+        <!-- Adicione abas para filtrar produtos ativos/inativos -->
+        <ul class="nav nav-tabs mb-4" id="produtosTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="ativos-tab" data-bs-toggle="tab" data-bs-target="#ativos" type="button" role="tab">
+                    <i class="fas fa-check-circle me-1"></i> Ativos
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="inativos-tab" data-bs-toggle="tab" data-bs-target="#inativos" type="button" role="tab">
+                    <i class="fas fa-times-circle me-1"></i> Inativos
+                </button>
+            </li>
+        </ul>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
@@ -139,40 +153,103 @@
                         <h3 class="mb-0"><i class="fas fa-list me-2"></i> Produtos Cadastrados</h3>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th><i class="fas fa-image me-2"></i> Imagem</th>
-                                        <th><i class="fas fa-tag me-2"></i> Nome</th>
-                                        <th><i class="fas fa-dollar-sign me-2"></i> Preço</th>
-                                        <th><i class="fas fa-cogs me-2"></i> Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for produto in produtos %}
-                                    <tr>
-                                        <td>
-                                            {% if produto.foto %}
-                                              <img src="{{ produto.foto.url }}" alt="{{ produto.nome }}" width="60" height="60" class="img-thumbnail">
-                                            {% else %}
-                                              <i class="fas fa-image fa-2x text-secondary"></i>
-                                            {% endif %}
-                                          </td>
-                                        <td>{{ produto.nome }}</td>
-                                        <td>R$ {{ produto.preco }}</td>
-                                        <td>
-                                            <a href="{% url 'editar_produto_base' produto.id %}" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Editar</a>
-                                            <a href="{% url 'desativar_produto_base' produto.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i> Desativar</a>
-                                        </td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="4" class="text-center"><i class="fas fa-exclamation-circle me-2"></i> Nenhum produto cadastrado</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <div class="tab-content" id="produtosTabContent">
+                            <!-- Aba de produtos ativos -->
+                            <div class="tab-pane fade show active" id="ativos" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th><i class="fas fa-image me-2"></i> Imagem</th>
+                                                <th><i class="fas fa-tag me-2"></i> Nome</th>
+                                                <th><i class="fas fa-dollar-sign me-2"></i> Preço</th>
+                                                <th><i class="fas fa-cogs me-2"></i> Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for produto in produtos %}
+                                                {% if produto.ativo %}
+                                                <tr>
+                                                    <td>
+                                                        {% if produto.foto %}
+                                                        <img src="{{ produto.foto.url }}" alt="{{ produto.nome }}" width="60" height="60" class="img-thumbnail">
+                                                        {% else %}
+                                                        <i class="fas fa-image fa-2x text-secondary"></i>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ produto.nome }}</td>
+                                                    <td>R$ {{ produto.preco }}</td>
+                                                    <td>
+                                                        <div class="d-flex flex-wrap gap-1">
+                                                            <a href="{% url 'editar_produto_base' produto.id %}" class="btn btn-sm btn-warning">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <a href="{% url 'desativar_produto_base' produto.id %}" class="btn btn-sm btn-dark">
+                                                                <i class="fas fa-ban"></i>
+                                                            </a>
+                                                            <a href="{% url 'excluir_produto_base' produto.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir PERMANENTEMENTE este produto?')">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-center"><i class="fas fa-exclamation-circle me-2"></i> Nenhum produto cadastrado</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Aba de produtos inativos -->
+                            <div class="tab-pane fade" id="inativos" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th><i class="fas fa-image me-2"></i> Imagem</th>
+                                                <th><i class="fas fa-tag me-2"></i> Nome</th>
+                                                <th><i class="fas fa-dollar-sign me-2"></i> Preço</th>
+                                                <th><i class="fas fa-cogs me-2"></i> Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for produto in produtos %}
+                                                {% if not produto.ativo %}
+                                                <tr>
+                                                    <td>
+                                                        {% if produto.foto %}
+                                                        <img src="{{ produto.foto.url }}" alt="{{ produto.nome }}" width="60" height="60" class="img-thumbnail">
+                                                        {% else %}
+                                                        <i class="fas fa-image fa-2x text-secondary"></i>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ produto.nome }}</td>
+                                                    <td>R$ {{ produto.preco }}</td>
+                                                    <td>
+                                                        <div class="d-flex flex-wrap gap-1">
+                                                            <a href="{% url 'ativar_produto_base' produto.id %}" class="btn btn-sm btn-success">
+                                                                <i class="fas fa-check"></i> Ativar
+                                                            </a>
+                                                            <a href="{% url 'excluir_produto_base' produto.id %}" class="btn btn-sm btn-dark" onclick="return confirm('Tem certeza que deseja excluir PERMANENTEMENTE este produto?')">
+                                                                <i class="fas fa-trash-alt"></i> Excluir
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-center"><i class="fas fa-exclamation-circle me-2"></i> Nenhum produto inativo</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -181,5 +258,15 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        // Confirmação antes de excluir
+        document.querySelectorAll('.btn-excluir').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (!confirm('Tem certeza que deseja excluir PERMANENTEMENTE este produto?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

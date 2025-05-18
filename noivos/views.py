@@ -686,10 +686,9 @@ def buscar_detalhes_produto(request):
 def admin_produto(request):
     if not request.user.is_staff:
         messages.error(request, 'Você não tem permissão para acessar esta página.')
-        return redirect('home')  # Redireciona para a página inicial ou outra página apropriada
+        return redirect('home')
 
     if request.method == 'POST':
-        # Processar formulário de criação de produto base
         nome = request.POST.get('nome_produto')
         preco = request.POST.get('preco')
         link_sugestao = request.POST.get('link_sugestao_compra')
@@ -716,7 +715,8 @@ def admin_produto(request):
         messages.success(request, 'Produto adicionado com sucesso!')
         return redirect('admin_produto')
 
-    produtos = ProdutoBase.objects.filter(ativo=True).order_by('-data_criacao')
+    # Mostrar todos os produtos, não apenas os ativos
+    produtos = ProdutoBase.objects.all().order_by('-data_criacao')
     return render(request, 'admin_produto.html', {'produtos': produtos})
 
 
@@ -770,11 +770,15 @@ def editar_produto_base(request, produto_id):
         if 'foto' in request.FILES:
             produto.foto = request.FILES['foto']
 
-        produto.save()
-        messages.success(request, 'Produto atualizado com sucesso!')
-        return redirect('admin_produto')
+        try:
+            produto.save()
+            messages.success(request, 'Produto atualizado com sucesso!')
+            return redirect('admin_produto')
+        except Exception as e:
+            messages.error(request, f'Erro ao atualizar produto: {str(e)}')
 
     return render(request, 'editar_produto_base.html', {'produto': produto})
+
 
 @login_required(login_url='/auth/logar/')
 def desativar_produto_base(request, produto_id):
@@ -786,4 +790,32 @@ def desativar_produto_base(request, produto_id):
     produto.ativo = False
     produto.save()
     messages.success(request, 'Produto desativado com sucesso!')
+    return redirect('admin_produto')
+
+@login_required(login_url='/auth/logar/')
+def ativar_produto_base(request, produto_id):
+    if not request.user.is_staff:
+        messages.error(request, 'Você não tem permissão para acessar esta página.')
+        return redirect('home')
+
+    produto = get_object_or_404(ProdutoBase, id=produto_id)
+    produto.ativo = True
+    produto.save()
+    messages.success(request, 'Produto ativado com sucesso!')
+    return redirect('admin_produto')
+
+@login_required(login_url='/auth/logar/')
+def excluir_produto_base(request, produto_id):
+    if not request.user.is_staff:
+        messages.error(request, 'Você não tem permissão para acessar esta página.')
+        return redirect('home')
+
+    produto = get_object_or_404(ProdutoBase, id=produto_id)
+    
+    try:
+        produto.delete()
+        messages.success(request, 'Produto excluído permanentemente com sucesso!')
+    except Exception as e:
+        messages.error(request, f'Erro ao excluir produto: {str(e)}')
+    
     return redirect('admin_produto')
