@@ -3,31 +3,191 @@
 {% load static %}
 
 <style>
-    .btn-cancelar-reserva {
-        pointer-events: auto !important;
-        opacity: 1 !important;
+    /* Estilos existentes e adaptados */
+    body {
+        font-family: 'Arial', sans-serif; /* Ou outra fonte mais moderna se preferir */
+        background-color: #f8f9fa;
+        color: #333;
     }
 
     h2 {
-        color: #8B4513;
-    }
-    
-
-    #confirmacao-presenca {
-        min-height: auto;
-        padding: 40px 20px; /* Ajuste os valores conforme necessário */
+        color: #be1c3cfd; /* Cor do botão */
+        font-weight: 700;
     }
 
+    .container {
+        max-width: 1100px;
+    }
 
-    /* Estilo para o botão de buscar */
+    /* Cards */
+    .card-presentes {
+        display: flex; /* Garante que o card ocupe o espaço disponível */
+        align-items: stretch; /* Faz os cards se esticarem para ter a mesma altura */
+    }
+
+    .card {
+        border: none;
+        border-radius: 1.5rem; /* Bordas mais arredondadas para um toque moderno */
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1); /* Sombra mais suave e profissional */
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        width: 100%; /* Garante que o card ocupe a largura total da coluna */
+        height: 28rem; /* Altura fixa para todos os cards */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card:hover {
+        transform: translateY(-5px); /* Efeito de elevação ao passar o mouse */
+        box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15); /* Sombra mais intensa no hover */
+    }
+
+    .card-img-container {
+        height: 15rem; /* Altura fixa para a imagem */
+        overflow: hidden;
+        border-radius: 1.5rem 1.5rem 0 0; /* Bordas arredondadas apenas na parte superior */
+        background-color: #fff; /* Fundo branco para imagens transparentes */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem; /* Espaçamento interno para a imagem */
+    }
+
+    .card-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+        border-radius: 1rem; /* Borda arredondada para a imagem */
+    }
+
+    .card-body {
+        padding: 0.75rem; /* Reduzido o padding padrão para 0.75rem */
+        background-color: #f8f9fa;
+        border-radius: 0 0 1.5rem 1.5rem;
+        flex-grow: 1; /* Faz o corpo do card preencher o espaço restante */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Distribui o conteúdo verticalmente */
+        align-items: center; /* Centraliza horizontalmente */
+        text-align: center;
+        min-height: 8rem; /* **NOVO:** Altura mínima para o card-body */
+    }
+
+    /* Nome do presente */
+    .card-title {
+        font-size: 1.2rem; /* Levemente diminuído o tamanho da fonte */
+        font-weight: 600;
+        color: #be1c3cfd;
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Mantido ellipsis, mas com line-clamp */
+        width: 100%;
+        margin-bottom: 0.2rem; /* Espaçamento reduzido para o preço */
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Limita o título a 2 linhas */
+        -webkit-box-orient: vertical;
+        line-height: 1.2;
+        height: 2.4em; /* **NOVO:** Altura fixa para o título (2 linhas * 1.2em line-height) */
+    }
+
+    .card-text {
+        font-size: 1rem; /* Levemente diminuído o tamanho da fonte */
+        font-weight: 500;
+        color: #6c757d; /* Cor mais suave para o preço */
+        margin-bottom: 0.5rem; /* Espaçamento reduzido para os botões */
+    }
+
+    /* Botões */
+    .btn {
+        border-radius: 0.75rem; /* Botões mais arredondados */
+        padding: 0.5rem 1rem; /* Reduzido o padding padrão dos botões */
+        font-size: 0.9rem; /* Levemente diminuído o tamanho da fonte */
+        font-weight: 600;
+        transition: all 0.3s ease;
+        flex-shrink: 0; /* Impede que os botões encolham */
+    }
+
     .btn-danger {
         background-color: #be1c3cfd;
         border-color: #be1c3cfd;
     }
 
     .btn-danger:hover {
-        background-color: #DC143C;
-        border-color: #DC143C;
+        background-color: #dc143c;
+        border-color: #dc143c;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline-danger {
+        color: #be1c3cfd;
+        border-color: #be1c3cfd;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #be1c3cfd;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+        transform: translateY(-1px);
+    }
+
+    .btn-cancelar-reserva {
+        background-color: #6c757d; /* Cor mais neutra para cancelar reserva */
+        border-color: #6c757d;
+    }
+
+    .btn-cancelar-reserva:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+
+    /* Modal */
+    .modal-content {
+        border-radius: 1rem;
+        box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        background-color: #be1c3cfd;
+        color: white;
+        border-bottom: none;
+        border-radius: 1rem 1rem 0 0;
+        padding: 1.25rem;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .modal-body p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .modal-footer {
+        border-top: none;
+        padding: 1.25rem;
+    }
+
+    /* Outros estilos existentes */
+    .btn-cancelar-reserva {
+        pointer-events: auto !important;
+        opacity: 1 !important;
+    }
+
+    #confirmacao-presenca {
+        min-height: auto;
+        padding: 40px 20px;
     }
 
     /* Scroll to top button */
@@ -46,7 +206,7 @@
         box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         opacity: 0;
         transition: opacity 0.3s;
-        z-index: 9999; /* Valor alto para garantir que fique acima de tudo */
+        z-index: 9999;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -56,82 +216,46 @@
         opacity: 1;
     }
 
-    
-
-    
-    /* Estiliza a barra de progresso */
+    /* Range Slider */
     .range-slider {
         -webkit-appearance: none;
         width: 100%;
         height: 6px;
-        background: #be1c3cfd; /* Cor do botão */
+        background: #be1c3cfd;
         border-radius: 5px;
         outline: none;
         opacity: 0.9;
         transition: opacity .2s;
     }
 
-    /* Quando o usuário passa o mouse */
     .range-slider:hover {
         opacity: 1;
     }
 
-    /* Personaliza o botão deslizante no Chrome */
     .range-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 16px;
         height: 16px;
-        background: #be1c3cfd; /* Cor do botão */
+        background: #be1c3cfd;
         border-radius: 50%;
         cursor: pointer;
     }
 
-    /* Personaliza o botão deslizante no Firefox */
     .range-slider::-moz-range-thumb {
         width: 16px;
         height: 16px;
-        background: #be1c3cfd; /* Cor do botão */
+        background: #be1c3cfd;
         border-radius: 50%;
         cursor: pointer;
-    }
-
-    .card-img-top {
-        width: 100%;         /* Faz a imagem ocupar toda a largura do card */
-        height: 200px;       /* Altura fixa (ajuste conforme necessário) */
-        object-fit: cover;   /* Faz a imagem cobrir o espaço sem distorcer */
-        border-radius: 24px;  /* Opcional: bordas arredondadas */
-    }
-
-    .container {
-        max-width: 1100px; /* Reduza conforme necessário */
-    }
-    
-
-    .edit-icon {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente */
-        padding: 5px;
-        border-radius: 50%;
-        font-size: 18px;
-        color: #be1c3cfd; /* Cor vermelha para combinar com o tema */
-        text-decoration: none;
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .edit-icon:hover {
-        background: rgba(255, 255, 255, 1);
-        transform: scale(1.1);
     }
 
     .foto-quadrada {
         width: 100%;
-        aspect-ratio: 1; /* Mantém o formato quadrado */
+        aspect-ratio: 1;
         position: relative;
         overflow: hidden;
-        border-radius: 30px; /* Arredondamento maior */
+        border-radius: 30px;
     }
 
     .foto-quadrada img {
@@ -139,17 +263,16 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 110%; /* Tornando um pouco maior */
+        width: 110%;
         height: 110%;
-        object-fit: cover; /* Mantém o enquadramento correto */
+        object-fit: cover;
         transition: transform 0.4s ease-in-out, border-radius 0.4s ease;
-        border-radius: 30px; /* Aumento do arredondamento */
+        border-radius: 30px;
     }
 
-    /* Efeito de zoom no hover */
     .foto-quadrada:hover img {
-        transform: translate(-50%, -50%) scale(1.15); /* Leve aumento ao passar o mouse */
-        border-radius: 30px; /* Mantendo o arredondamento */
+        transform: translate(-50%, -50%) scale(1.15);
+        border-radius: 30px;
     }
 
     .imagem-menor {
@@ -158,51 +281,31 @@
         object-fit: cover;
     }
 
-    /* Estilo base para os botões */
-    .btn {
-        display: inline-block;
-        padding: 6px 16px;
-        text-align: center;
-        font-size: 14px;
-        font-weight: 600;
-        text-transform: uppercase;
-        border-radius: 9999px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        width: 210px;  /* Define um tamanho fixo para os botões */
-        text-decoration: none;
-    }
-
-    /* Ajusta a posição dos botões para ficarem no centro verticalmente */
     .botao-container {
         display: flex;
-        align-items: center; /* Centraliza verticalmente */
-        justify-content: center; /* Centraliza horizontalmente */
-        gap: 20px; /* Espaço entre os botões */
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
     }
 
-    /* Botão de Confirmação de Presença: Branco com texto preto */
     .btn-primary {
         background-color: white;
         color: black;
         border: 2px solid white;
     }
 
-    /* Efeito de hover para o botão de Confirmação de Presença */
     .btn-primary:hover {
         background-color: transparent;
         color: white;
         border-color: white;
     }
 
-    /* Botão de Lista de Presentes: Transparente com texto branco */
     .btn-secondary {
         background-color: transparent;
         color: white;
         border: 2px solid white;
     }
 
-    /* Efeito de hover para o botão de Lista de Presentes */
     .btn-secondary:hover {
         background-color: white;
         color: black;
@@ -214,7 +317,7 @@
     }
 
     .relative.w-full.h-screen {
-        min-height: 100vh; /* Permite que o conteúdo abaixo empurre a imagem */
+        min-height: 100vh;
     }
 
     @keyframes fadeIn {
@@ -222,107 +325,116 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-
     /* Ajustes para telas menores */
     @media (max-width: 768px) {
-        .foto-quadrada {
-            width: 90%; /* Ocupa 90% da largura da tela */
-            max-width: 400px; /* Limita a largura máxima para evitar imagens muito grandes */
-            margin: 10px auto; /* Centraliza e adiciona margem */
+        .card {
+            height: auto; /* Permite que a altura do card se ajuste */
+            max-height: 25rem; /* Ajustei a altura máxima */
+            min-height: 20rem; /* Ajustei a altura mínima para mais consistência */
         }
-
-        #mensagem-aos-noivos .row {
-            flex-direction: column;
+        .card-body {
+            padding: 0.6rem; /* Reduzido o padding interno do corpo do card */
+            justify-content: space-between;
+            min-height: 7.5rem; /* **NOVO:** Altura mínima para o card-body em mobile */
+            background-color: #f8f9fa;
         }
-
-        .foto-quadrada img {
-            border-radius: 20px; /* Reduz o arredondamento para telas menores */
+        .card-img-container {
+            height: 8rem; /* Um pouco menor em telas pequenas */
         }
-
         .btn {
-            width: 100%; /* Faz os botões ocuparem a largura total */
-
-            padding: 5px 12px;
-            font-size: 13px;
+            padding: 0.4rem 0.8rem; /* Reduz o padding dos botões ainda mais */
+            font-size: 0.8rem; /* Diminui o tamanho da fonte dos botões */
+            border-radius: 0.5rem;
+            max-width: 160px; /* Largura máxima dos botões */
+            margin: 0.15rem auto; /* Pequeno espaçamento entre os botões */
         }
-
+        .d-flex.justify-content-center.gap-2.w-100 {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem; /* Espaçamento reduzido entre os botões empilhados */
+        }
+        .form-control {
+            font-size: 0.9rem;
+            padding: 0.6rem 0.75rem;
+        }
+        .card-title {
+            font-size: 0.95rem; /* Ajuste para o tamanho do título */
+            -webkit-line-clamp: 3; /* Permite até 3 linhas para o nome do presente */
+            height: 3.4em; /* Altura fixa para 3 linhas (3 * 1.2em line-height) */
+            margin-bottom: 0.15rem; /* Reduz a margem */
+        }
+        .card-text {
+            font-size: 0.95rem; /* Ajuste para o tamanho do preço */
+            margin-bottom: 0.4rem; /* Reduz a margem */
+        }
+        .foto-quadrada {
+            width: 90%;
+            max-width: 400px;
+            margin: 10px auto;
+        }
+        .foto-quadrada img {
+            border-radius: 20px;
+        }
         .relative.w-full.h-screen {
-            height: 60vh; /* Reduz a altura em telas menores */
+            height: 60vh;
         }
         .absolute.inset-0.text-5xl {
-            font-size: 2rem; /* Reduz o tamanho do texto */
+            font-size: 2rem;
             text-align: center;
         }
-
         .grid-cols-2 {
-            grid-template-columns: 1fr; /* Faz com que cada elemento ocupe 100% da largura */
+            grid-template-columns: 1fr;
         }
-
         .text-5xl {
             font-size: 2rem;
         }
         .sm\:text-5xl {
             font-size: 2rem;
         }
-
         .botao-container {
-            flex-direction: column; /* Empilha os botões verticalmente */
-            gap: 16px; /* Ajusta o espaçamento */
+            flex-direction: column;
+            gap: 16px;
         }
-
-
         #mensagem-aos-noivos .mensagem-box {
             padding: 0.75rem;
             margin-bottom: 0.75rem;
             font-size: 0.85rem;
         }
-
         #mensagem-aos-noivos .mensagem-box strong {
             font-size: 0.9rem;
         }
-
         #mensagem-aos-noivos .mensagem-box small {
             font-size: 0.7rem;
         }
-
         #mensagem-aos-noivos .mensagem-box .texto {
             font-size: 0.85rem;
             line-height: 1.3;
         }
-
         #mensagem-aos-noivos h2 {
             font-size: 1.2rem;
             text-align: center;
         }
-
         #mensagem-aos-noivos textarea {
             font-size: 0.85rem;
             min-height: 100px;
         }
-
         #mensagem-aos-noivos .form-label {
             font-size: 0.85rem;
         }
-
         #mensagem-aos-noivos button.btn {
             font-size: 0.85rem;
             padding: 0.6rem 1rem;
         }
-
         #mensagem-aos-noivos .mensagens-container {
             max-height: 250px;
             background: #fff0f0;
         }
-    
-
-        
-
     }
 
     #mensagem-aos-noivos .mensagens-container {
-        max-height: 600px;  /* Limite de altura (ajuste como quiser) */
+        max-height: 600px;
         overflow-y: auto;
-        padding-right: 10px; /* Evita que a rolagem fique sobre o conteúdo */
+        padding-right: 10px;
         background: #fff0f0;
     }
 
@@ -359,13 +471,12 @@
         }
     }
 
-    /* Animação de flutuação para o ícone */
     .animacao-icone {
         animation: flutuar 4s ease-in-out infinite;
-        display: inline-block; /* Necessário para a animação */
+        display: inline-block;
         transform-origin: center;
     }
-    
+
     @keyframes flutuar {
         0%, 100% {
             transform: translateY(0) scale(1);
@@ -377,18 +488,15 @@
         }
     }
 
-
-    /* Ajustes para o ícone */
     .cor-vermelho {
         color: #be1c3cfd;
         transition: all 0.3s ease;
     }
-    
-    /* Efeito hover adicional */
+
     .animacao-icone:hover {
         animation: flutuar 2s ease-in-out infinite, pulsar 1.5s ease infinite;
     }
-    
+
     @keyframes pulsar {
         0%, 100% {
             transform: scale(1);
@@ -398,18 +506,11 @@
         }
     }
 
-
-
-    
-
-
-
     img {
         max-width: 100%;
         height: auto;
     }
 
-    /* Estilos para os botões de navegação */
     .btn-navegacao {
         min-width: 150px;
         padding: 10px 20px;
@@ -427,24 +528,21 @@
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    /* Responsividade */
     @media (max-width: 576px) {
         .btn-navegacao {
             width: 100%;
         }
     }
 
-
     @keyframes afastar {
         0% {
             transform: scale(1);
         }
         100% {
-            transform: scale(1.1); /* Aumentei de 1.1 para 1.2 (20% de zoom out) */
+            transform: scale(1.1);
         }
     }
-    
-    /* Estilo para os nomes dos noivos */
+
     .nomes-noivos {
         display: flex;
         flex-wrap: wrap;
@@ -452,28 +550,26 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .nome-noivo {
         white-space: nowrap;
     }
-    
+
     .separador {
         white-space: nowrap;
         margin: 0 0.5rem;
     }
-    
+
     @media (max-width: 768px) {
         .nomes-noivos {
             flex-direction: column;
         }
-        
+
         .separador {
             margin: 0.5rem 0;
         }
     }
 
-
-    /* Estilos para os botões de ação */
     .btn-action {
         width: 28px;
         height: 28px;
@@ -488,106 +584,97 @@
         transition: all 0.3s ease;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    
+
     .btn-action:hover {
         background-color: rgba(190, 28, 60, 0.2);
         transform: translateY(-1px);
         color: #be1c3cfd;
     }
-    
+
     .btn-action-danger {
         background-color: rgba(220, 53, 69, 0.1);
         color: #dc3545;
     }
-    
+
     .btn-action-danger:hover {
         background-color: rgba(220, 53, 69, 0.2);
         color: #dc3545;
     }
-    
-    /* Ícones dentro dos botões */
+
     .btn-action i {
         font-size: 0.85rem;
     }
-    
-    /* Tooltip personalizado */
+
     .tooltip-inner {
         background-color: #be1c3cfd;
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
     }
-    
+
     .bs-tooltip-auto[data-popper-placement^=top] .tooltip-arrow::before,
     .bs-tooltip-top .tooltip-arrow::before {
         border-top-color: #be1c3cfd;
     }
-    
-    /* Efeito de hover na mensagem */
+
     .mensagem-box:hover {
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    
-    /* Transição suave */
+
     .mensagem-box, .btn-action {
         transition: all 0.3s ease;
     }
 
-    /* Ajustes para mobile */
     @media (max-width: 768px) {
         .btn-action {
             width: 26px;
             height: 26px;
         }
-        
+
         .btn-action i {
             font-size: 0.75rem;
         }
-        
+
         .mensagens-container {
             padding: 1rem;
         }
-        
+
         .mensagem-box {
             padding: 0.75rem;
         }
-        
-        /* Ajuste no layout para telas pequenas */
+
         .flex-wrap > .w-100.w-md-auto {
             width: 100% !important;
             margin-bottom: 0.5rem;
         }
-        
+
         .justify-content-between > .me-2 {
             margin-right: 0.5rem !important;
         }
-        
+
         .btn-group-sm {
             margin-left: 0.25rem !important;
         }
     }
 
-    /* Ajustes para telas muito pequenas */
     @media (max-width: 576px) {
         .btn-action {
             width: 24px;
             height: 24px;
         }
-        
+
         .btn-action i {
             font-size: 0.7rem;
         }
-        
+
         .texto {
             font-size: 0.9rem;
         }
-        
+
         .mensagem-box {
             padding: 0.5rem;
         }
     }
-
-    
 </style>
 
 
@@ -1007,11 +1094,9 @@
                         <div class="col-12 col-md-6 card-presentes col-lg-4 d-flex justify-content-center">
                             <div class="card rounded-2xl shadow-lg overflow-hidden 
                                 {% if presente.reservado %} presente-reservado {% endif %}
-                                {% if presente.reservado_por.token == token %} reservado-pelo-convidado {% endif %}"
-                                style="width: 22rem; height: 28rem; position: relative;">
-        
-                                <!-- Exibição da imagem do presente -->
-                                <div class="card-img-container rounded-top-2xl" style="height: 15rem; overflow: hidden;">
+                                {% if presente.reservado_por.token == token %} reservado-pelo-convidado {% endif %}">
+            
+                                <div class="card-img-container rounded-top-2xl">
                                     {% if presente.foto %}
                                         <img class="w-100 h-100 object-fit-contain rounded-top-2xl" src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}">
                                     {% else %}
@@ -1019,8 +1104,8 @@
                                     {% endif %}
                                 </div>
                                 
-                                <div class="card-body rounded-bottom-2xl p-1 bg-white d-flex flex-column justify-content-center align-items-center text-center gap-3">
-                                    <h3 class="card-title cor-vermelho m-0">{{ presente.nome_presente }}</h3>
+                                <div class="card-body rounded-bottom-2xl p-1 d-flex flex-column justify-content-center align-items-center text-center gap-3">
+                                    <h3 class="card-title cor-vermelho m-0" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ presente.nome_presente }}">{{ presente.nome_presente }}</h3>
                                     <p class="card-text cor-vermelho">R$ {{ presente.preco|floatformat:2|default:"0.00" }}</p>
                                 
                                     <div class="d-flex justify-content-center gap-2 w-100">
@@ -1056,21 +1141,18 @@
                             </div>
                         </div>
         
-                        <!-- Modal de reserva -->
                         <div class="modal fade" id="modal{{ presente.id }}" tabindex="-1" aria-labelledby="modalLabel{{ presente.id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Centralizado verticalmente -->
-                                <div class="modal-content shadow-lg rounded-4"> <!-- Borda arredondada e sombra suave -->
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content shadow-lg rounded-4">
                                     
-                                    <!-- Cabeçalho do Modal -->
-                                    <div class="modal-header bg-danger"> <!-- Fundo colorido para destaque -->
+                                    <div class="modal-header bg-danger">
                                         <h5 class="modal-title text-white fw-bold" id="modalLabel{{ presente.id }}">{{ presente.nome_presente }}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                     </div>
-
-                                    <!-- Corpo do Modal -->
+        
                                     <div class="modal-body">
                                         <p class="fs-5"><strong>Valor:</strong> <span class="text-success">R$ {{ presente.preco|floatformat:2 }}</span></p>
-
+        
                                         {% if presente.link_sugestao_compra %}
                                         <p><strong>Sugestão de compra:</strong>
                                             <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="btn btn-outline-danger btn-sm">
@@ -1078,7 +1160,7 @@
                                             </a>
                                         </p>
                                         {% endif %}
-
+        
                                         {% if presente.link_cobranca %}
                                         <p><strong>Se preverir dê um vale-presente no lugar do presente:</strong>
                                             <a href="{{ presente.link_cobranca }}" target="_blank" class="btn btn-outline-danger btn-sm">
@@ -1087,9 +1169,8 @@
                                         </p>
                                         {% endif %}
                                     </div>
-
-                                    <!-- Rodapé do Modal -->
-                                    <div class="modal-footer d-flex justify-content-between"> <!-- Alinhamento flexível -->
+        
+                                    <div class="modal-footer d-flex justify-content-between">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                                         <form action="{% url 'reservar_presente' presente.id %}?token={{ convidado.token }}" method="POST">
                                             {% csrf_token %}
@@ -1098,11 +1179,11 @@
                                             </button>
                                         </form>
                                     </div>
-
+        
                                 </div>
                             </div>
                         </div>
-
+        
                         {% endfor %}
                     </div>
                 </div>

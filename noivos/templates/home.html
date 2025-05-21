@@ -143,13 +143,17 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #f8f9fa;
+        background: #ffffff;
     }
 
     .card-img-container img {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
+    }
+
+    .card-body{
+        background: #f8f9fa;
     }
 
     .edit-icon {
@@ -373,6 +377,80 @@
             font-size: 0.7rem !important;
         }
     }
+
+    @media (max-width: 575.98px) {
+        .card-img-container {
+            height: 120px !important;
+        }
+        .card-body {
+            padding: 0.5rem !important;
+        }
+        .card-title {
+            font-size: 0.9rem !important;
+        }
+        .card-text, .importance-label, .btn {
+            font-size: 0.8rem !important;
+        }
+    }
+
+    /* Garante que todos os cards tenham a mesma altura */
+    .presente-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Estilo para o título do card com ellipsis */
+    .card-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    /* Tooltip moderno para mostrar o nome completo */
+    .card-title::after {
+        content: attr(data-fullname);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+        z-index: 10;
+    }
+    
+    .card-title:hover::after {
+        opacity: 1;
+        visibility: visible;
+        bottom: calc(100% + 5px);
+    }
+    
+    /* Ajustes para mobile */
+    @media (max-width: 575.98px) {
+        .card-title {
+            font-size: 0.9rem !important;
+            max-width: 100%;
+        }
+        
+        .card-img-container {
+            height: 120px !important;
+        }
+    }
 </style>
 
 {% include "partials/navbar.html" %}
@@ -487,19 +565,19 @@
                 </div>
             </section>
 
+            <!-- Substitua a seção da lista de presentes por este código -->
             <section>
                 <br>
-
                 <h2 class="Comfortaa-Bold text-center display-4 cor-marrom">Lista de presentes</h2>
 
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-4">
+                <div class="row g-2 g-sm-3 g-lg-4 mt-2 mt-sm-4">
                     {% for presente in presentes %}
-                    <div class="col">
-                        <div class="card h-100 position-relative">
-                            <!-- Container da imagem com altura fixa e proporção quadrada -->
-                            <div class="card-img-container" style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                    <div class="col-6 col-lg-3">
+                        <div class="card h-100 position-relative presente-card">
+                            <!-- Container da imagem -->
+                            <div class="card-img-container" style="height: {% if request.user_agent.is_mobile %}120px{% else %}200px{% endif %};">
                                 {% if presente.foto %}
-                                <img src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}" class="card-img-top" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                <img src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}" class="card-img-top">
                                 <!-- Ícone de edição -->
                                 <a href="#" class="edit-icon" onclick="abrirModal(
                                     '{{ presente.id }}', 
@@ -516,32 +594,42 @@
                                 </div>
                                 {% endif %}
                             </div>
-                
+                    
                             <!-- Corpo do card -->
-                            <div class="card-body d-flex flex-column">
-                                <h3 class="card-title cor-vermelho">{{ presente.nome_presente }}</h3>
-                                <p class="card-text cor-vermelho">Valor: R$ {{ presente.preco|floatformat:2 }}</p>
+                            <div class="card-body d-flex flex-column p-2 p-sm-3">
+                                <h3 class="card-title cor-vermelho mb-1" 
+                                    style="font-size: {% if request.user_agent.is_mobile %}0.9rem{% else %}1.25rem{% endif %};"
+                                    data-fullname="{{ presente.nome_presente }}">
+                                    {{ presente.nome_presente }}
+                                </h3>
+                                <p class="card-text cor-vermelho mb-1" style="font-size: {% if request.user_agent.is_mobile %}0.8rem{% else %}1rem{% endif %};">
+                                    R$ {{ presente.preco|floatformat:2 }}
+                                </p>
                                 {% if presente.reservado %}
-                                <p class="card-text cor-marrom">Reservado por: {{ presente.reservado_por }}</p>
+                                <p class="card-text cor-marrom mb-1" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
+                                    Reservado por: {{ presente.reservado_por }}
+                                </p>
                                 {% endif %}
                                 {% if presente.link_sugestao_compra %}
-                                <a href="{{ presente.link_sugestao_compra }}" target="_blank" class="cor-vermelho text-decoration-underline">
-                                    Veja a sugestão de compra
+                                <a href="{{ presente.link_sugestao_compra }}" target="_blank" 
+                                class="cor-vermelho text-decoration-underline mb-1" 
+                                style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
+                                    Veja a sugestão
                                 </a>
                                 {% endif %}
-                                <div class="mt-2">
+                                <div class="mt-1">
                                     {% if presente.importancia <= 2 %}
-                                    <span class="importance-label low">
+                                    <span class="importance-label low" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
                                         Pouco importante
                                         <i class="fas fa-times-circle ms-1"></i>
                                     </span>
                                     {% elif presente.importancia < 4 %}
-                                    <span class="importance-label medium">
+                                    <span class="importance-label medium" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
                                         Importante
                                         <i class="fas fa-times-circle ms-1"></i>
                                     </span>
                                     {% else %}
-                                    <span class="importance-label high">
+                                    <span class="importance-label high" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
                                         Muito importante
                                         <i class="fas fa-times-circle ms-1"></i>
                                     </span>
@@ -550,7 +638,7 @@
                                 <!-- Formulário de exclusão -->
                                 <form action="{% url 'excluir_presente' presente.id %}" method="POST" onsubmit="return confirmarExclusao();" class="mt-auto">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm w-100 rounded-pill">
+                                    <button type="submit" class="btn btn-danger btn-sm w-100 rounded-pill mt-1" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %}; padding: 0.25rem;">
                                         Excluir
                                     </button>
                                 </form>
