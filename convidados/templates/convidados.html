@@ -16,7 +16,7 @@
     }
 
     .container {
-        max-width: 1100px;
+        max-width: 1200px;
     }
 
     /* Cards */
@@ -424,6 +424,7 @@
         #mensagem-aos-noivos button.btn {
             font-size: 0.85rem;
             padding: 0.6rem 1rem;
+            
         }
         #mensagem-aos-noivos .mensagens-container {
             max-height: 250px;
@@ -675,6 +676,12 @@
             padding: 0.5rem;
         }
     }
+
+    .flower-ampersand {
+        display: inline-block;
+        animation: pulse 6s infinite;
+        transform-origin: center;
+    }
 </style>
 
 
@@ -715,8 +722,8 @@
                     <span class="nome-noivo text-white">{{ convidado.user.perfil.nome_segundo_conjuge }}</span>
                 </div>
                 <div class="d-flex justify-content-center gap-3 mb-4 mt-2">
-                    <a href="#confirmacao-presenca" class="btn btn-primary">Confirmar presença</a>
-                    <a href="#lista-presentes" class="btn btn-secondary">Lista de presentes</a>
+                    <a href="#confirmacao-presenca" class="btn btn-primary rounded-pill">Confirmar presença</a>
+                    <a href="#lista-presentes" class="btn btn-secondary rounded-pill">Lista de presentes</a>
                 </div>
                 <p class="lead text-white">
                     {{ convidado.user.perfil.data_casamento|date:"d/m/Y" }} às {{ convidado.user.perfil.horario_casamento|time:"H:i" }}
@@ -729,7 +736,7 @@
             <div class="container text-center">
                 <!-- Imagem centralizada -->
                 <div class="mb-4">
-                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
+                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem flower-ampersand">
                 </div>
         
                 <!-- Ícone e título - agora com animação -->
@@ -764,13 +771,29 @@
                 </div>
             </div>
         </section>
+
+        <hr class="mt-12 mb-12"> 
+        
+        <section id="mensagem-noivos" class="py-5">
+            <div class="text-center mb-5">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem flower-ampersand">
+            </div>
+            <div class="container text-center">
+                <i class="bi bi-envelope fs-1 cor-vermelho animacao-icone"></i>
+                <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Mensagem</h2>
+                <p class="fst-italic cor-marrom lead">
+                    {{ convidado.user.perfil.mensagem_noivos }}
+                </p>
+            </div>
+        </section>
         
         <br>
+
 
         {% if convidado.user.perfil.galeria.all %}  {# Verifica se a variável imagens contém alguma foto #}
             <section id="galeria-imagens" class="py-5">
                 <div class="text-center mb-5">
-                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
+                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem flower-ampersand">
                 </div>
                 <div class="container">
                     <div class="text-center">
@@ -794,11 +817,15 @@
                 </div>
             </section>
         {% endif %}
+
+
+        
+
         <br>
 
         <section id="sobre-nos" class="py-5">
             <div class="text-center mb-5">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid mx-auto">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem flower-ampersand">
             </div>
             <div class="container">
                 <div class="text-center">
@@ -852,20 +879,7 @@
         
         
         <br>
-        <hr class="mt-12 mb-12"> 
         
-        <section id="mensagem-noivos" class="py-5">
-            <div class="text-center mb-5">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
-            </div>
-            <div class="container text-center">
-                <i class="bi bi-envelope fs-1 cor-vermelho animacao-icone"></i>
-                <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Mensagem</h2>
-                <p class="fst-italic cor-marrom lead">
-                    {{ convidado.user.perfil.mensagem_noivos }}
-                </p>
-            </div>
-        </section>
         
         <br>
 
@@ -873,7 +887,7 @@
             <div class="container-fluid">
                 <!-- Imagem centralizada -->
                 <div class="text-center my-5">
-                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
+                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem flower-ampersand">
                 </div>
         
                 <!-- Título e ícone -->
@@ -887,7 +901,7 @@
                 <div class="row">
                     <!-- Formulário -->
                     <div class="col-md-6 mb-4">
-                        <div class="bg-light p-4 shadow rounded h-100">
+                        <div class="bg-light p-2 shadow rounded h-100">
                             <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}">
                                 {% csrf_token %}
                                 <div class="mb-3">
@@ -895,7 +909,7 @@
                                     <textarea name="texto_mensagem" id="texto_mensagem" class="form-control rounded-3 shadow-sm" rows="5" placeholder="Escreva sua mensagem aqui..."></textarea>
                                 </div>
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-danger px-4">Enviar Mensagem</button>
+                                    <button type="submit" class="btn btn-danger rounded-pill px-4">Enviar Mensagem</button>
                                 </div>
                             </form>
                         </div>
@@ -903,8 +917,8 @@
         
                     <!-- Mensagens Enviadas -->
                     <div class="col-md-6">
-                        <div class="bg-light p-4 shadow rounded mensagens-container">
-                            <h5 class="mb-4 fw-bold cor-marrom">Mensagens Enviadas</h5>
+                        <div class="bg-light p-2 shadow rounded mensagens-container">
+                            <h5 class="mb-3 fw-bold cor-marrom">Mensagens Enviadas</h5>
                             {% if mensagens_enviadas %}
                                 {% for mensagem in mensagens_enviadas %}
                                     <div class="d-flex mensagem-box position-relative mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
@@ -1000,7 +1014,7 @@
 
         <section id="confirmacao-presenca" class="section-full-height">
             <div class="text-center mt-5 mb-5">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem flower-ampersand">
             </div>
             <div class="text-center">
                 <i class="bi bi-clipboard-heart fs-1 cor-vermelho animacao-icone"></i>
@@ -1078,7 +1092,7 @@
 
         <section id="lista-presentes" class="py-5">
             <div class="text-center mt-5 mb-5">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem flower-ampersand">
             </div>
             
             <div class="grid grid-cols-1 gap-4">
@@ -1091,7 +1105,7 @@
                 <div class="container mt-4">
                     <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
                         {% for presente in presentes %}
-                        <div class="col-12 col-md-6 card-presentes col-lg-4 d-flex justify-content-center">
+                        <div class="col-12 col-md-6 card-presentes col-lg-3 d-flex justify-content-center">
                             <div class="card rounded-2xl shadow-lg overflow-hidden 
                                 {% if presente.reservado %} presente-reservado {% endif %}
                                 {% if presente.reservado_por.token == token %} reservado-pelo-convidado {% endif %}">
@@ -1104,11 +1118,11 @@
                                     {% endif %}
                                 </div>
                                 
-                                <div class="card-body rounded-bottom-2xl p-1 d-flex flex-column justify-content-center align-items-center text-center gap-3">
-                                    <h3 class="card-title cor-vermelho m-0" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ presente.nome_presente }}">{{ presente.nome_presente }}</h3>
-                                    <p class="card-text cor-vermelho">R$ {{ presente.preco|floatformat:2|default:"0.00" }}</p>
+                                <div class="card-body p-1 d-flex flex-column justify-content-center align-items-center text-center gap-3">
+                                    <h3 class="card-title cor-vermelho mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ presente.nome_presente }}">{{ presente.nome_presente }}</h3>
+                                    <p class="card-text cor-vermelho mb-0">R$ {{ presente.preco|floatformat:2|default:"0.00" }}</p>
                                 
-                                    <div class="d-flex justify-content-center gap-2 w-100">
+                                    <div class="d-flex justify-content-center mb-0 gap-2 w-100">
                                         {% if presente.link_sugestao_compra %}
                                             <a class="btn btn-danger btn-sm flex-grow-1 rounded-pill {% if presente.reservado %} disabled {% endif %}" 
                                                href="{{ presente.link_sugestao_compra }}" target="_blank">
@@ -1195,7 +1209,7 @@
         <!-- Seção Local do Casamento -->
         <section id="local-casamento" class="py-5">
             <div class="text-center mb-5">
-                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem">
+                <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem flower-ampersand">
             </div>
             <div class="container">
                 <div class="text-center">

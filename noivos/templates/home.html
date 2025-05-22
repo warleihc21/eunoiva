@@ -451,6 +451,50 @@
             height: 120px !important;
         }
     }
+
+    .altura-mobile {
+    height: 120px;
+    }
+
+    .altura-desktop {
+    height: 200px;
+    }
+
+    .tamanho-pequeno {
+    font-size: 0.9rem;
+    }
+
+    .tamanho-normal {
+    font-size: 1.25rem;
+    }
+
+    /* Altura da imagem */
+    .altura-mobile { height: 120px; }
+    .altura-desktop { height: 200px; }
+
+    /* Tamanhos de título */
+    .tamanho-titulo-mobile { font-size: 0.9rem; }
+    .tamanho-titulo-desktop { font-size: 1.25rem; }
+
+    /* Tamanhos de preço */
+    .tamanho-preco-mobile { font-size: 0.8rem; }
+    .tamanho-preco-desktop { font-size: 1rem; }
+
+    /* Tamanhos do texto reservado */
+    .tamanho-reservado-mobile { font-size: 0.7rem; }
+    .tamanho-reservado-desktop { font-size: 0.9rem; }
+
+    /* Tamanhos do link de sugestão */
+    .tamanho-link-mobile { font-size: 0.7rem; }
+    .tamanho-link-desktop { font-size: 0.9rem; }
+
+    /* Tamanhos da importância */
+    .tamanho-importancia-mobile { font-size: 0.7rem; }
+    .tamanho-importancia-desktop { font-size: 0.9rem; }
+
+    /* Botões */
+    .tamanho-botao-mobile { font-size: 0.7rem; padding: 0.25rem; }
+    .tamanho-botao-desktop { font-size: 0.9rem; padding: 0.25rem; }
 </style>
 
 {% include "partials/navbar.html" %}
@@ -575,7 +619,7 @@
                     <div class="col-6 col-lg-3">
                         <div class="card h-100 position-relative presente-card">
                             <!-- Container da imagem -->
-                            <div class="card-img-container" style="height: {% if request.user_agent.is_mobile %}120px{% else %}200px{% endif %};">
+                            <div class="card-img-container {% if request.user_agent.is_mobile %}altura-mobile{% else %}altura-desktop{% endif %}">
                                 {% if presente.foto %}
                                 <img src="{{ presente.foto.url }}" alt="{{ presente.nome_presente }}" class="card-img-top">
                                 <!-- Ícone de edição -->
@@ -594,42 +638,39 @@
                                 </div>
                                 {% endif %}
                             </div>
-                    
+                
                             <!-- Corpo do card -->
                             <div class="card-body d-flex flex-column p-2 p-sm-3">
-                                <h3 class="card-title cor-vermelho mb-1" 
-                                    style="font-size: {% if request.user_agent.is_mobile %}0.9rem{% else %}1.25rem{% endif %};"
-                                    data-fullname="{{ presente.nome_presente }}">
+                                <h3 class="card-title cor-vermelho mb-1 {% if request.user_agent.is_mobile %}tamanho-titulo-mobile{% else %}tamanho-titulo-desktop{% endif %}">
                                     {{ presente.nome_presente }}
                                 </h3>
-                                <p class="card-text cor-vermelho mb-1" style="font-size: {% if request.user_agent.is_mobile %}0.8rem{% else %}1rem{% endif %};">
+                                <p class="card-text cor-vermelho mb-1 {% if request.user_agent.is_mobile %}tamanho-preco-mobile{% else %}tamanho-preco-desktop{% endif %}">
                                     R$ {{ presente.preco|floatformat:2 }}
                                 </p>
                                 {% if presente.reservado %}
-                                <p class="card-text cor-marrom mb-1" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
+                                <p class="card-text cor-marrom mb-1 {% if request.user_agent.is_mobile %}tamanho-reservado-mobile{% else %}tamanho-reservado-desktop{% endif %}">
                                     Reservado por: {{ presente.reservado_por }}
                                 </p>
                                 {% endif %}
                                 {% if presente.link_sugestao_compra %}
                                 <a href="{{ presente.link_sugestao_compra }}" target="_blank" 
-                                class="cor-vermelho text-decoration-underline mb-1" 
-                                style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
+                                   class="cor-vermelho text-decoration-underline mb-1 {% if request.user_agent.is_mobile %}tamanho-link-mobile{% else %}tamanho-link-desktop{% endif %}">
                                     Veja a sugestão
                                 </a>
                                 {% endif %}
                                 <div class="mt-1">
                                     {% if presente.importancia <= 2 %}
-                                    <span class="importance-label low" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
+                                    <span class="importance-label low {% if request.user_agent.is_mobile %}tamanho-importancia-mobile{% else %}tamanho-importancia-desktop{% endif %}">
                                         Pouco importante
                                         <i class="fas fa-times-circle ms-1"></i>
                                     </span>
                                     {% elif presente.importancia < 4 %}
-                                    <span class="importance-label medium" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
+                                    <span class="importance-label medium {% if request.user_agent.is_mobile %}tamanho-importancia-mobile{% else %}tamanho-importancia-desktop{% endif %}">
                                         Importante
                                         <i class="fas fa-times-circle ms-1"></i>
                                     </span>
                                     {% else %}
-                                    <span class="importance-label high" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %};">
+                                    <span class="importance-label high {% if request.user_agent.is_mobile %}tamanho-importancia-mobile{% else %}tamanho-importancia-desktop{% endif %}">
                                         Muito importante
                                         <i class="fas fa-times-circle ms-1"></i>
                                     </span>
@@ -638,7 +679,7 @@
                                 <!-- Formulário de exclusão -->
                                 <form action="{% url 'excluir_presente' presente.id %}" method="POST" onsubmit="return confirmarExclusao();" class="mt-auto">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm w-100 rounded-pill mt-1" style="font-size: {% if request.user_agent.is_mobile %}0.7rem{% else %}0.9rem{% endif %}; padding: 0.25rem;">
+                                    <button type="submit" class="btn btn-danger btn-sm w-100 rounded-pill mt-1 {% if request.user_agent.is_mobile %}tamanho-botao-mobile{% else %}tamanho-botao-desktop{% endif %}">
                                         Excluir
                                     </button>
                                 </form>
