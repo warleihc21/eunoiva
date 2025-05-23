@@ -682,6 +682,163 @@
         animation: pulse 6s infinite;
         transform-origin: center;
     }
+
+
+
+    /* Container principal */
+    .mensagens-cards-container {
+        
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    /* Card de mensagem */
+    .mensagem-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .mensagem-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+    
+    .mensagem-card-own {
+        border-left: 3px solid #6f42c1;
+    }
+    
+    /* Header do card */
+    .mensagem-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .mensagem-card-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .mensagem-card-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6f42c1, #d63384);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+    
+    .mensagem-card-username {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .mensagem-card-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .mensagem-card-action {
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .mensagem-card-action:hover {
+        background: #f1f1f1;
+        color: #495057;
+    }
+    
+    .mensagem-card-action-danger:hover {
+        color: #dc3545;
+        background: rgba(220, 53, 69, 0.1);
+    }
+    
+    /* Body do card */
+    .mensagem-card-body {
+        padding: 8px;
+    }
+    
+    .mensagem-card-text {
+        color: #333;
+        line-height: 1.5;
+        margin-bottom: 12px;
+    }
+    
+    .mensagem-card-time {
+        text-align: right;
+        color: #6c757d;
+        font-size: 0.8rem;
+    }
+    
+    /* Estilos específicos para o modal */
+    .modal-mensagens-container {
+        max-height: 60vh;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+    
+    /* Scrollbar personalizada para o modal */
+    .modal-mensagens-container::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .modal-mensagens-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    .modal-mensagens-container::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+    
+    .modal-mensagens-container::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    
+    /* Responsividade - Modal em telas pequenas */
+    @media (max-width: 768px) {
+        .modal-dialog {
+            margin: 0;
+            max-width: 100%;
+            height: 100%;
+        }
+        
+        .modal-content {
+            height: 100%;
+            border-radius: 0;
+        }
+        
+        .modal-body {
+            padding: 15px;
+            flex-grow: 1;
+        }
+        
+        .modal-mensagens-container {
+            max-height: none;
+            height: calc(100vh - 150px);
+        }
+    }
 </style>
 
 
@@ -920,26 +1077,91 @@
                         <div class="bg-light p-2 shadow rounded mensagens-container">
                             <h5 class="mb-3 fw-bold cor-marrom">Mensagens Enviadas</h5>
                             {% if mensagens_enviadas %}
-                                {% for mensagem in mensagens_enviadas %}
-                                    <div class="d-flex mensagem-box position-relative mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
-                                        <!-- Avatar / Ícone -->
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center shadow" style="width: 40px; height: 40px; font-size: 24px;">
-                                                <i class="bi bi-person-fill"></i>
+                                <div class="mensagens-cards-container">
+                                    {% for mensagem in mensagens_enviadas|slice:":3" %}
+                                        <div class="mensagem-card mb-4 {% if mensagem.escrita_por.token == token %}mensagem-card-own{% endif %}">
+                                            <!-- Card Header -->
+                                            <div class="mensagem-card-header">
+                                                <div class="mensagem-card-user">
+                                                    <div class="mensagem-card-avatar">
+                                                        <i class="bi bi-person-fill"></i>
+                                                    </div>
+                                                    <span class="mensagem-card-username">{{ mensagem.escrita_por.nome_convidado }}</span>
+                                                </div>
+                                                
+                                                <!-- Botões de ação (só mostra se for mensagem do convidado atual) -->
+                                                {% if mensagem.escrita_por.token == token %}
+                                                <div class="mensagem-card-actions">
+                                                    <button class="mensagem-card-action editar-mensagem-btn" 
+                                                            data-mensagem-id="{{ mensagem.id }}"
+                                                            data-mensagem-texto="{{ mensagem.texto_mensagem }}"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Editar mensagem">
+                                                        <i class="bi bi-pencil-fill"></i>
+                                                    </button>
+                                                    <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
+                                                        <button type="submit" class="mensagem-card-action mensagem-card-action-danger" 
+                                                                onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir mensagem">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <!-- Card Body -->
+                                            <div class="mensagem-card-body">
+                                                <div class="mensagem-card-text">
+                                                    {{ mensagem.texto_mensagem|safe }}
+                                                </div>
+                                                <div class="mensagem-card-time">
+                                                    <small>{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
+                                                </div>
                                             </div>
                                         </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                
+                            {% else %}
+                                <p class="text-muted">Nenhuma mensagem enviada ainda.</p>
+                            {% endif %}
+                        </div>
+                        <!-- Botão Mostrar Mais (só aparece se houver mais de 3 mensagens) -->
+                        {% if mensagens_enviadas|length > 3 %}
+                        <div class="text-center mt-3">
+                            <button type="button" class="btn btn-outline-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#mensagensModal">
+                                Mostrar mais mensagens ({{ mensagens_enviadas|length|add:"-3" }})
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
 
-                                        <!-- Conteúdo da mensagem -->
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
-                                                <strong class="text-truncate pe-2 w-100 w-md-auto">{{ mensagem.escrita_por.nome_convidado }}</strong>
-                                                <div class="d-flex align-items-center justify-content-between w-100 w-md-auto">
-                                                    <small class="text-muted me-2">{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
+                    <!-- Modal com todas as mensagens -->
+                    <div class="modal fade" id="mensagensModal" tabindex="-1" aria-labelledby="mensagensModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-white" id="mensagensModalLabel">Todas as mensagens</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mensagens-cards-container modal-mensagens-container">
+                                        {% for mensagem in mensagens_enviadas %}
+                                            <div class="mensagem-card mb-4 {% if mensagem.escrita_por.token == token %}mensagem-card-own{% endif %}">
+                                                <div class="mensagem-card-header">
+                                                    <div class="mensagem-card-user">
+                                                        <div class="mensagem-card-avatar">
+                                                            <i class="bi bi-person-fill"></i>
+                                                        </div>
+                                                        <span class="mensagem-card-username">{{ mensagem.escrita_por.nome_convidado }}</span>
+                                                    </div>
                                                     
-                                                    <!-- Botões de edição/exclusão - Só mostra se for mensagem do convidado atual -->
                                                     {% if mensagem.escrita_por.token == token %}
-                                                    <div class="btn-group btn-group-sm ms-2" role="group">
-                                                        <button class="btn btn-action editar-mensagem-btn" 
+                                                    <div class="mensagem-card-actions">
+                                                        <button class="mensagem-card-action editar-mensagem-btn" 
                                                                 data-mensagem-id="{{ mensagem.id }}"
                                                                 data-mensagem-texto="{{ mensagem.texto_mensagem }}"
                                                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Editar mensagem">
@@ -948,7 +1170,7 @@
                                                         <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
                                                             {% csrf_token %}
                                                             <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
-                                                            <button type="submit" class="btn btn-action btn-action-danger ms-1" 
+                                                            <button type="submit" class="mensagem-card-action mensagem-card-action-danger" 
                                                                     onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')"
                                                                     data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir mensagem">
                                                                 <i class="bi bi-trash-fill"></i>
@@ -957,16 +1179,24 @@
                                                     </div>
                                                     {% endif %}
                                                 </div>
+                                                
+                                                <div class="mensagem-card-body">
+                                                    <div class="mensagem-card-text">
+                                                        {{ mensagem.texto_mensagem|safe }}
+                                                    </div>
+                                                    <div class="mensagem-card-time">
+                                                        <small>{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="texto">
-                                                {{ mensagem.texto_mensagem|safe }}
-                                            </div>
-                                        </div>
+                                        {% endfor %}
                                     </div>
-                                {% endfor %}
-                            {% else %}
-                                <p class="text-muted">Nenhuma mensagem enviada ainda.</p>
-                            {% endif %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-danger rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
+                                    
+                                </div>
+                            </div>
                         </div>
                     </div>
 
