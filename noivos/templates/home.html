@@ -495,6 +495,215 @@
     /* Botões */
     .tamanho-botao-mobile { font-size: 0.7rem; padding: 0.25rem; }
     .tamanho-botao-desktop { font-size: 0.9rem; padding: 0.25rem; }
+
+
+    /* Estilos específicos para a seção de mensagens recebidas */
+    .messages-received-section {
+        background-color: #faf9f7;
+        position: relative;
+        overflow: hidden;
+        padding: 60px 0;
+    }
+
+    .messages-received-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none" opacity="0.03"><path d="M50 0 L100 50 L50 100 L0 50 Z" stroke="%23be1c3c" stroke-width="1"/></svg>');
+        background-size: 150px;
+        opacity: 0.05;
+        z-index: 0;
+    }
+
+    .messages-received-section .container-fluid {
+        position: relative;
+        z-index: 1;
+    }
+
+    .messages-container-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    /* Estilos para o avatar */
+    .avatar-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .avatar-initials {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6f42c1, #d63384);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 20px;
+        border: 2px solid white;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Estilos para a lista de mensagens */
+    .messages-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .message-item {
+        display: flex;
+        gap: 15px;
+        padding: 20px;
+        border-radius: 12px;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+        animation: fadeIn 0.6s ease forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .message-item:nth-child(1) { animation-delay: 0.1s; }
+    .message-item:nth-child(2) { animation-delay: 0.2s; }
+    .message-item:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .message-item:hover {
+        background-color: #f5f5f5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .message-content {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .message-author {
+        font-weight: 600;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 70%;
+    }
+
+    .message-time {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    .message-text {
+        color: #333;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    /* Estilos para quando não há mensagens */
+    .no-messages {
+        padding: 40px 20px;
+        text-align: center;
+        color: #6c757d;
+    }
+
+    .no-messages i {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        color: #adb5bd;
+    }
+
+    /* Botão "Ver todas as mensagens" */
+    .btn-view-all {
+        background: white;
+        color: #be1c3cfd;
+        border: 1px solid #be1c3cfd;
+        border-radius: 12px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-view-all:hover {
+        background: linear-gradient(135deg, rgba(190, 28, 60, 0.1), rgba(214, 51, 132, 0.1));
+        color: #be1c3cfd;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(190, 28, 60, 0.1);
+    }
+
+    /* Estilos para o modal de todas as mensagens */
+    .all-messages-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding-right: 10px;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .messages-container-wrapper {
+            padding: 20px;
+        }
+        
+        .message-item {
+            flex-direction: column;
+            padding: 15px;
+        }
+        
+        .message-avatar {
+            margin-bottom: 10px;
+        }
+        
+        .message-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .message-time {
+            margin-top: 5px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .messages-received-section {
+            padding: 40px 0;
+        }
+        
+        .messages-container-wrapper {
+            padding: 15px;
+        }
+        
+        .message-text {
+            font-size: 0.9rem;
+        }
+    }
 </style>
 
 {% include "partials/navbar.html" %}
@@ -612,8 +821,12 @@
             <!-- Substitua a seção da lista de presentes por este código -->
             <section>
                 <br>
-                <h2 class="Comfortaa-Bold text-center display-4 cor-marrom">Lista de presentes</h2>
-
+                <div class="text-center mb-5">
+                    <div class="message-header-icon">
+                        <i class="bi bi-gift fs-1 cor-vermelho cor-vermelho animacao-icone"></i>
+                    </div>
+                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-3">Lista de presentes</h2>
+                </div>
                 <div class="row g-2 g-sm-3 g-lg-4 mt-2 mt-sm-4">
                     {% for presente in presentes %}
                     <div class="col-6 col-lg-3">
@@ -734,7 +947,12 @@
             <section>
                 <!-- Presentes Reservados -->
                 <div class="form-section">
-                    <h2 class="Comfortaa-Bold text-center display-4 cor-marrom mb-4">Presentes Reservados</h2>
+                    <div class="text-center mb-5">
+                        <div class="message-header-icon">
+                            <i class="bi bi-bag-check fs-1 cor-vermelho cor-vermelho animacao-icone"></i>
+                        </div>
+                        <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-3">Presentes Reservados</h2>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead class="table-light">
@@ -770,7 +988,12 @@
             <section>
                 <!-- Galeria de Fotos -->
                 <div class="form-section">
-                    <h2 class="Comfortaa-Bold text-center text-4xl font-semibold cor-marrom mb-4">Galeria de fotos</h2>
+                    <div class="text-center mb-5">
+                        <div class="message-header-icon">
+                            <i class="bi bi-camera fs-1 cor-vermelho animacao-icone"></i>
+                        </div>
+                        <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-3">Galeria de fotos</h2>
+                    </div>
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
                         {% for imagem in perfil.galeria.all|slice:":6" %}  <!-- Limita para 6 imagens -->
                             <div class="col">
@@ -798,7 +1021,12 @@
             <section>
                 <!-- Sobre Nós -->
                 <div class="form-section">
-                    <h2 class="Comfortaa-Bold text-center display-4 cor-marrom">Sobre nós</h2>
+                    <div class="text-center mb-5">
+                        <div class="message-header-icon">
+                            <i class="bi bi-emoji-smile fs-1 cor-vermelho animacao-icone"></i>
+                        </div>
+                        <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-3">Sobre nós</h2>
+                    </div>
                     <div class="row">
                         <div class="col-md-6 mb-4 mb-md-0">
                             <div class="about-card">
@@ -836,9 +1064,15 @@
 
                 <!-- Mensagem dos Noivos -->
                 <div class="form-section">
-                    <h2 class="Comfortaa-Bold display-4 cor-marrom mb-4 text-center">Mensagem</h2>
-                    <p class="text-center lead">{{ perfil.mensagem_noivos }}</p>
+                    <div class="text-center mb-5">
+                        <div class="message-header-icon">
+                            <i class="bi bi-envelope-heart fs-1 cor-vermelho animacao-icone"></i>
+                        </div>
+                        <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-3">Mensagem</h2>
+                        <p class="text-center lead">{{ perfil.mensagem_noivos }}</p>
+                    </div>
                 </div>
+                
 
                 <!-- Modal para editar mensagens -->
                 <div class="modal fade" id="editarMensagemModal" tabindex="-1" aria-labelledby="editarMensagemModalLabel" aria-hidden="true">
@@ -917,33 +1151,97 @@
                 </div>
 
                 <!-- Mensagens Recebidas -->
-                <div class="form-section">
-                    <h2 class="Comfortaa-Bold display-4 cor-marrom text-center">Mensagens Recebidas</h2>
-                    <div class="messages-container">
-                        {% for mensagem in mensagens %}
-                            <div class="message-box">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0 me-sm-3 mb-3 mb-sm-0 text-center">
-                                        {% if mensagem.escrita_por.foto_perfil %}
-                                            <img src="{{ mensagem.escrita_por.foto_perfil.url }}" alt="Foto do Convidado" class="rounded-circle shadow-sm" style="width: 55px; height: 55px; object-fit: cover;">
-                                        {% else %}
-                                            <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center shadow-sm mx-auto" style="width: 55px; height: 55px; font-size: 30px;">
-                                                <i class="fas fa-user"></i>
+                <div class="form-section messages-received-section">
+                    <div class="container-fluid">
+                        <!-- Cabeçalho -->
+                        <div class="text-center mb-5">
+                            <div class="message-header-icon">
+                                <i class="bi bi-chat-heart fs-1 cor-vermelho animacao-icone"></i>
+                            </div>
+                            <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-3">Mensagens Recebidas</h2>
+                            <p class="mb-4 text-lg cor-marrom">As mensagens carinhosas dos seus convidados</p>
+                        </div>
+
+                        <!-- Container de Mensagens -->
+                        <div class="messages-container-wrapper">
+                            {% if mensagens %}
+                                <div class="messages-list">
+                                    {% for mensagem in mensagens|slice:":3" %}
+                                        <div class="message-item">
+                                            <div class="message-avatar">
+                                                {% if mensagem.escrita_por.foto_perfil %}
+                                                    <img src="{{ mensagem.escrita_por.foto_perfil.url }}" alt="Foto do Convidado" class="avatar-image">
+                                                {% else %}
+                                                    <div class="avatar-initials">
+                                                        {{ mensagem.escrita_por.nome_convidado|slice:":1"|upper }}
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <strong>{{ mensagem.escrita_por.nome_convidado }}</strong>
-                                            <small class="text-muted">{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
+                                            <div class="message-content">
+                                                <div class="message-header">
+                                                    <span class="message-author">{{ mensagem.escrita_por.nome_convidado }}</span>
+                                                    <span class="message-time"><i class="bi bi-calendar-event me-1"></i> {{ mensagem.data_envio|date:"d/m/Y"}} <i class="bi bi-clock ms-2 me-1"></i>{{ mensagem.data_envio|date:"H:i" }}</span>
+                                                </div>
+                                                <div class="message-text">{{ mensagem.texto_mensagem|safe }}</div>
+                                            </div>
                                         </div>
-                                        <p class="mb-0">{{ mensagem.texto_mensagem|safe }}</p>
-                                    </div>
+                                    {% endfor %}
+                                </div>
+
+                                <!-- Botão Mostrar Mais (só aparece se houver mais de 3 mensagens) -->
+                                {% if mensagens|length > 3 %}
+                                <div class="text-center mt-4">
+                                    <button type="button" class="btn btn-view-all" data-bs-toggle="modal" data-bs-target="#allMessagesModal">
+                                        Ver todas as mensagens ({{ mensagens|length }})
+                                    </button>
+                                </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="no-messages">
+                                    <i class="bi bi-chat-square-text"></i>
+                                    <p>Nenhuma mensagem recebida ainda.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal com todas as mensagens -->
+                <div class="modal fade" id="allMessagesModal" tabindex="-1" aria-labelledby="allMessagesModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Todas as mensagens recebidas</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="all-messages-list">
+                                    {% for mensagem in mensagens %}
+                                        <div class="message-item">
+                                            <div class="message-avatar">
+                                                {% if mensagem.escrita_por.foto_perfil %}
+                                                    <img src="{{ mensagem.escrita_por.foto_perfil.url }}" alt="Foto do Convidado" class="avatar-image">
+                                                {% else %}
+                                                    <div class="avatar-initials">
+                                                        {{ mensagem.escrita_por.nome_convidado|slice:":1"|upper }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="message-content">
+                                                <div class="message-header">
+                                                    <span class="message-author">{{ mensagem.escrita_por.nome_convidado }}</span>
+                                                    <span class="message-time"><i class="bi bi-calendar-event me-1"></i> {{ mensagem.data_envio|date:"d/m/Y"}} <i class="bi bi-clock ms-2 me-1"></i>{{ mensagem.data_envio|date:"H:i" }}</span>
+                                                </div>
+                                                <div class="message-text">{{ mensagem.texto_mensagem|safe }}</div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        {% empty %}
-                            <p class="text-center text-muted">Nenhuma mensagem recebida ainda.</p>
-                        {% endfor %}
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1315,7 +1613,23 @@
             });
         });
 
-
+        // Animação para as mensagens
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configura o modal para rolar até a última mensagem
+            const allMessagesModal = document.getElementById('allMessagesModal');
+            if (allMessagesModal) {
+                allMessagesModal.addEventListener('shown.bs.modal', function() {
+                    const modalBody = this.querySelector('.modal-body');
+                    modalBody.scrollTop = modalBody.scrollHeight;
+                });
+            }
+            
+            // Efeito de carregamento para as mensagens
+            const messageItems = document.querySelectorAll('.message-item');
+            messageItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
        
 
 

@@ -617,226 +617,370 @@
         border-top-color: #be1c3cfd;
     }
 
-    .mensagem-box:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-
-    .mensagem-box, .btn-action {
-        transition: all 0.3s ease;
-    }
-
-    @media (max-width: 768px) {
-        .btn-action {
-            width: 26px;
-            height: 26px;
-        }
-
-        .btn-action i {
-            font-size: 0.75rem;
-        }
-
-        .mensagens-container {
-            padding: 1rem;
-        }
-
-        .mensagem-box {
-            padding: 0.75rem;
-        }
-
-        .flex-wrap > .w-100.w-md-auto {
-            width: 100% !important;
-            margin-bottom: 0.5rem;
-        }
-
-        .justify-content-between > .me-2 {
-            margin-right: 0.5rem !important;
-        }
-
-        .btn-group-sm {
-            margin-left: 0.25rem !important;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .btn-action {
-            width: 24px;
-            height: 24px;
-        }
-
-        .btn-action i {
-            font-size: 0.7rem;
-        }
-
-        .texto {
-            font-size: 0.9rem;
-        }
-
-        .mensagem-box {
-            padding: 0.5rem;
-        }
-    }
-
-    .flower-ampersand {
-        display: inline-block;
-        animation: pulse 6s infinite;
-        transform-origin: center;
-    }
-
-
-
-    /* Container principal */
-    .mensagens-cards-container {
-        
-        flex-direction: column;
-        gap: 16px;
-    }
-    
-    /* Card de mensagem */
-    .mensagem-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    /* Estilos gerais para a seção de mensagens */
+    #mensagem-aos-noivos {
+        position: relative;
         overflow: hidden;
-        transition: transform 0.2s, box-shadow 0.2s;
     }
-    
-    .mensagem-card:hover {
+
+    #mensagem-aos-noivos::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none" opacity="0.03"><path d="M50 0 L100 50 L50 100 L0 50 Z" stroke="%23be1c3c" stroke-width="1"/></svg>');
+        background-size: 150px;
+        opacity: 0.05;
+        z-index: 0;
+    }
+
+    #mensagem-aos-noivos .container-fluid {
+        position: relative;
+        z-index: 1;
+    }
+
+    .message-header-icon {
+        display: inline-block;
+        background: linear-gradient(135deg, rgba(190, 28, 60, 0.1), rgba(214, 51, 132, 0.1));
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    /* Estilos para o formulário */
+    .message-form-container {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .message-textarea {
+        min-height: 150px;
+        border-radius: 12px;
+        border: 1px solid #e0e0e0;
+        resize: none;
+        transition: all 0.3s ease;
+        padding: 16px !important;
+    }
+
+    .message-textarea:focus {
+        border-color: #be1c3cfd;
+        box-shadow: 0 0 0 4px rgba(190, 28, 60, 0.1);
+    }
+
+    .message-textarea::placeholder {
+        color: #adb5bd;
+    }
+
+    .btn-send-message {
+        background: linear-gradient(135deg, #be1c3cfd, #d63384);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-send-message:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 4px 12px rgba(190, 28, 60, 0.3);
+        color: white;
     }
-    
-    .mensagem-card-own {
-        border-left: 3px solid #6f42c1;
+
+    /* Estilos para o container de mensagens */
+    .messages-container {
+        background: white;
+        border-radius: 16px;
+        padding: 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        overflow: hidden;
     }
-    
-    /* Header do card */
-    .mensagem-card-header {
+
+    .messages-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid #f0f0f0;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 16px;
-        background: #f8f9fa;
-        border-bottom: 1px solid #eee;
     }
-    
-    .mensagem-card-user {
+
+    .messages-header h5 {
+        margin: 0;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .messages-count .badge {
+        background: linear-gradient(135deg, #be1c3cfd, #d63384);
+        border-radius: 12px;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+
+    .messages-list {
+        padding: 20px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    /* Estilos para as mensagens individuais */
+    .message-item {
         display: flex;
-        align-items: center;
-        gap: 10px;
+        gap: 15px;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        background-color: #f9f9f9;
+        position: relative;
     }
-    
-    .mensagem-card-avatar {
-        width: 36px;
-        height: 36px;
+
+    .message-item:hover {
+        background-color: #f5f5f5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .message-item.own-message {
+        background-color: rgba(190, 28, 60, 0.05);
+        border-left: 3px solid #be1c3cfd;
+    }
+
+    .message-avatar {
+        flex-shrink: 0;
+    }
+
+    .avatar-initials {
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         background: linear-gradient(135deg, #6f42c1, #d63384);
         color: white;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-weight: 600;
         font-size: 18px;
     }
-    
-    .mensagem-card-username {
+
+    .message-content {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .message-author {
         font-weight: 600;
         color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 70%;
     }
-    
-    .mensagem-card-actions {
+
+    .message-time {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    .message-text {
+        color: #333;
+        line-height: 1.5;
+        margin-bottom: 10px;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .message-actions {
         display: flex;
-        gap: 8px;
+        gap: 10px;
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
-    
-    .mensagem-card-action {
+
+    .message-item:hover .message-actions {
+        opacity: 1;
+    }
+
+    .btn-edit-message, .btn-delete-message {
         background: none;
         border: none;
-        color: #6c757d;
-        cursor: pointer;
-        padding: 4px;
-        border-radius: 4px;
-        transition: all 0.2s;
         width: 28px;
         height: 28px;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-    
-    .mensagem-card-action:hover {
-        background: #f1f1f1;
-        color: #495057;
-    }
-    
-    .mensagem-card-action-danger:hover {
-        color: #dc3545;
-        background: rgba(220, 53, 69, 0.1);
-    }
-    
-    /* Body do card */
-    .mensagem-card-body {
-        padding: 8px;
-    }
-    
-    .mensagem-card-text {
-        color: #333;
-        line-height: 1.5;
-        margin-bottom: 12px;
-    }
-    
-    .mensagem-card-time {
-        text-align: right;
         color: #6c757d;
-        font-size: 0.8rem;
+        transition: all 0.3s ease;
     }
-    
-    /* Estilos específicos para o modal */
-    .modal-mensagens-container {
+
+    .btn-edit-message:hover {
+        background-color: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+    }
+
+    .btn-delete-message:hover {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+
+    /* Estilos para quando não há mensagens */
+    .no-messages {
+        padding: 40px 20px;
+        text-align: center;
+        color: #6c757d;
+    }
+
+    .no-messages i {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        color: #adb5bd;
+    }
+
+    /* Botão "Ver todas as mensagens" */
+    .btn-view-all {
+        background: white;
+        color: #be1c3cfd;
+        border: 1px solid #be1c3cfd;
+        border-radius: 12px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-view-all:hover {
+        background: linear-gradient(135deg, rgba(190, 28, 60, 0.1), rgba(214, 51, 132, 0.1));
+        color: #be1c3cfd;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(190, 28, 60, 0.1);
+    }
+
+    /* Estilos para o modal de todas as mensagens */
+    .all-messages-list {
+        padding-right: 10px;
+    }
+
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .modal-body {
+        padding: 20px;
         max-height: 60vh;
         overflow-y: auto;
-        padding-right: 8px;
     }
-    
-    /* Scrollbar personalizada para o modal */
-    .modal-mensagens-container::-webkit-scrollbar {
+
+    /* Barra de rolagem personalizada */
+    ::-webkit-scrollbar {
         width: 6px;
     }
-    
-    .modal-mensagens-container::-webkit-scrollbar-track {
+
+    ::-webkit-scrollbar-track {
         background: #f1f1f1;
         border-radius: 10px;
     }
-    
-    .modal-mensagens-container::-webkit-scrollbar-thumb {
-        background: #888;
+
+    ::-webkit-scrollbar-thumb {
+        background: #be1c3cfd;
         border-radius: 10px;
     }
-    
-    .modal-mensagens-container::-webkit-scrollbar-thumb:hover {
-        background: #555;
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #d63384;
     }
-    
-    /* Responsividade - Modal em telas pequenas */
+
+    /* Responsividade */
+    @media (max-width: 992px) {
+        .message-form-container, .messages-container {
+            height: auto;
+        }
+        
+        .messages-list {
+            max-height: 300px;
+        }
+    }
+
     @media (max-width: 768px) {
-        .modal-dialog {
-            margin: 0;
-            max-width: 100%;
-            height: 100%;
+        #mensagem-aos-noivos .row {
+            flex-direction: column-reverse;
         }
         
-        .modal-content {
-            height: 100%;
-            border-radius: 0;
+        .message-item {
+            flex-direction: column;
         }
         
-        .modal-body {
+        .message-avatar {
+            margin-bottom: 10px;
+        }
+        
+        .message-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .message-time {
+            margin-top: 5px;
+        }
+        
+        .message-actions {
+            position: static;
+            opacity: 1;
+            margin-top: 10px;
+            justify-content: flex-end;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .message-form-container, .messages-container {
+            padding: 5px;
+        }
+        
+        .messages-header {
             padding: 15px;
-            flex-grow: 1;
         }
         
-        .modal-mensagens-container {
-            max-height: none;
-            height: calc(100vh - 150px);
+        .messages-list {
+            padding: 15px;
+            max-height: 500px;
+        }
+        
+        .message-textarea {
+            min-height: 120px;
         }
     }
 </style>
@@ -1042,195 +1186,192 @@
 
         <section id="mensagem-aos-noivos" class="py-5">
             <div class="container-fluid">
-                <!-- Imagem centralizada -->
+                <!-- Imagem decorativa -->
                 <div class="text-center my-5">
-                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Imagem do Casamento" class="img-fluid tamanho-imagem flower-ampersand">
+                    <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Decoração floral" class="img-fluid tamanho-imagem flower-ampersand">
                 </div>
         
-                <!-- Título e ícone -->
-                <div class="text-center">
-                    <i class="bi bi-chat-heart fs-1 cor-vermelho animacao-icone"></i>
-                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-4">Deixe sua mensagem</h2>
-                    <p class="mb-4 text-lg cor-marrom">Compartilhe seus votos de felicidade</p>
+                <!-- Cabeçalho -->
+                <div class="text-center mb-5">
+                    <div class="text-center">
+                        <i class="bi bi-chat-heart fs-1 cor-vermelho animacao-icone"></i>
+                        <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-3">Mural de Recados</h2>
+                        <p class="mb-4 text-lg cor-marrom">Compartilhe seus votos de felicidade com os noivos</p>
+                    </div>
                 </div>
         
-                <!-- Grid: formulário + mensagens -->
-                <div class="row">
+                <!-- Grid principal -->
+                <div class="row g-4">
                     <!-- Formulário -->
-                    <div class="col-md-6 mb-4">
-                        <div class="bg-light p-2 shadow rounded h-100">
-                            <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}">
+                    <div class="col-lg-6">
+                        <div class="message-form-container">
+                            <div class="messages-header">
+                                <h5>Mensagens dos Convidados</h5>
+
+                            </div>
+                            <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}" class="message-form">
                                 {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="texto_mensagem" class="form-label fw-bold cor-marrom">Mensagem:</label>
-                                    <textarea name="texto_mensagem" id="texto_mensagem" class="form-control rounded-3 shadow-sm" rows="5" placeholder="Escreva sua mensagem aqui..."></textarea>
+                                <div class="form-floating mb-4">
+                                    <textarea name="texto_mensagem" id="texto_mensagem" class="form-control message-textarea" 
+                                              placeholder="Escreva sua mensagem aqui..." rows="5"></textarea>
+                                    
                                 </div>
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-danger rounded-pill px-4">Enviar Mensagem</button>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    
+                                    <button type="submit" class="btn btn-danger rounded-pill">
+                                        <i class="bi bi-send-fill me-2 text-center"></i> Enviar
+                                    </button>
                                 </div>
                             </form>
                         </div>
                     </div>
         
-                    <!-- Mensagens Enviadas -->
-                    <div class="col-md-6">
-                        <div class="bg-light p-2 shadow rounded mensagens-container">
-                            <h5 class="mb-3 fw-bold cor-marrom">Mensagens Enviadas</h5>
+                    <!-- Mensagens -->
+                    <div class="col-lg-6">
+                        <div class="messages-container">
+                            <div class="messages-header">
+                                <h5>Escreva sua mensagem</h5>
+                                <div class="messages-count">
+                                    <span class="badge bg-primary">{{ mensagens_enviadas|length }}</span>
+                                </div>
+                            </div>
+                            
                             {% if mensagens_enviadas %}
-                                <div class="mensagens-cards-container">
+                                <div class="messages-list">
                                     {% for mensagem in mensagens_enviadas|slice:":3" %}
-                                        <div class="mensagem-card mb-4 {% if mensagem.escrita_por.token == token %}mensagem-card-own{% endif %}">
-                                            <!-- Card Header -->
-                                            <div class="mensagem-card-header">
-                                                <div class="mensagem-card-user">
-                                                    <div class="mensagem-card-avatar">
-                                                        <i class="bi bi-person-fill"></i>
-                                                    </div>
-                                                    <span class="mensagem-card-username">{{ mensagem.escrita_por.nome_convidado }}</span>
+                                        <div class="message-item {% if mensagem.escrita_por.token == token %}own-message{% endif %}" 
+                                             data-message-id="{{ mensagem.id }}">
+                                            <div class="message-avatar">
+                                                <div class="avatar-initials">
+                                                    {{ mensagem.escrita_por.nome_convidado|slice:":1"|upper }}
                                                 </div>
-                                                
-                                                <!-- Botões de ação (só mostra se for mensagem do convidado atual) -->
+                                            </div>
+                                            <div class="message-content">
+                                                <div class="message-header">
+                                                    <span class="message-author">{{ mensagem.escrita_por.nome_convidado }}</span>
+                                                    <span class="message-time"><i class="bi bi-calendar-event me-1"></i> {{ mensagem.data_envio|date:"d/m/Y"}} <i class="bi bi-clock ms-2 me-1"></i> {{ mensagem.data_envio|date:"H:i" }}</span>
+                                                </div>
+                                                <div class="message-text">{{ mensagem.texto_mensagem|safe }}</div>
                                                 {% if mensagem.escrita_por.token == token %}
-                                                <div class="mensagem-card-actions">
-                                                    <button class="mensagem-card-action editar-mensagem-btn" 
+                                                <div class="message-actions">
+                                                    <button class="btn-edit-message" 
                                                             data-mensagem-id="{{ mensagem.id }}"
-                                                            data-mensagem-texto="{{ mensagem.texto_mensagem }}"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Editar mensagem">
-                                                        <i class="bi bi-pencil-fill"></i>
+                                                            data-mensagem-texto="{{ mensagem.texto_mensagem }}">
+                                                        <i class="bi bi-pencil"></i>
                                                     </button>
                                                     <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
                                                         {% csrf_token %}
                                                         <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
-                                                        <button type="submit" class="mensagem-card-action mensagem-card-action-danger" 
-                                                                onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')"
-                                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir mensagem">
-                                                            <i class="bi bi-trash-fill"></i>
+                                                        <button type="submit" class="btn-delete-message" 
+                                                                onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')">
+                                                            <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
                                                 </div>
                                                 {% endif %}
                                             </div>
-                                            
-                                            <!-- Card Body -->
-                                            <div class="mensagem-card-body">
-                                                <div class="mensagem-card-text">
-                                                    {{ mensagem.texto_mensagem|safe }}
-                                                </div>
-                                                <div class="mensagem-card-time">
-                                                    <small>{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
-                                                </div>
-                                            </div>
                                         </div>
                                     {% endfor %}
                                 </div>
                                 
-                                
+                                <!-- Botão Mostrar Mais -->
+                                {% if mensagens_enviadas|length > 3 %}
+                                <div class="text-center mt-4 mb-2">
+                                    <button type="button" class="btn btn-view-all rounded-pill" data-bs-toggle="modal" data-bs-target="#mensagensModal">
+                                        Ver todas as mensagens ({{ mensagens_enviadas|length }}) <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </div>
+                                {% endif %}
                             {% else %}
-                                <p class="text-muted">Nenhuma mensagem enviada ainda.</p>
+                                <div class="no-messages">
+                                    <i class="bi bi-chat-square-text"></i>
+                                    <p>Nenhuma mensagem ainda. Seja o primeiro a deixar seus votos!</p>
+                                </div>
                             {% endif %}
                         </div>
-                        <!-- Botão Mostrar Mais (só aparece se houver mais de 3 mensagens) -->
-                        {% if mensagens_enviadas|length > 3 %}
-                        <div class="text-center mt-3">
-                            <button type="button" class="btn btn-outline-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#mensagensModal">
-                                Mostrar mais mensagens ({{ mensagens_enviadas|length|add:"-3" }})
-                            </button>
-                        </div>
-                        {% endif %}
                     </div>
-
-                    <!-- Modal com todas as mensagens -->
-                    <div class="modal fade" id="mensagensModal" tabindex="-1" aria-labelledby="mensagensModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-white" id="mensagensModalLabel">Todas as mensagens</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mensagens-cards-container modal-mensagens-container">
-                                        {% for mensagem in mensagens_enviadas %}
-                                            <div class="mensagem-card mb-4 {% if mensagem.escrita_por.token == token %}mensagem-card-own{% endif %}">
-                                                <div class="mensagem-card-header">
-                                                    <div class="mensagem-card-user">
-                                                        <div class="mensagem-card-avatar">
-                                                            <i class="bi bi-person-fill"></i>
-                                                        </div>
-                                                        <span class="mensagem-card-username">{{ mensagem.escrita_por.nome_convidado }}</span>
-                                                    </div>
-                                                    
-                                                    {% if mensagem.escrita_por.token == token %}
-                                                    <div class="mensagem-card-actions">
-                                                        <button class="mensagem-card-action editar-mensagem-btn" 
-                                                                data-mensagem-id="{{ mensagem.id }}"
-                                                                data-mensagem-texto="{{ mensagem.texto_mensagem }}"
-                                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Editar mensagem">
-                                                            <i class="bi bi-pencil-fill"></i>
-                                                        </button>
-                                                        <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
-                                                            {% csrf_token %}
-                                                            <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
-                                                            <button type="submit" class="mensagem-card-action mensagem-card-action-danger" 
-                                                                    onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')"
-                                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir mensagem">
-                                                                <i class="bi bi-trash-fill"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                    {% endif %}
-                                                </div>
-                                                
-                                                <div class="mensagem-card-body">
-                                                    <div class="mensagem-card-text">
-                                                        {{ mensagem.texto_mensagem|safe }}
-                                                    </div>
-                                                    <div class="mensagem-card-time">
-                                                        <small>{{ mensagem.data_envio|date:"d/m/Y H:i" }}</small>
-                                                    </div>
-                                                </div>
+                </div>
+            </div>
+        
+            <!-- Modal com todas as mensagens -->
+            <div class="modal fade" id="mensagensModal" tabindex="-1" aria-labelledby="mensagensModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Todas as mensagens</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="all-messages-list">
+                                {% for mensagem in mensagens_enviadas %}
+                                    <div class="message-item {% if mensagem.escrita_por.token == token %}own-message{% endif %}" 
+                                         data-message-id="{{ mensagem.id }}">
+                                        <div class="message-avatar">
+                                            <div class="avatar-initials">
+                                                {{ mensagem.escrita_por.nome_convidado|slice:":1"|upper }}
                                             </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-danger rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal para edição -->
-                    <div class="modal fade" id="editarMensagemModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content border-0 shadow-lg">
-                                <div class="modal-header border-0 pb-0">
-                                    <h5 class="modal-title fs-5 fw-normal text-muted">Editar sua mensagem</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}">
-                                    {% csrf_token %}
-                                    <div class="modal-body pt-0">
-                                        <input type="hidden" name="mensagem_id" id="editarMensagemId">
-                                        <div class="mb-3">
-                                            <textarea name="texto_mensagem" id="editarTextoMensagem" 
-                                                    class="form-control border-0 shadow-none p-3" 
-                                                    rows="6" style="resize: none; background-color: #f8f9fa;"></textarea>
+                                        </div>
+                                        <div class="message-content">
+                                            <div class="message-header">
+                                                <span class="message-author">{{ mensagem.escrita_por.nome_convidado }}</span>
+                                                <span class="message-time">{{ mensagem.data_envio|date:"d/m/Y H:i" }}</span>
+                                            </div>
+                                            <div class="message-text">{{ mensagem.texto_mensagem|safe }}</div>
+                                            {% if mensagem.escrita_por.token == token %}
+                                            <div class="message-actions">
+                                                <button class="btn-edit-message" 
+                                                        data-mensagem-id="{{ mensagem.id }}"
+                                                        data-mensagem-texto="{{ mensagem.texto_mensagem }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
+                                                    <button type="submit" class="btn-delete-message" 
+                                                            onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            {% endif %}
                                         </div>
                                     </div>
-                                    <div class="modal-footer border-0 pt-0">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">
-                                            Cancelar
-                                        </button>
-                                        <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3">
-                                            <i class="bi bi-check-circle me-1"></i> Salvar
-                                        </button>
-                                    </div>
-                                </form>
+                                {% endfor %}
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
                     </div>
-
+                </div>
+            </div>
+        
+            <!-- Modal para edição -->
+            <div class="modal fade" id="editarMensagemModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Editar mensagem</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <input type="hidden" name="mensagem_id" id="editarMensagemId">
+                                <div class="form-floating mb-3">
+                                    <textarea name="texto_mensagem" id="editarTextoMensagem" 
+                                            class="form-control message-textarea" 
+                                            placeholder="Edite sua mensagem" 
+                                            rows="6"></textarea>
+                                    <label for="editarTextoMensagem">Sua mensagem</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1751,6 +1892,57 @@
                     }, 500);
                 });
             });
+        });
+
+
+        // Inicialização do modal de edição
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuração dos botões de edição
+            const editButtons = document.querySelectorAll('.btn-edit-message, .editar-mensagem-btn');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const messageId = this.getAttribute('data-mensagem-id');
+                    const messageText = this.getAttribute('data-mensagem-texto');
+                    
+                    document.getElementById('editarMensagemId').value = messageId;
+                    document.getElementById('editarTextoMensagem').value = messageText;
+                    
+                    // Ajusta a altura do textarea para o conteúdo
+                    const textarea = document.getElementById('editarTextoMensagem');
+                    textarea.style.height = 'auto';
+                    textarea.style.height = (textarea.scrollHeight) + 'px';
+                    
+                    // Abre o modal
+                    var editModal = new bootstrap.Modal(document.getElementById('editarMensagemModal'));
+                    editModal.show();
+                });
+            });
+            
+            // Auto-resize para o textarea de edição
+            const editTextarea = document.getElementById('editarTextoMensagem');
+            if (editTextarea) {
+                editTextarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight) + 'px';
+                });
+            }
+            
+            // Auto-resize para o textarea principal
+            const mainTextarea = document.getElementById('texto_mensagem');
+            if (mainTextarea) {
+                mainTextarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight) + 'px';
+                });
+            }
+            
+            // Efeito de carregamento para as mensagens
+            const messageItems = document.querySelectorAll('.message-item');
+            messageItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            
         });
                 
     </script>
