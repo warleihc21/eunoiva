@@ -983,6 +983,95 @@
             min-height: 120px;
         }
     }
+
+
+    /* Estilos para as notificações */
+    .notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 350px;
+        width: 100%;
+    }
+
+    .notification {
+        position: relative;
+        padding: 15px 20px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        transform: translateX(150%);
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .notification.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .notification.hide {
+        transform: translateX(150%);
+        opacity: 0;
+        margin-bottom: 0;
+        height: 0;
+        padding: 0;
+    }
+
+    .notification.success {
+        background-color: #28a745;
+        border-left: 5px solid #218838;
+    }
+
+    .notification.error {
+        background-color: #dc3545;
+        border-left: 5px solid #c82333;
+    }
+
+    .notification.warning {
+        background-color: #ffc107;
+        border-left: 5px solid #e0a800;
+        color: #212529;
+    }
+
+    .notification.info {
+        background-color: #17a2b8;
+        border-left: 5px solid #138496;
+    }
+
+    .notification i {
+        margin-right: 10px;
+        font-size: 1.5rem;
+    }
+
+    .notification-close {
+        margin-left: auto;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 1.2rem;
+        opacity: 0.8;
+    }
+
+    .notification-close:hover {
+        opacity: 1;
+    }
+
+    /* Animação para o ícone */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+        40% {transform: translateY(-10px);}
+        60% {transform: translateY(-5px);}
+    }
+
+    .notification .bounce {
+        animation: bounce 1s;
+    }
 </style>
 
 
@@ -990,15 +1079,8 @@
 {% include "partials/navbar_convidados.html" %}
 
     <div class="container-fluid p-0">
-        {% if messages %}
-            <div class="container mt-4">
-                {% for message in messages %}
-                    <div class="alert {{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+
+        
 
         <!-- Seção de imagem com os nomes dos cônjuges no centro e efeito de escurecimento -->
         <div class="position-relative vh-100" style="padding-top: 56px; overflow: hidden;">
@@ -1651,6 +1733,16 @@
     <!-- Botão para rolar até o topo -->
     <button id="scrollToTopBtn" title="Voltar ao topo"><i class="bi bi-arrow-up"></i></button>
 
+    {% if messages %}
+        <div class="notification-container" id="notificationContainer">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
 
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJ1z7QJZsZiRmNL343rB2PayN-uBl4ZoA&callback=initMap&v={{ timestamp }}" async defer></script> -->
 
@@ -1943,6 +2035,69 @@
             });
             
             
+        });
+
+
+        // Função para mostrar notificação
+        function showNotification(message, type = 'success') {
+            const icons = {
+                'success': 'bi-check-circle-fill',
+                'error': 'bi-exclamation-triangle-fill',
+                'warning': 'bi-exclamation-circle-fill',
+                'info': 'bi-info-circle-fill'
+            };
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="bi ${icons[type]} bounce"></i>
+                <span>${message}</span>
+                <button class="notification-close">&times;</button>
+            `;
+
+            const container = document.getElementById('notificationContainer');
+            container.appendChild(notification);
+
+            // Forçar reflow para ativar a transição
+            void notification.offsetWidth;
+            
+            notification.classList.add('show');
+
+            // Fechar notificação após 5 segundos
+            const autoClose = setTimeout(() => {
+                closeNotification(notification);
+            }, 5000);
+
+            // Fechar ao clicar no botão
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                clearTimeout(autoClose);
+                closeNotification(notification);
+            });
+        }
+
+        function closeNotification(notification) {
+            notification.classList.remove('show');
+            notification.classList.add('hide');
+            
+            // Remover após a animação
+            notification.addEventListener('transitionend', () => {
+                notification.remove();
+            });
+        }
+
+        // Verificar se há mensagens do Django para exibir
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar mensagens do Django
+            const djangoMessages = document.querySelectorAll('.alert');
+            djangoMessages.forEach(message => {
+                let type = 'info';
+                if (message.classList.contains('alert-success')) type = 'success';
+                else if (message.classList.contains('alert-danger')) type = 'error';
+                else if (message.classList.contains('alert-warning')) type = 'warning';
+                
+                showNotification(message.textContent.trim(), type);
+                message.remove(); // Remove a mensagem padrão do Django
+            });
         });
                 
     </script>

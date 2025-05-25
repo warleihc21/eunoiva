@@ -54,12 +54,14 @@ def responder_presenca(request):
 
     if resposta not in ['C', 'R']:
         messages.error(request, 'Você deve confirmar ou recusar')
-        return redirect(f"{reverse('convidados')}?token={token}")
+        # Redireciona para a seção de confirmação de presença
+        return redirect(f"{reverse('convidados')}?token={token}#confirmacao-presenca")
     
     convidado.status = resposta
     convidado.save()
 
-    return redirect(f"{reverse('convidados')}?token={token}")
+    # Redireciona para a seção de confirmação de presença
+    return redirect(f"{reverse('convidados')}?token={token}#confirmacao-presenca")
 
 def reservar_presente(request, id):
     token = request.GET.get('token')
@@ -69,11 +71,12 @@ def reservar_presente(request, id):
     presente.reservado = True
     presente.reservado_por = convidado
     presente.save()
-    return redirect(f'{reverse("convidados")}?token={token}')
+    # Redireciona para a seção de presentes
+    return redirect(f'{reverse("convidados")}?token={token}#lista-presentes')
 
 
 def cancelar_reserva(request, presente_id):
-    token = request.GET.get('token')  # Pegando o token correto
+    token = request.GET.get('token')
     presente = get_object_or_404(Presentes, id=presente_id)
 
     if presente.reservado_por and presente.reservado_por.token == token:
@@ -84,7 +87,8 @@ def cancelar_reserva(request, presente_id):
     else:
         messages.error(request, "Você não tem permissão para cancelar esta reserva.")
 
-    return redirect(f'{reverse("convidados")}?token={token}')
+    # Redireciona para a seção de presentes
+    return redirect(f'{reverse("convidados")}?token={token}#lista-presentes')
 
 def adicionar_acompanhante(request, token):
     convidado = get_object_or_404(Convidados, token=token)
@@ -99,7 +103,8 @@ def adicionar_acompanhante(request, token):
     else:
         messages.error(request, 'Você já atingiu o limite máximo de acompanhantes.')
 
-    return redirect(f"{reverse('convidados')}?token={token}")
+    # Redireciona para a seção de confirmação de presença (onde os acompanhantes são adicionados)
+    return redirect(f"{reverse('convidados')}?token={token}#confirmacao-presenca")
 
 def excluir_acompanhante(request, token, acompanhante_id):
     convidado = get_object_or_404(Convidados, token=token)
@@ -109,7 +114,8 @@ def excluir_acompanhante(request, token, acompanhante_id):
         acompanhante.delete()
         messages.success(request, 'Acompanhante excluído com sucesso!')
 
-    return redirect(f"{reverse('convidados')}?token={token}")
+    # Redireciona para a seção de confirmação de presença
+    return redirect(f"{reverse('convidados')}?token={token}#confirmacao-presenca")
 
 
 def mensagem_aos_noivos(request):
@@ -118,14 +124,14 @@ def mensagem_aos_noivos(request):
 
     if request.method == 'POST':
         texto_mensagem = request.POST.get('texto_mensagem')
-        mensagem_id = request.POST.get('mensagem_id')  # Para edição
+        mensagem_id = request.POST.get('mensagem_id')
         
-        if mensagem_id:  # Se estiver editando
+        if mensagem_id:
             mensagem = get_object_or_404(MensagemAosNoivos, id=mensagem_id, escrita_por=convidado)
             mensagem.texto_mensagem = texto_mensagem
             mensagem.save()
             messages.success(request, 'Mensagem atualizada com sucesso!')
-        elif texto_mensagem:  # Se estiver criando nova
+        elif texto_mensagem:
             MensagemAosNoivos.objects.create(
                 user=convidado.user,
                 texto_mensagem=texto_mensagem,
@@ -135,7 +141,8 @@ def mensagem_aos_noivos(request):
         else:
             messages.error(request, 'A mensagem não pode estar vazia.')
 
-    return redirect(f"{reverse('convidados')}?token={token}")
+    # Redireciona para a seção de mensagens
+    return redirect(f"{reverse('convidados')}?token={token}#mensagem-aos-noivos")
 
 @require_POST
 def excluir_mensagem(request):
@@ -147,6 +154,5 @@ def excluir_mensagem(request):
     mensagem.delete()
     
     messages.success(request, 'Mensagem excluída com sucesso!')
-    return redirect(f"{reverse('convidados')}?token={token}")
-
-
+    # Redireciona para a seção de mensagens
+    return redirect(f"{reverse('convidados')}?token={token}#mensagem-aos-noivos")
