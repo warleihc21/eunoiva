@@ -1,6 +1,8 @@
 from io import BytesIO
 
+import os
 from urllib.parse import quote
+import uuid
 from django.forms import ValidationError
 from django.urls import reverse
 import secrets
@@ -10,6 +12,7 @@ from PIL import Image, ImageOps
 from django.core.files.base import ContentFile
 from django.core.validators import FileExtensionValidator
 from ckeditor.fields import RichTextField
+from django.utils.text import slugify
 
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -128,8 +131,6 @@ class Acompanhante(models.Model):
     def __str__(self):
         return f"{self.nome} (Acompanhante de {self.convidado.nome_convidado})"
 
-def __str__(self):
-    return self.nome_convidado
 
 
 class ProdutoBase(models.Model):
@@ -156,7 +157,12 @@ class ProdutoBase(models.Model):
             buffer = BytesIO()
             img.save(buffer, format='JPEG')
             buffer.seek(0)
-            self.foto = ContentFile(buffer.read(), name=self.foto.name)
+            # Corrigir o nome do arquivo
+            filename = os.path.basename(self.foto.name)
+            name, ext = os.path.splitext(filename)
+            new_filename = f"{slugify(name)}{ext}"
+
+            self.foto = ContentFile(buffer.read(), name=new_filename)
         super().save(*args, **kwargs)
 
 
@@ -164,7 +170,7 @@ class Presentes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='presentes')
     produto_base = models.ForeignKey('ProdutoBase', null=True, blank=True, on_delete=models.SET_NULL)
     nome_presente = models.CharField(max_length=1000)
-    foto = models.ImageField(upload_to='presentes/', blank=True, null=True)
+    foto = models.ImageField(upload_to='presentes/', blank=True, null=True, max_length=255)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     importancia = models.IntegerField()
     reservado = models.BooleanField(default=False)
@@ -194,7 +200,12 @@ class Presentes(models.Model):
             buffer = BytesIO()
             img.save(buffer, format='JPEG')  # Salvar no formato JPEG
             buffer.seek(0)
-            self.foto = ContentFile(buffer.read(), name=self.foto.name)
+
+            # Criar nome de arquivo curto e único
+            nome_slug = slugify(self.nome_presente)[:40]  # no máximo 40 caracteres
+            nome_arquivo = f"{nome_slug}-{uuid.uuid4().hex[:8]}.jpg"
+            
+            self.foto = ContentFile(buffer.read(), name=nome_arquivo)
         
         super().save(*args, **kwargs)
 

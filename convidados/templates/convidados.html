@@ -1291,19 +1291,18 @@
                                 <h5>Mensagens dos Convidados</h5>
 
                             </div>
-                            <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}" class="message-form">
+                            <form id="form-mensagem" method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}" class="message-form">
                                 {% csrf_token %}
                                 <div class="form-floating mb-4">
                                     <textarea name="texto_mensagem" id="texto_mensagem" class="form-control message-textarea" 
                                               placeholder="Escreva sua mensagem aqui..." rows="5"></textarea>
-                                    
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    
                                     <button type="submit" class="btn btn-danger rounded-pill">
                                         <i class="bi bi-send-fill me-2 text-center"></i> Enviar
                                     </button>
                                 </div>
+                                <input type="hidden" id="editarMensagemId" name="mensagem_id" value="">
                             </form>
                         </div>
                     </div>
@@ -1319,7 +1318,7 @@
                             </div>
                             
                             {% if mensagens_enviadas %}
-                                <div class="messages-list">
+                                <div class="messages-list" id="lista-mensagens">
                                     {% for mensagem in mensagens_enviadas|slice:":3" %}
                                         <div class="message-item {% if mensagem.escrita_por.token == token %}own-message{% endif %}" 
                                              data-message-id="{{ mensagem.id }}">
@@ -1341,11 +1340,10 @@
                                                             data-mensagem-texto="{{ mensagem.texto_mensagem }}">
                                                         <i class="bi bi-pencil"></i>
                                                     </button>
-                                                    <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
+                                                    <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline excluir-mensagem-form">
                                                         {% csrf_token %}
                                                         <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
-                                                        <button type="submit" class="btn-delete-message" 
-                                                                onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')">
+                                                        <button type="submit" class="btn-delete-message" title="Excluir mensagem">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
@@ -1487,7 +1485,8 @@
                         </p>
                         <div class="mt-4 mb-4">
                             <a href="{% url 'responder_presenca' %}?resposta=C&token={{ convidado.token }}" 
-                                class="btn btn-outline-danger btn-lg w-100 rounded-pill">
+                                class="btn btn-outline-danger btn-lg w-100 rounded-pill responder-presenca"
+                                data-token="{{ convidado.token }}" data-resposta="C">
                                 Confirmar
                             </a>
                         </div>
@@ -1504,7 +1503,7 @@
                         <h2 class="text-center mb-4">Adicione seus acompanhantes</h2>
         
                         {% if acompanhantes_restantes > 0 %}
-                            <form action="{% url 'adicionar_acompanhante' convidado.token %}" method="POST">
+                            <form id="form-acompanhante" action="{% url 'adicionar_acompanhante' convidado.token %}" method="POST">
                                 {% csrf_token %}
                                 <input 
                                     type="text" 
@@ -1518,17 +1517,17 @@
                                     Adicionar
                                 </button>
                             </form>
-                            <p class="text-center mt-2 cor-vermelho">Você ainda pode adicionar <strong>{{ acompanhantes_restantes }}</strong> acompanhante(s).</p>
+                            <p id="acompanhantes-restantes" class="text-center mt-2 cor-vermelho">Você ainda pode adicionar <strong>{{ acompanhantes_restantes }}</strong> acompanhante(s).</p>
                         {% else %}
                             <p class="text-center mt-2 text-danger">Você já atingiu o número máximo de acompanhantes permitidos.</p>
                         {% endif %}
         
                         <hr class="my-4">
-                        <ul class="list-unstyled">
+                        <ul id="lista-acompanhantes" class="list-unstyled">
                             {% for acompanhante in convidado.acompanhantes.all %}
-                                <li class="bg-light p-3 mb-2 d-flex justify-content-between align-items-center rounded">
+                                <li id="acompanhante-{{ acompanhante.id }}" class="bg-light p-3 mb-2 d-flex justify-content-between align-items-center rounded">
                                     <span class="cor-marrom">{{ acompanhante.nome }}</span>
-                                    <form action="{% url 'excluir_acompanhante' convidado.token acompanhante.id %}" method="POST" class="d-inline">
+                                    <form class="form-excluir-acompanhante" data-id="{{ acompanhante.id }}" action="{% url 'excluir_acompanhante' convidado.token acompanhante.id %}" method="POST" class="d-inline">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-link text-danger p-0">Excluir</button>
                                     </form>
@@ -1558,7 +1557,7 @@
                 <div class="container mt-4">
                     <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
                         {% for presente in presentes %}
-                        <div class="col-12 col-md-6 card-presentes col-lg-3 d-flex justify-content-center">
+                        <div class="col-12 col-md-6 card-presentes col-lg-3 d-flex justify-content-center" id="presente-card-{{ presente.id }}">
                             <div class="card rounded-2xl shadow-lg overflow-hidden 
                                 {% if presente.reservado %} presente-reservado {% endif %}
                                 {% if presente.reservado_por.token == token %} reservado-pelo-convidado {% endif %}">
@@ -1598,9 +1597,9 @@
                                     </div>
                                 
                                     {% if presente.reservado_por and presente.reservado_por.token == token %}
-                                        <form action="{% url 'cancelar_reserva' presente.id %}?token={{ token }}" method="POST" class="w-100">
+                                        <form action="{% url 'cancelar_reserva' presente.id %}?token={{ token }}" method="POST" class="form-cancelar-reserva w-100">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100 mt-2">Cancelar Reserva</button>
+                                            <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100 mt-2 rounded-pill">Cancelar Reserva</button>
                                         </form>
                                     {% endif %}
                                 </div>
@@ -1639,7 +1638,7 @@
         
                                     <div class="modal-footer d-flex justify-content-between">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                        <form action="{% url 'reservar_presente' presente.id %}?token={{ convidado.token }}" method="POST">
+                                        <form action="{% url 'reservar_presente' presente.id %}?token={{ convidado.token }}" method="POST" class="form-reservar-presente">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fas fa-check-circle"></i> Confirmar Reserva
@@ -1733,15 +1732,7 @@
     <!-- Botão para rolar até o topo -->
     <button id="scrollToTopBtn" title="Voltar ao topo"><i class="bi bi-arrow-up"></i></button>
 
-    {% if messages %}
-        <div class="notification-container" id="notificationContainer">
-            {% for message in messages %}
-                <div class="alert {{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+    <div id="notificationContainer" class="notification-container"></div>
 
 
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJ1z7QJZsZiRmNL343rB2PayN-uBl4ZoA&callback=initMap&v={{ timestamp }}" async defer></script> -->
@@ -1749,6 +1740,7 @@
     <!-- Adicione estas bibliotecas no final do body, antes dos seus scripts -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
     <script>
@@ -2097,6 +2089,245 @@
                 
                 showNotification(message.textContent.trim(), type);
                 message.remove(); // Remove a mensagem padrão do Django
+            });
+        });
+
+        $(document).ready(function() {
+
+            // Adicionar acompanhante via AJAX
+            $('#form-acompanhante').on('submit', function(e) {
+                e.preventDefault();
+                const url = $(this).attr('action');
+                const nome = $('#nome').val();
+                const csrfToken = $('[name=csrfmiddlewaretoken]').val();
+
+                $.post(url, { nome: nome, csrfmiddlewaretoken: csrfToken }, function(response) {
+                    if (response.success) {
+                        // Adiciona novo acompanhante à lista
+                        $('#lista-acompanhantes').append(`
+                            <li id="acompanhante-${response.acompanhante.id}" class="bg-light p-3 mb-2 d-flex justify-content-between align-items-center rounded">
+                                <span class="cor-marrom">${response.acompanhante.nome}</span>
+                                <form class="form-excluir-acompanhante" data-id="${response.acompanhante.id}" action="/excluir_acompanhante/${response.acompanhante.id}/?token={{ token }}" method="POST">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                                    <button type="submit" class="btn btn-link text-danger p-0">Excluir</button>
+                                </form>
+                            </li>
+                        `);
+
+                        $('#nome').val('');
+                        $('#acompanhantes-restantes strong').text(response.acompanhantes_restantes);
+
+                        // ✅ Mostra a notificação personalizada
+                        showNotification(response.message, 'success');
+                    } else {
+                        // ✅ Mostra erro personalizado
+                        showNotification(response.message, 'error');
+                    }
+                });
+            });
+
+            // Excluir acompanhante via AJAX
+            $('#lista-acompanhantes').on('submit', '.form-excluir-acompanhante', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const id = form.data('id');
+                const url = form.attr('action');
+                const csrfToken = $('[name=csrfmiddlewaretoken]').val();
+
+                $.post(url, { csrfmiddlewaretoken: csrfToken }, function(response) {
+                    if (response.success) {
+                        $('#acompanhante-' + id).remove();
+                        $('#acompanhantes-restantes strong').text(response.acompanhantes_restantes);
+
+                        // ✅ Mostra a notificação personalizada
+                        showNotification(response.message, 'success');
+                    } else {
+                        showNotification(response.message, 'error');
+                    }
+                });
+            });
+
+
+            $('.responder-presenca').on('click', function (e) {
+                e.preventDefault();
+                
+                const token = $(this).data('token');
+                const resposta = $(this).data('resposta');
+                const url = '{% url "responder_presenca" %}?token=' + token + '&resposta=' + resposta;
+
+                $.get(url, function(response) {
+                    if (response.success) {
+                        let mensagemHTML = '';
+
+                        if (response.status === 'C') {
+                            mensagemHTML = '<p class="mt-4 mb-4 text-lg text-success">Presença confirmada! Estamos ansiosos para vê-lo no nosso casamento!!!</p>';
+                        } else if (response.status === 'R') {
+                            mensagemHTML = '<p class="mt-4 mb-4 text-lg cor-marrom">Presença recusada. Sentiremos sua falta, esperamos vê-lo em outra oportunidade!</p>';
+                        }
+
+                        $('#confirmacao-presenca .col-md-6.text-center').html(`
+                            <h2 class="mt-4 mb-4 text-4xl">Olá, {{ convidado.nome_convidado }}</h2>
+                            ${mensagemHTML}
+                        `);
+
+                        // ✅ Notificação personalizada
+                        showNotification(response.message, 'success');
+                    } else {
+                        showNotification(response.message, 'error');
+                    }
+                }).fail(function(xhr) {
+                    const erro = xhr.responseJSON?.message || 'Erro ao processar resposta.';
+                    showNotification(erro, 'error');
+                });
+            });
+
+
+            // Reservar presente via AJAX
+            $('.form-reservar-presente').on('submit', function(e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const url = form.attr('action');
+                const modal = form.closest('.modal');
+                const csrfToken = form.find('[name=csrfmiddlewaretoken]').val();
+
+                $.post(url, { csrfmiddlewaretoken: csrfToken }, function(response) {
+                    if (response.success) {
+                        modal.modal('hide');
+
+                        // Atualiza o botão no card para mostrar "Reservado"
+                        const card = $('#presente-card-' + response.presente_id);
+                        card.find('.btn-reservar').replaceWith(`
+                            <button type="button" class="btn btn-success btn-sm flex-grow-1 rounded-pill" disabled>
+                                Reservado
+                            </button>
+                        `);
+
+                        // Adiciona o botão de cancelar reserva
+                        card.find('.card-body').append(`
+                            <form action="/cancelar_reserva/${response.presente_id}/?token=${response.token}" method="POST" class="form-cancelar-reserva w-100 mt-2">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                                <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100">Cancelar Reserva</button>
+                            </form>
+                        `);
+
+                        showNotification(response.message, 'success');
+                    } else {
+                        showNotification(response.message, 'error');
+                    }
+                });
+            });
+
+            // Cancelar reserva via AJAX
+            $('#lista-presentes').on('submit', '.form-cancelar-reserva', function(e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const url = form.attr('action');
+                const csrfToken = form.find('[name=csrfmiddlewaretoken]').val();
+
+                $.post(url, { csrfmiddlewaretoken: csrfToken }, function(response) {
+                    if (response.success) {
+                        const card = $('#presente-card-' + response.presente_id);
+
+                        // Atualiza o botão para permitir reserva novamente
+                        card.find('.form-cancelar-reserva').remove();
+                        card.find('.btn-success').replaceWith(`
+                            <button type="button" 
+                                    class="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill btn-reservar" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#modal${response.presente_id}">
+                                    <i class="fa fa-check"></i> Reservar
+                            </button>
+                        `);
+
+                        showNotification(response.message, 'success');
+                    } else {
+                        showNotification(response.message, 'error');
+                    }
+                });
+            });
+
+            // Enviar/Editar mensagem via AJAX
+            $('#form-mensagem').on('submit', function(e) {
+                e.preventDefault();
+                const url = $(this).attr('action');
+                const csrfToken = $('[name=csrfmiddlewaretoken]').val();
+                const texto_mensagem = $('#texto_mensagem').val();
+                const mensagem_id = $('#editarMensagemId').val() || '';
+
+                $.post(url, {
+                    texto_mensagem: texto_mensagem,
+                    mensagem_id: mensagem_id,
+                    csrfmiddlewaretoken: csrfToken
+                }, function(response) {
+                    if (response.success) {
+                        // Limpa textarea e id edição
+                        $('#texto_mensagem').val('');
+                        $('#editarMensagemId').val('');
+                        
+                        // Atualize a lista de mensagens (exemplo: adiciona nova mensagem no DOM)
+                        // Você deve ajustar aqui conforme o seu HTML da lista de mensagens
+                        $('#lista-mensagens').append(`
+                            <li id="mensagem-${response.mensagem.id}">
+                                <p>${response.mensagem.texto_mensagem}</p>
+                                <!-- Botões editar/excluir -->
+                            </li>
+                        `);
+
+                        showNotification(response.message, 'success');
+                    } else {
+                        showNotification(response.message, 'error');
+                    }
+                });
+            });
+
+                     
+
+
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seleciona todos os formulários de exclusão
+            const excluirForms = document.querySelectorAll('.excluir-mensagem-form');
+
+            excluirForms.forEach(form => {
+                form.addEventListener('submit', function(event) {
+                event.preventDefault(); // evita submit normal
+
+                if (!confirm('Tem certeza que deseja excluir esta mensagem?')) {
+                    return;
+                }
+
+                const url = form.action;
+                const formData = new FormData(form);
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert(data.message || 'Mensagem excluída com sucesso!');
+                    // Remove a mensagem do DOM
+                    const mensagemId = form.querySelector('input[name="mensagem_id"]').value;
+                    const mensagemElemento = document.querySelector(`[data-message-id="${mensagemId}"]`);
+                    if (mensagemElemento) {
+                        mensagemElemento.remove();
+                    }
+                    } else {
+                    alert(data.message || 'Erro ao excluir a mensagem.');
+                    }
+                })
+                .catch(() => {
+                    alert('Erro na requisição. Tente novamente.');
+                });
+                });
             });
         });
                 
