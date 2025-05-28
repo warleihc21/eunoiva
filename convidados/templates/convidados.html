@@ -900,7 +900,7 @@
     }
 
     .modal-body {
-        padding: 20px;
+        padding: 10px;
         max-height: 60vh;
         overflow-y: auto;
     }
@@ -1291,7 +1291,12 @@
                                 <h5>Mensagens dos Convidados</h5>
 
                             </div>
-                            <form id="form-mensagem" method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}" class="message-form">
+                            <form id="form-mensagem-novo"
+                                    method="post"
+                                    action="{% url 'mensagem_aos_noivos' %}?token={{ token }}"
+                                    class="message-form"
+                                    data-nome="{{ convidado.nome_convidado }}"
+                                    data-inicial="{{ convidado.nome_convidado|slice:":1"|upper }}">
                                 {% csrf_token %}
                                 <div class="form-floating mb-4">
                                     <textarea name="texto_mensagem" id="texto_mensagem" class="form-control message-textarea" 
@@ -1378,7 +1383,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Todas as mensagens</h5>
+                            <h5 class="modal-title text-white">Todas as mensagens</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -1404,11 +1409,10 @@
                                                         data-mensagem-texto="{{ mensagem.texto_mensagem }}">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
-                                                <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline">
+                                                <form method="post" action="{% url 'excluir_mensagem' %}?token={{ token }}" class="d-inline excluir-mensagem-form">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="mensagem_id" value="{{ mensagem.id }}">
-                                                    <button type="submit" class="btn-delete-message" 
-                                                            onclick="return confirm('Tem certeza que deseja excluir esta mensagem?')">
+                                                    <button type="submit" class="btn-delete-message" title="Excluir mensagem">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
@@ -1420,7 +1424,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
                         </div>
                     </div>
                 </div>
@@ -1434,7 +1438,12 @@
                             <h5 class="modal-title">Editar mensagem</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form method="post" action="{% url 'mensagem_aos_noivos' %}?token={{ token }}">
+                        <form id="form-mensagem-editar"
+                                method="post"
+                                action="{% url 'mensagem_aos_noivos' %}?token={{ token }}"
+                                class="message-form"
+                                data-nome="{{ convidado.nome_convidado }}"
+                                data-inicial="{{ convidado.nome_convidado|slice:":1"|upper }}">
                             {% csrf_token %}
                             <div class="modal-body">
                                 <input type="hidden" name="mensagem_id" id="editarMensagemId">
@@ -1442,8 +1451,9 @@
                                     <textarea name="texto_mensagem" id="editarTextoMensagem" 
                                             class="form-control message-textarea" 
                                             placeholder="Edite sua mensagem" 
-                                            rows="6"></textarea>
-                                    <label for="editarTextoMensagem">Sua mensagem</label>
+                                            rows="6">
+                                    </textarea>
+                                    
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -1588,7 +1598,7 @@
                                             </button>
                                         {% else %}
                                             <button type="button" 
-                                                    class="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill" 
+                                                    class="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill btn-reservar" 
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#modal{{ presente.id }}">
                                                     <i class="fa fa-check"></i> Reservar
@@ -1599,7 +1609,7 @@
                                     {% if presente.reservado_por and presente.reservado_por.token == token %}
                                         <form action="{% url 'cancelar_reserva' presente.id %}?token={{ token }}" method="POST" class="form-cancelar-reserva w-100">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100 mt-2 rounded-pill">Cancelar Reserva</button>
+                                            <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100 rounded-pill">Cancelar Reserva</button>
                                         </form>
                                     {% endif %}
                                 </div>
@@ -1979,55 +1989,7 @@
         });
 
 
-        // Inicialização do modal de edição
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configuração dos botões de edição
-            const editButtons = document.querySelectorAll('.btn-edit-message, .editar-mensagem-btn');
-            editButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const messageId = this.getAttribute('data-mensagem-id');
-                    const messageText = this.getAttribute('data-mensagem-texto');
-                    
-                    document.getElementById('editarMensagemId').value = messageId;
-                    document.getElementById('editarTextoMensagem').value = messageText;
-                    
-                    // Ajusta a altura do textarea para o conteúdo
-                    const textarea = document.getElementById('editarTextoMensagem');
-                    textarea.style.height = 'auto';
-                    textarea.style.height = (textarea.scrollHeight) + 'px';
-                    
-                    // Abre o modal
-                    var editModal = new bootstrap.Modal(document.getElementById('editarMensagemModal'));
-                    editModal.show();
-                });
-            });
-            
-            // Auto-resize para o textarea de edição
-            const editTextarea = document.getElementById('editarTextoMensagem');
-            if (editTextarea) {
-                editTextarea.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = (this.scrollHeight) + 'px';
-                });
-            }
-            
-            // Auto-resize para o textarea principal
-            const mainTextarea = document.getElementById('texto_mensagem');
-            if (mainTextarea) {
-                mainTextarea.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = (this.scrollHeight) + 'px';
-                });
-            }
-            
-            // Efeito de carregamento para as mensagens
-            const messageItems = document.querySelectorAll('.message-item');
-            messageItems.forEach((item, index) => {
-                item.style.animationDelay = `${index * 0.1}s`;
-            });
-            
-            
-        });
+        
 
 
         // Função para mostrar notificação
@@ -2183,7 +2145,7 @@
 
 
             // Reservar presente via AJAX
-            $('.form-reservar-presente').on('submit', function(e) {
+            $(document).on('submit', '.form-reservar-presente', function(e) {
                 e.preventDefault();
 
                 const form = $(this);
@@ -2195,19 +2157,24 @@
                     if (response.success) {
                         modal.modal('hide');
 
-                        // Atualiza o botão no card para mostrar "Reservado"
                         const card = $('#presente-card-' + response.presente_id);
+                        const cardContainer = card.find('.card');
+
+                        // Adiciona classes visuais ao card
+                        cardContainer.addClass('presente-reservado reservado-pelo-convidado');
+
+                        // Atualiza o botão
                         card.find('.btn-reservar').replaceWith(`
                             <button type="button" class="btn btn-success btn-sm flex-grow-1 rounded-pill" disabled>
                                 Reservado
                             </button>
                         `);
 
-                        // Adiciona o botão de cancelar reserva
+                        // Adiciona botão de cancelar
                         card.find('.card-body').append(`
-                            <form action="/cancelar_reserva/${response.presente_id}/?token=${response.token}" method="POST" class="form-cancelar-reserva w-100 mt-2">
+                            <form action="/cancelar_reserva/${response.presente_id}/?token=${response.token}" method="POST" class="form-cancelar-reserva w-100">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
-                                <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100">Cancelar Reserva</button>
+                                <button type="submit" class="btn btn-danger btn-cancelar-reserva btn-sm w-100 rounded-pill">Cancelar Reserva</button>
                             </form>
                         `);
 
@@ -2219,7 +2186,7 @@
             });
 
             // Cancelar reserva via AJAX
-            $('#lista-presentes').on('submit', '.form-cancelar-reserva', function(e) {
+            $(document).on('submit', '.form-cancelar-reserva', function(e) {
                 e.preventDefault();
 
                 const form = $(this);
@@ -2229,9 +2196,15 @@
                 $.post(url, { csrfmiddlewaretoken: csrfToken }, function(response) {
                     if (response.success) {
                         const card = $('#presente-card-' + response.presente_id);
+                        const cardContainer = card.find('.card');
 
-                        // Atualiza o botão para permitir reserva novamente
+                        // Remove classes de estilo
+                        cardContainer.removeClass('presente-reservado reservado-pelo-convidado');
+
+                        // Remove o botão de cancelar
                         card.find('.form-cancelar-reserva').remove();
+
+                        // Atualiza o botão para "Reservar"
                         card.find('.btn-success').replaceWith(`
                             <button type="button" 
                                     class="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill btn-reservar" 
@@ -2248,39 +2221,7 @@
                 });
             });
 
-            // Enviar/Editar mensagem via AJAX
-            $('#form-mensagem').on('submit', function(e) {
-                e.preventDefault();
-                const url = $(this).attr('action');
-                const csrfToken = $('[name=csrfmiddlewaretoken]').val();
-                const texto_mensagem = $('#texto_mensagem').val();
-                const mensagem_id = $('#editarMensagemId').val() || '';
-
-                $.post(url, {
-                    texto_mensagem: texto_mensagem,
-                    mensagem_id: mensagem_id,
-                    csrfmiddlewaretoken: csrfToken
-                }, function(response) {
-                    if (response.success) {
-                        // Limpa textarea e id edição
-                        $('#texto_mensagem').val('');
-                        $('#editarMensagemId').val('');
-                        
-                        // Atualize a lista de mensagens (exemplo: adiciona nova mensagem no DOM)
-                        // Você deve ajustar aqui conforme o seu HTML da lista de mensagens
-                        $('#lista-mensagens').append(`
-                            <li id="mensagem-${response.mensagem.id}">
-                                <p>${response.mensagem.texto_mensagem}</p>
-                                <!-- Botões editar/excluir -->
-                            </li>
-                        `);
-
-                        showNotification(response.message, 'success');
-                    } else {
-                        showNotification(response.message, 'error');
-                    }
-                });
-            });
+            
 
                      
 
@@ -2293,44 +2234,120 @@
 
             excluirForms.forEach(form => {
                 form.addEventListener('submit', function(event) {
-                event.preventDefault(); // evita submit normal
+                    event.preventDefault(); // evita submit normal
 
-                if (!confirm('Tem certeza que deseja excluir esta mensagem?')) {
-                    return;
-                }
+                    if (!confirm('Tem certeza que deseja excluir esta mensagem?')) {
+                        return;
+                    }
 
-                const url = form.action;
-                const formData = new FormData(form);
+                    const url = form.action;
+                    const formData = new FormData(form);
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // ✅ Mostrar notificação de sucesso
+                            showNotification(data.message || 'Mensagem excluída com sucesso!', 'success');
+
+                            // Remove a mensagem do DOM
+                            const mensagemId = form.querySelector('input[name="mensagem_id"]').value;
+                            const mensagemElemento = document.querySelector(`[data-message-id="${mensagemId}"]`);
+                            if (mensagemElemento) {
+                                mensagemElemento.remove();
+                            }
+                        } else {
+                            // ✅ Mostrar notificação de erro
+                            showNotification(data.message || 'Erro ao excluir a mensagem.', 'error');
+                        }
+                    })
+                    .catch(() => {
+                        showNotification('Erro na requisição. Tente novamente.', 'error');
+                    });
+                });
+            });
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Submissão do formulário NOVA mensagem
+            const formNovo = document.getElementById('form-mensagem-novo');
+            if (formNovo) {
+                formNovo.addEventListener('submit', function (e) {
+                    e.preventDefault(); // Impede envio padrão
+                    enviarMensagem(this, false);
+                });
+            }
+
+            // Submissão do formulário EDITAR mensagem
+            const formEditar = document.getElementById('form-mensagem-editar');
+            if (formEditar) {
+                formEditar.addEventListener('submit', function (e) {
+                    e.preventDefault(); // Impede envio padrão
+                    enviarMensagem(this, true);
+                });
+            }
+
+            function enviarMensagem(formulario, isEdit) {
+                const url = formulario.action;
+                const csrfToken = formulario.querySelector('[name=csrfmiddlewaretoken]').value;
+                const formData = new FormData(formulario);
 
                 fetch(url, {
                     method: 'POST',
                     headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                        'X-CSRFToken': csrfToken
                     },
                     body: formData
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                    alert(data.message || 'Mensagem excluída com sucesso!');
-                    // Remove a mensagem do DOM
-                    const mensagemId = form.querySelector('input[name="mensagem_id"]').value;
-                    const mensagemElemento = document.querySelector(`[data-message-id="${mensagemId}"]`);
-                    if (mensagemElemento) {
-                        mensagemElemento.remove();
-                    }
+                        showNotification(data.message || 'Mensagem salva com sucesso!', 'success');
+                        setTimeout(() => window.location.reload(), 2000); // dá tempo da notificação aparecer
                     } else {
-                    alert(data.message || 'Erro ao excluir a mensagem.');
+                        showNotification(data.message || 'Erro ao enviar mensagem', 'error');
                     }
                 })
-                .catch(() => {
-                    alert('Erro na requisição. Tente novamente.');
+                .catch(error => {
+                    console.error('Erro na requisição:', error);
+                    showNotification('Erro ao processar sua solicitação.', 'error');
                 });
+            }
+
+            // Abrir modal de edição com dados da mensagem
+            const editButtons = document.querySelectorAll('.btn-edit-message');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const messageId = this.getAttribute('data-mensagem-id');
+                    const messageText = this.getAttribute('data-mensagem-texto');
+
+                    document.getElementById('editarMensagemId').value = messageId;
+                    document.getElementById('editarTextoMensagem').value = messageText.trim();
+
+                    const textarea = document.getElementById('editarTextoMensagem');
+                    textarea.style.height = 'auto';
+                    textarea.style.height = textarea.scrollHeight + 'px';
+
+                    const modal = new bootstrap.Modal(document.getElementById('editarMensagemModal'));
+                    modal.show();
                 });
             });
         });
-                
+
+
+        const contador = document.querySelector('.messages-count .badge');
+        if (contador) {
+            contador.textContent = parseInt(contador.textContent) + 1;
+        }
+                        
     </script>
        
 {% endblock %}
