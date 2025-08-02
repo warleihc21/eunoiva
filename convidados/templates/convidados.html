@@ -636,6 +636,7 @@
         z-index: 0;
     }
 
+    #mensagem-aos-noivos .container,
     #mensagem-aos-noivos .container-fluid {
         position: relative;
         z-index: 1;
@@ -733,7 +734,7 @@
 
     .messages-list {
         padding: 20px;
-        max-height: 400px;
+        max-height: 740px; /* Valor aumentado */
         overflow-y: auto;
     }
 
@@ -931,7 +932,7 @@
         }
         
         .messages-list {
-            max-height: 300px;
+            max-height: 500px;
         }
     }
 
@@ -976,7 +977,7 @@
         
         .messages-list {
             padding: 15px;
-            max-height: 500px;
+            max-height: 600px;
         }
         
         .message-textarea {
@@ -1267,64 +1268,31 @@
         <br>
 
         <section id="mensagem-aos-noivos" class="py-5">
-            <div class="container-fluid">
-                <!-- Imagem decorativa -->
+            <div class="container">
                 <div class="text-center my-5">
                     <img src="{% static 'noivos/img/ramocoracao.png' %}" alt="Decoração floral" class="img-fluid tamanho-imagem flower-ampersand">
                 </div>
         
-                <!-- Cabeçalho -->
                 <div class="text-center mb-5">
-                    <div class="text-center">
-                        <i class="bi bi-chat-heart fs-1 cor-vermelho animacao-icone"></i>
-                        <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-3">Mural de Recados</h2>
-                        <p class="mb-4 text-lg cor-marrom">Compartilhe seus votos de felicidade com os noivos</p>
-                    </div>
+                    <i class="bi bi-chat-heart fs-1 cor-vermelho animacao-icone"></i>
+                    <h2 class="Comfortaa-Bold cor-marrom mt-3 mb-3">Mural de Recados</h2>
+                    <p class="mb-4 text-lg cor-marrom">Compartilhe seus votos de felicidade com os noivos</p>
                 </div>
         
-                <!-- Grid principal -->
-                <div class="row g-4">
-                    <!-- Formulário -->
-                    <div class="col-lg-6">
-                        <div class="message-form-container">
-                            <div class="messages-header">
-                                <h5>Mensagens dos Convidados</h5>
-
-                            </div>
-                            <form id="form-mensagem-novo"
-                                    method="post"
-                                    action="{% url 'mensagem_aos_noivos' %}?token={{ token }}"
-                                    class="message-form"
-                                    data-nome="{{ convidado.nome_convidado }}"
-                                    data-inicial="{{ convidado.nome_convidado|slice:":1"|upper }}">
-                                {% csrf_token %}
-                                <div class="form-floating mb-4">
-                                    <textarea name="texto_mensagem" id="texto_mensagem" class="form-control message-textarea" 
-                                              placeholder="Escreva sua mensagem aqui..." rows="5"></textarea>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <button type="submit" class="btn btn-danger rounded-pill">
-                                        <i class="bi bi-send-fill me-2 text-center"></i> Enviar
-                                    </button>
-                                </div>
-                                <input type="hidden" id="editarMensagemId" name="mensagem_id" value="">
-                            </form>
+                <div class="chat-container bg-white rounded-4 shadow-lg overflow-hidden">
+                    <div class="chat-header p-4 border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 cor-vermelho">
+                                <i class="bi bi-chat-square-text me-2"></i> Mensagens dos Convidados
+                            </h5>
+                            <span class="badge bg-danger rounded-pill">{{ mensagens_enviadas|length }}</span>
                         </div>
                     </div>
-        
-                    <!-- Mensagens -->
-                    <div class="col-lg-6">
-                        <div class="messages-container">
-                            <div class="messages-header">
-                                <h5>Escreva sua mensagem</h5>
-                                <div class="messages-count">
-                                    <span class="badge bg-primary">{{ mensagens_enviadas|length }}</span>
-                                </div>
-                            </div>
+                        <div>
                             
                             {% if mensagens_enviadas %}
                                 <div class="messages-list" id="lista-mensagens">
-                                    {% for mensagem in mensagens_enviadas|slice:":3" %}
+                                    {% for mensagem in mensagens_enviadas|slice:":5" %}
                                         <div class="message-item {% if mensagem.escrita_por.token == token %}own-message{% endif %}" 
                                              data-message-id="{{ mensagem.id }}">
                                             <div class="message-avatar">
@@ -1359,7 +1327,6 @@
                                     {% endfor %}
                                 </div>
                                 
-                                <!-- Botão Mostrar Mais -->
                                 {% if mensagens_enviadas|length > 3 %}
                                 <div class="text-center mt-4 mb-2">
                                     <button type="button" class="btn btn-view-all rounded-pill" data-bs-toggle="modal" data-bs-target="#mensagensModal">
@@ -1374,13 +1341,31 @@
                                 </div>
                             {% endif %}
                         </div>
+                    <div class="chat-form p-4 border-top bg-light">
+                        <form id="form-mensagem-novo"
+                            method="post"
+                            action="{% url 'mensagem_aos_noivos' %}?token={{ token }}"
+                            class="message-form"
+                            data-nome="{{ convidado.nome_convidado }}"
+                            data-inicial="{{ convidado.nome_convidado|slice:":1"|upper }}">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <textarea name="texto_mensagem" id="texto_mensagem" 
+                                        class="form-control message-textarea rounded-start-4" 
+                                        placeholder="Escreva sua mensagem aqui..." 
+                                        rows="2"></textarea>
+                                <button type="submit" class="btn btn-danger rounded-end-4 px-2 px-sm-4">
+                                    <i class="bi bi-send-fill"></i>
+                                </button>
+                            </div>
+                            <input type="hidden" id="editarMensagemId" name="mensagem_id" value="">
+                        </form>
                     </div>
                 </div>
             </div>
         
-            <!-- Modal com todas as mensagens -->
             <div class="modal fade" id="mensagensModal" tabindex="-1" aria-labelledby="mensagensModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title text-white">Todas as mensagens</h5>
@@ -1430,9 +1415,8 @@
                 </div>
             </div>
         
-            <!-- Modal para edição -->
             <div class="modal fade" id="editarMensagemModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Editar mensagem</h5>
