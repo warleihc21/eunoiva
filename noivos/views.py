@@ -254,31 +254,34 @@ def lista_convidados(request):
         data_casamento = perfil.data_casamento
 
         # Adicionar o link do WhatsApp personalizado para cada convidado
-        for convidado in nao_confirmados:
+        for convidado in convidados:  # Mudar de nao_confirmados para convidados
             telefone = convidado.whatsapp
-            if telefone and not telefone.startswith("55"):
-                telefone = f"55{telefone}"
+            if telefone:
+                if not telefone.startswith("55"):
+                    telefone = f"55{telefone}"
 
-            endereco_completo = f"Rua {perfil.rua}, {perfil.numero} - {perfil.bairro}, {perfil.municipio}/{perfil.estado} - {perfil.cep}"
-            data_formatada = perfil.data_casamento.strftime("%d/%m/%Y")
-            horario_formatado = perfil.horario_casamento.strftime("%H:%M") if perfil.horario_casamento else ""
+                endereco_completo = f"Rua {perfil.rua}, {perfil.numero} - {perfil.bairro}, {perfil.municipio}/{perfil.estado} - {perfil.cep}"
+                data_formatada = perfil.data_casamento.strftime("%d/%m/%Y")
+                horario_formatado = perfil.horario_casamento.strftime("%H:%M") if perfil.horario_casamento else ""
 
-            # Personalizar mensagem
-            mensagem_formatada = mensagem.replace("{nome}", convidado.nome_convidado)\
-                           .replace("{link}", convidado.link_convite)\
-                           .replace("{local}", endereco_completo)\
-                           .replace("{data}", data_formatada)\
-                           .replace("{horario}", horario_formatado)\
-                           .replace("{noivo}", perfil.nome_primeiro_conjuge)\
-                           .replace("{noiva}", perfil.nome_segundo_conjuge)
+                # Personalizar mensagem
+                mensagem_formatada = mensagem.replace("{nome}", convidado.nome_convidado)\
+                            .replace("{link}", convidado.link_convite)\
+                            .replace("{local}", endereco_completo)\
+                            .replace("{data}", data_formatada)\
+                            .replace("{horario}", horario_formatado)\
+                            .replace("{noivo}", perfil.nome_primeiro_conjuge)\
+                            .replace("{noiva}", perfil.nome_segundo_conjuge)
 
-            # Adicionar link da imagem, se existir
-            if mensagem_obj and mensagem_obj.imagem:
-                imagem_url = request.build_absolute_uri(mensagem_obj.imagem.url)
-                mensagem_formatada += f"\n\n📷 Segue também um lindo convite que preparamos para você: {imagem_url}"
+                # Adicionar link da imagem, se existir
+                if mensagem_obj and mensagem_obj.imagem:
+                    imagem_url = request.build_absolute_uri(mensagem_obj.imagem.url)
+                    mensagem_formatada += f"\n\n📷 Segue também um lindo convite que preparamos para você: {imagem_url}"
 
-            mensagem_encoded = quote(mensagem_formatada)
-            convidado.link_whatsapp = f"https://wa.me/{telefone}?text={mensagem_encoded}"
+                mensagem_encoded = quote(mensagem_formatada)
+                convidado.link_whatsapp = f"https://wa.me/{telefone}?text={mensagem_encoded}"
+            else:
+                convidado.link_whatsapp = "#"
 
         return render(request, 'lista_convidados.html', {
             'convidados': convidados, 

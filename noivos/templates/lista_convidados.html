@@ -619,7 +619,7 @@
                                     </td>
                                     <td>
                                         {% if convidado.whatsapp %}
-                                            <a href="https://wa.me/55{{ convidado.whatsapp }}" target="_blank" class="text-success" style="text-decoration: none;">
+                                            <a href="{{ convidado.link_whatsapp }}" target="_blank" class="text-success text-decoration-none">
                                                 <i class="bi bi-whatsapp"></i> {{ convidado.whatsapp }}
                                             </a>
                                         {% else %}
