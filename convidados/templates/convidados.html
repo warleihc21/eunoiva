@@ -1073,6 +1073,22 @@
     .notification .bounce {
         animation: bounce 1s;
     }
+
+    /* INÍCIO DA NOVA REGRA PARA O FORMULÁRIO */
+    #form-mensagem-novo .input-group {
+        flex-direction: column; /* Coloca os itens em coluna (um em cima do outro) */
+        gap: 0.5rem; /* Adiciona um pequeno espaço entre o campo e o botão */
+    }
+
+    #form-mensagem-novo .message-textarea {
+        border-radius: 12px !important; /* Arredonda todos os cantos do campo de texto */
+        width: 100%; /* Garante que ocupe a largura total */
+    }
+
+    #form-mensagem-novo .btn {
+        border-radius: 12px !important; /* Arredonda todos os cantos do botão */
+        width: 100%; /* Faz o botão ocupar a largura total */
+    }
 </style>
 
 
