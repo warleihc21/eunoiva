@@ -617,7 +617,15 @@
                                             {{ convidado.get_status_display }}
                                         </span>
                                     </td>
-                                    <td><i class="bi bi-whatsapp text-success"></i> {{ convidado.whatsapp|default:"-" }}</td>
+                                    <td>
+                                        {% if convidado.whatsapp %}
+                                            <a href="https://wa.me/55{{ convidado.whatsapp }}" target="_blank" class="text-success" style="text-decoration: none;">
+                                                <i class="bi bi-whatsapp"></i> {{ convidado.whatsapp }}
+                                            </a>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         {% if convidado.maximo_acompanhantes > 0 %}
                                             <div class="d-flex align-items-center">
